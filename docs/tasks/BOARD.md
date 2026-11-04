@@ -1,7 +1,8 @@
 # 任务看板
 
-> 状态以任务包为准；本表只做索引。认领时把自己的 GitHub handle 填进“owner”，
-> 开分支 `feat/<id>-<slug>`，按 [COLLABORATION.md](../../COLLABORATION.md) 走 PR。
+> **自由认领**：不锁分工。想做哪个，先把表里的“认领”改成自己，开分支
+> `feat/<id>-<slug>`，按 [COLLABORATION.md](../../COLLABORATION.md) 走 PR。
+> 可以跨优先级、可以一人做多块；撞车就拆任务，不要抢同一个文件。
 
 ## 已完成
 
@@ -17,22 +18,23 @@
 
 ## 待做（按优先级）
 
-| ID | 模块 | 状态 | 建议 owner | 依赖 | 文档 |
+| ID | 模块 | 状态 | 认领 | 依赖 | 文档 |
 |---|---|---|---|---|---|
-| D4-01 | 预算推荐：预算+用途 → 完整配置 | **next** | @MoeField | D1/D3 | [D4-01](D4-01.md) |
-| DEMO-01 | 目录 16 → 24+ 条 | ready | @LIU132578 | D1 | [DEMO-01](DEMO-01.md) |
-| QA-01 | 矩阵 / 变异 / 批次报告 | ready | @yys1yys2yys | D1–D6 | [QA-01](QA-01.md) |
-| DATA-02 | Room 持久化 | backlog | @LIU132578 | D2 | [DATA-02](DATA-02.md) |
+| D4-01 | 预算推荐：预算+用途 → 完整配置 | **doing** | @MoeField | D1/D3 | [D4-01](D4-01.md) |
+| DEMO-01 | 目录 16 → 24+ 条 | ready | 开放 | D1 | [DEMO-01](DEMO-01.md) |
+| QA-01 | 矩阵 / 变异 / 批次报告 | ready | 开放 | D1–D6 | [QA-01](QA-01.md) |
+| DATA-02 | Room 持久化 | backlog | 开放 | D2 | [DATA-02](DATA-02.md) |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | doing | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
-| DEFENSE-01 | 讲稿 / 演示脚本 / Q&A | backlog | @yys1yys2yys | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
+| DEFENSE-01 | 讲稿 / 演示脚本 / Q&A | backlog | 开放 | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
 | RELEASE-01 | 签名 APK / Release | backlog | @MoeField | QA | [RELEASE-01](RELEASE-01.md) |
 
 ## 认领规则
 
-1. 只改自己模块的路径；跨模块先拆任务。
-2. 任务包里的“允许修改的路径”就是边界，越界 PR 打回。
+1. 先改本表“认领”，再开分支；没改就开 PR 也算认领，但要在 PR 里写。
+2. 只改自己任务包里的路径；跨模块先拆任务。
 3. 一个 PR ≤ 400 行有效 diff；超过就拆。
 4. AI 生成的代码也要人来跑一次验收命令、看一眼截图。
+5. 不强制按顺序，也不强制每人只做一个；没人做的由 @MoeField 兜底，但不要沉默地等。
 
 ## 本周目标（2026-11-04 起）
 
