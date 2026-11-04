@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -56,6 +57,15 @@ jobs:
             done
           fi
           exit "$status"
+
+      - name: Comment Gradle log on PR (debug)
+        if: failure() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tail -120 /tmp/gradle.log > /tmp/gradle-tail.txt || true
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gradle-tail.txt
 
 # Android 构建（:data / :app）暂不进 CI：
 # GitHub hosted runner 上的 compileSdk 37 平台包名尚未验证（本机是 android-37.0），
