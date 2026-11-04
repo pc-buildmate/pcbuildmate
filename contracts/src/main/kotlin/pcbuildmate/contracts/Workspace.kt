@@ -28,6 +28,8 @@ enum class TextKey(val key: String) {
     RECOMMENDATION_INFEASIBLE("recommendation_infeasible"),
     UNDO_APPLIED("undo_applied"),
     SAVED("saved"),
+    INVALID_STATE("invalid_state"),
+    PREVIEW_NOT_READY("preview_not_ready"),
 }
 
 /** 拒绝原因。枚举冻结；新增走契约变更。 */
