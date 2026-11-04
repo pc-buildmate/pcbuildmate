@@ -1,0 +1,6 @@
+# raw captures and local env; derived data is committed selectively
+data/raw/
+.venv/
+__pycache__/
+*.pyc
+.uv-cache/
