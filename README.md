@@ -139,6 +139,8 @@ node tools/test-demo-ui.mjs      # 全部界面的渲染冒烟测试
 
 - 模块矩阵与 `ci/modules.json` 一致：`:contracts`、`:contracts-test`、`:domain:{build,rules,replacement,recommend,compare,state}`、`:data`、`:feature`、`:ui`、`:app`、`:testing`、`:test-oracle`。
 - `compileSdk = 37`，`minSdk = 31`（Android 12+），`arm64-v8a` 为发布基线。
+- 安装身份：`applicationId = cn.org.this.pcbuildmate`（反向域名，与 GitHub 邮箱 `pc-buildmate@this.org.cn` 同域）。
+  代码 namespace 保留 `pcbuildmate.*`：`this` 是 Java/Kotlin 保留字，不能作为包名段；两者不必相同。
 - 依赖仓库在 `settings.gradle.kts`：阿里云镜像优先，官方仓库回退；**不提交任何私人代理地址**。
 - 本机 SDK 写在 `local.properties`（已 gitignore）：
 

@@ -4,13 +4,17 @@ plugins {
 }
 
 android {
+    // 安装身份用反向域名（与 GitHub 邮箱同域）。
+    // 注意："this" 是 Java/Kotlin 保留字，不能作为 Kotlin 包名的一段；
+    // 因此代码命名空间保留 pcbuildmate.*，applicationId 单独用域名。
+    // 两者不必相同：applicationId 决定安装身份，namespace 只决定 R/BuildConfig 包。
     namespace = "pcbuildmate.app"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "pcbuildmate.app"
+        applicationId = "cn.org.this.pcbuildmate"
         minSdk = 31
         targetSdk = 37
         versionCode = 1
