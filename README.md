@@ -83,6 +83,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 | `:test-oracle` | 独立参考模型 | 待补 | [QA-01](docs/tasks/QA-01.md) |
 
 > 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：31 条、2026-11-04 参考快照，不承诺实时/库存。
+> 价格数据管道（2020+，半自动，App 只读快照）见 [pricedata/README.md](pricedata/README.md)。
 
 ## 这一周做什么
 
