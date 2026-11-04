@@ -180,17 +180,19 @@ ai:ready  needs-human  solo-merge  good-first-task
 列：`Backlog → Ready → Doing → Review → Done`。
 Issue 的 `status:*` 标签与列一一对应；**任务包文件是权威，Issue 只是索引**。
 
-### 3.6 本地与远程
+### 3.6 本地与远程（已接通，2026-11-04）
 
 ```bash
 cd PC_BUILDMATE
-git init
-git remote add origin git@github.com:<owner>/pc-buildmate.git
-git branch -M main
+git remote add origin git@github.com:pc-buildmate/pcbuildmate.git
+git push -u origin main
+git push -u origin chore/s1-scaffold
 ```
 
-> 代理没配好之前：**先本地 git**，push 稍后。CI 不跑时，以本机门禁命令为准；
-> push 之后 CI 是唯一权威。不要把 `local.properties`、`.DS_Store`、`build/` 提交上去。
+- 仓库：<https://github.com/pc-buildmate/pcbuildmate>（public，默认分支 `main`）
+- 认证：仓库级 **Deploy Key**（`dsh-agent-1`，已勾选 write access）；私钥在本地 `.ssh/`，已 gitignore
+- `main` 目前只有文档基线；S1 在 `chore/s1-scaffold`，走 PR 合并
+- 不要把 `local.properties`、`.ssh/`、`.DS_Store`、`build/`、`.gradle-home/` 提交上去
 
 ---
 
