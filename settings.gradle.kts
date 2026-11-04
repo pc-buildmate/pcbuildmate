@@ -30,7 +30,7 @@ rootProject.name = "pc-buildmate"
 include(
     ":contracts",
     ":contracts-test",
-    ":domain:build",
+    ":domain:revision",
     ":domain:rules",
     ":domain:replacement",
     ":domain:recommend",

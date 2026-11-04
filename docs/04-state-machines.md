@@ -65,7 +65,7 @@ data class TransitionResult<S : Any>(
 | `RunDiagnosis(revisionId)` | ViewModel → `CompatibilityEvaluator` | 发 `CheckFailed` |
 | `CancelDiagnosis` | ViewModel（取消 job） | 忽略 |
 | `LoadCandidates(base, ruleId, conflictId)` | ViewModel → `ReplacementAdvisorPort` | 发 `CandidatesLoaded(空)` |
-| `BuildPreview(base, componentId)` | ViewModel → `domain:build` | 不产生 `PreviewBuilt`（保持 `previewRevisionId = null`） |
+| `BuildPreview(base, componentId)` | ViewModel → `domain:revision` | 不产生 `PreviewBuilt`（保持 `previewRevisionId = null`） |
 | `RecheckRevision(revisionId)` | ViewModel → 引擎全量重检 | 发 `RecheckRejected` |
 | `PersistRevision(revision)` | ViewModel → `BuildStorePort` | 保留内存态 + 提示 |
 | `PersistApplied(revision)` | 同上（仅在重检通过后） | 同上 |

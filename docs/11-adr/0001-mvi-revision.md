@@ -1,7 +1,7 @@
 # ADR-0001 · 用 MVI + BuildRevision 管理状态
 
 - 状态：已采纳（2026-10）
-- 影响：feature、ui、domain:build、domain:state
+- 影响：feature、ui、domain:revision、domain:state
 - 相关：docs/04-state-machines.md、docs/05-module-independence.md
 
 ## 背景

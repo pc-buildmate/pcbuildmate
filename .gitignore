@@ -41,3 +41,6 @@ Thumbs.db
 
 # Local deploy key (never commit)
 .ssh/
+
+# Clean-cache repro
+.gradle-fresh/

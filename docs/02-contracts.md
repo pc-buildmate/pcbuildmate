@@ -28,7 +28,7 @@
 | ID | 不变量 | 违反归类 | 主要覆盖 |
 |---|---|---|---|
 | INV-01 | `totalCny == Σ(quantity × unitPriceCny)` | DOMAIN_BUG | 构造期 `require` + 属性测试 |
-| INV-02 | 同一 `buildId` 下 revision id 严格递增 | DOMAIN_BUG | `domain:build` |
+| INV-02 | 同一 `buildId` 下 revision id 严格递增 | DOMAIN_BUG | `domain:revision` |
 | INV-03 | 诊断只有 `revisionId == currentRevisionId` 才能作为当前结论展示 | UI_STATE_BUG | `currentDiagnosis` 访问器 |
 | INV-04 | 规则输入含 `EMPTY` / 缺失 → 不得 `Passed` | DOMAIN_BUG | 15 条规则 × `missing` fixture |
 | INV-05 | 规则输入含来源冲突 → 必须 `Unverified(SOURCE_CONFLICT)` | DOMAIN_BUG | `fx_source_conflict_*` |
