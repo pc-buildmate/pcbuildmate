@@ -44,3 +44,10 @@ Thumbs.db
 
 # Clean-cache repro
 .gradle-fresh/
+
+# Local GitHub CLI (per-repo auth)
+.tools/
+.gh-config/
+
+# Local evidence / captures
+artifacts/
