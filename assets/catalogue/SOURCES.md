@@ -10,6 +10,7 @@
 |---|---|---:|---|
 | `cpu-demo-9600x` | AMD Ryzen 5 9600X | 1349 | [it168 行情](https://www.it168.com/hotwords/2262_1.shtml) |
 | `cpu-demo-245k` | Intel Core Ultra 5 245K | 1229 | [什么值得买 京东价](https://www.smzdm.com/p/183586915/) |
+| `cpu-demo-7500f` | AMD Ryzen 5 7500F（无核显） | 999 | [ZOL CPU 报价](https://detail.zol.com.cn/cpu/) |
 | `mb-demo-b850-cvn` | COLORFUL CVN B850 GAMING PRO WIFI7 V14 | 1499 | [七彩虹商城](https://www.skycolorful.com/) · [规格新闻](https://news.ifeng.com/c/8oM90MLvXtb) |
 | `mb-demo-b850m` | COLORFUL iGame B850M ULTRA-S V14 | 1399 | [七彩虹商城](https://www.skycolorful.com/) · [规格新闻](https://news.17173.com/content/05202026/170650520.shtml) |
 | `mb-demo-z890m` | COLORFUL iGame Z890M ULTRA W V20 | 1599 | [七彩虹商城](https://www.skycolorful.com/) · [规格新闻](https://news.17173.com/content/08262026/120310845.shtml) |

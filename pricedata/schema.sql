@@ -11,6 +11,7 @@ CREATE TABLE products (
     part_number     TEXT,
     release_year    INTEGER NOT NULL,
     platform        TEXT,
+    integrated_graphics TEXT CHECK (integrated_graphics IN ('YES', 'NO') OR integrated_graphics IS NULL),
     status          TEXT NOT NULL CHECK (status IN ('active', 'legacy', 'eol')),
     recommendable   INTEGER NOT NULL CHECK (recommendable IN (0, 1)),
     specs_json      TEXT NOT NULL,

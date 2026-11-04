@@ -31,7 +31,7 @@
 | 内存 | ✅ 必收 | ✅ | 联想官方配件页可作参考 |
 | 硬盘 | ✅ 必收 | ✅ | 联想官方配件页可作参考 |
 | 电源 | ✅ 必收 | ✅ | |
-| 显卡 | ✅ 收 | ✅ 可选 | 核显/办公配置可以没有独显 |
+| 显卡 | ✅ 收 | ✅ 可选 | 核显/办公配置可以没有独显；**无 GPU 时 CPU 必须有核显** |
 | 机箱 | ❌ 不做 | ⚠️ 仅 demo | 不采历史价；App 保留 `case-demo-320` 做 337/320 锚点 |
 | 散热 | ❌ 不做 | ⚠️ 仅 demo | 不采历史价；App 保留 1 条 demo 散热做扣具/高度演示 |
 | 无线网卡 / 显示器 / 外设 | ❌ 不做 | ❌ | 课程作业范围外 |
@@ -100,6 +100,7 @@ pricedata/
 | `brand` / `model` / `part_number` | 目录展示与去重 |
 | `release_year` | 用于 2020 门槛 |
 | `platform` | AM4 / AM5 / LGA1700 / LGA1851 … |
+| `integrated_graphics` | `YES` / `NO`；CPU 专用。无独显配置必须选 `YES` |
 | `status` | `active` / `legacy` / `eol` |
 | `recommendable` | 规则生成，不手填 |
 | `specs_json` | 只放 `docs/03 §3.3` 冻结字段；导出时映射到 `attributes` |
@@ -152,12 +153,17 @@ publish  →  GitHub Pages（人看）+ GitHub Release（App 取）
 
 命令（MVP 目标）：
 
+当前 MVP 用标准库实现，不依赖 uv 安装：
+
 ```bash
-uv run pricepipe collect --source manual_csv --file seeds/2026-11.csv
-uv run pricepipe collect --source asus_store --since 2026-10
-uv run pricepipe normalize
-uv run pricepipe validate
-uv run pricepipe export --out data/derived --version 2026.11
+PYTHONPATH=pricedata/src python3 -m pricepipe.cli validate \
+  --seed pricedata/seeds/2026-11.csv
+
+PYTHONPATH=pricedata/src python3 -m pricepipe.cli export \
+  --seed pricedata/seeds/2026-11.csv \
+  --out pricedata/data/derived \
+  --version 2026.11 \
+  --generated-at 2026-11-04T00:00:00+00:00
 ```
 
 ---
@@ -191,6 +197,10 @@ uv run pricepipe export --out data/derived --version 2026.11
 - `isDemo=true` 直到每条记录都有来源、日期、复核人；不要为了去掉“演示数据”标签而提前改 false。
 - 显卡是可选的：`UseCase.GAMING` 默认需要独显；办公/学习配置可以没有 GPU。
   没有 GPU 时，PSU 公式规则按 `docs/03 §3.7` 返回 `UNVERIFIED`，不要假装 PASSED。
+- **无 GPU ≠ 一定能亮机**：无独显配置必须选 `integrated_graphics=YES` 的 CPU。
+  D4 的过滤条件：`gpu == null -> cpu.integrated_graphics == YES`；
+  否则不生成该配置，而不是生成一台点不亮的机器。
+  当前 demo 四颗 CPU 都有核显；下一批会加 `NO` 的型号（如 7500F / KF）来测这条分支。
 - App 只读 assets 里的快照；**不**在运行时请求 GitHub Pages。
 - `manifest.json` 记录 `datasetVersion / generatedAt / datasetStart / minRecommendYear / productCount / priceCount / commit`。
 - 版本 pin：App PR 更新 `assets/catalogue/catalogue-2026.11.json` 和 `SOURCES.md` 一起提交。
@@ -269,14 +279,19 @@ uv run pricepipe export --out data/derived --version 2026.11
 
 ---
 
-## 10. MVP（建议 3–5 天）
+## 10. MVP 进度
 
-1. `schema.sql` + `manual_csv` adapter；先把现有 31 条导入，标 `release_year/status`；
-2. `asus_store` + `colorful_store` 两个 adapter，只采当前价；
-3. `wayback` adapter，回填 2020/2022/2024/2026 各 10 个锚点；
-4. `export` 出 `catalogue-2026.11.json` + `prices.csv` + `manifest.json`；
-5. GitHub Action 每周跑；异常进人工队列；
-6. App 先不动，等快照稳定再 pin。
+- [x] `schema.sql` + `manual_csv` seed（26 条，6 类，2020+）
+- [x] `export`：`products.csv` / `prices.csv` / `catalogue-2026.11.json` / `manifest.json`
+- [x] `integrated_graphics` 字段；`cpu-demo-7500f` 为 `NO`，用于无 GPU 冲突测试
+- [x] 标准库测试 3 条 + CI 步骤
+- [ ] `asus_store` / `colorful_store` adapter（当前价）
+- [ ] `wayback` 历史回填
+- [ ] GitHub Action 每周采集
+- [ ] App pin 快照（等 D4 需要时）
+
+> 生成物在 `pricedata/data/derived/`；App 现在仍用 `assets/catalogue/demo-v1.json`，
+> 不要在 D4 完成前切换，否则 demo 的 337/320 锚点会失去 case/cooler。
 
 ## 11. 明确不做
 

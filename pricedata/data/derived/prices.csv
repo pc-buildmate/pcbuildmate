@@ -1,0 +1,27 @@
+observation_id,product_id,observed_at,price_cny,list_price_cny,promo_price_cny,channel,condition,source_url,source_type,confidence,captured_by,notes
+cpu-demo-13600k:2026-11-04:manual:manual,cpu-demo-13600k,2026-11-04,1700,1700,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+cpu-demo-245k:2026-11-04:manual:manual,cpu-demo-245k,2026-11-04,1229,1229,,manual,new,https://www.smzdm.com/p/183586915/,manual,medium,MoeField,demo seed; 2026-11-04 reference
+cpu-demo-7500f:2026-11-04:manual:manual,cpu-demo-7500f,2026-11-04,999,999,,manual,new,https://detail.zol.com.cn/cpu/,manual,low,MoeField,无核显，用于 no-GPU 冲突测试
+cpu-demo-7600x:2026-11-04:manual:manual,cpu-demo-7600x,2026-11-04,1500,1500,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+cpu-demo-9600x:2026-11-04:manual:manual,cpu-demo-9600x,2026-11-04,1349,1349,,manual,new,https://www.it168.com/hotwords/2262_1.shtml,manual,medium,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-300:2026-11-04:manual:manual,gpu-demo-300,2026-11-04,3500,3500,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-337:2026-11-04:manual:manual,gpu-demo-337,2026-11-04,3400,3400,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-5060:2026-11-04:colorful_store:official,gpu-demo-5060,2026-11-04,4099,4099,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-5070:2026-11-04:colorful_store:official,gpu-demo-5070,2026-11-04,9799,9799,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-5070ti:2026-11-04:colorful_store:official,gpu-demo-5070ti,2026-11-04,13399,13399,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+gpu-demo-5080:2026-11-04:colorful_store:official,gpu-demo-5080,2026-11-04,21099,21099,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+mb-demo-b550m:2026-11-04:colorful_store:official,mb-demo-b550m,2026-11-04,549,549,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+mb-demo-b650:2026-11-04:manual:manual,mb-demo-b650,2026-11-04,900,900,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+mb-demo-b850-cvn:2026-11-04:colorful_store:official,mb-demo-b850-cvn,2026-11-04,1499,1499,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+mb-demo-b850m:2026-11-04:colorful_store:official,mb-demo-b850m,2026-11-04,1399,1399,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+mb-demo-lga1700:2026-11-04:manual:manual,mb-demo-lga1700,2026-11-04,700,700,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+mb-demo-z890m:2026-11-04:colorful_store:official,mb-demo-z890m,2026-11-04,1599,1599,,colorful_store,new,https://www.skycolorful.com/,official,high,MoeField,demo seed; 2026-11-04 reference
+mem-demo-ddr4-32:2026-11-04:manual:manual,mem-demo-ddr4-32,2026-11-04,380,380,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+mem-demo-ddr5-16:2026-11-04:manual:manual,mem-demo-ddr5-16,2026-11-04,1349,1349,,manual,new,https://wap.yesky.com/product/product/1142/1142908/price.shtml,manual,medium,MoeField,demo seed; 2026-11-04 reference
+mem-demo-ddr5-32:2026-11-04:manual:manual,mem-demo-ddr5-32,2026-11-04,500,500,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+psu-demo-550:2026-11-04:manual:manual,psu-demo-550,2026-11-04,450,450,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+psu-demo-750:2026-11-04:manual:manual,psu-demo-750,2026-11-04,600,600,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+psu-demo-rm750e:2026-11-04:manual:manual,psu-demo-rm750e,2026-11-04,849,849,,manual,new,https://www.smzdm.com/ju/sp61v12/,manual,medium,MoeField,demo seed; 2026-11-04 reference
+storage-demo-nvme:2026-11-04:manual:manual,storage-demo-nvme,2026-11-04,200,200,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+storage-demo-sata:2026-11-04:manual:manual,storage-demo-sata,2026-11-04,180,180,,manual,new,https://github.com/pc-buildmate/pcbuildmate/blob/main/assets/catalogue/SOURCES.md,manual,low,MoeField,demo seed; 2026-11-04 reference
+storage-demo-sn580:2026-11-04:manual:manual,storage-demo-sn580,2026-11-04,969,969,,manual,new,https://detail.zol.com.cn/solid_state_drive/s8137/pic_2.html,manual,medium,MoeField,demo seed; 2026-11-04 reference

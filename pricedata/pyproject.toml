@@ -1,0 +1,9 @@
+[project]
+name = "pricepipe"
+version = "0.1.0"
+description = "PC Buildmate 2020+ price data pipeline"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false

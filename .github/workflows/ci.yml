@@ -34,6 +34,11 @@ jobs:
           node tools/test-demo-flow.mjs
           node tools/test-demo-ui.mjs
 
+      - name: Price data tests
+        run: |
+          PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
+          PYTHONPATH=pricedata/src python3 -m pricepipe.cli validate --seed pricedata/seeds/2026-11.csv
+
   jvm:
     name: JVM tests
     runs-on: ubuntu-latest
