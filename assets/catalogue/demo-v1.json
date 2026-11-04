@@ -109,11 +109,11 @@
           "numeric": null
         },
         "biosGeneration": {
-          "value": "1.2",
-          "state": "VERIFIED",
+          "value": null,
+          "state": "EMPTY",
           "sources": [],
           "conflict": false,
-          "numeric": 1.2
+          "numeric": null
         },
         "memoryGeneration": {
           "value": "DDR5",

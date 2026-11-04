@@ -127,6 +127,7 @@ node tools/test-demo-ui.mjs      # 全部界面的渲染冒烟测试
 - D1 数据层：**已完成**（目录解析 + 路径/CSV/版本校验 + `CataloguePort` 实现 + 26 条单测）。
 - D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60 条 fixture 全绿）。
 - D5 替换建议：**已完成**（先过滤 BLOCKER，再按价格/影响/ID 排序；5 条测试，含 337→300 锚点）。
+- D2 工作区：**已完成**（76 格状态机 + ViewModel；Entry/Workspace/Diagnostics 三屏真机跑通，7800→7900）。
 - Git：已推送到 <https://github.com/pc-buildmate/pcbuildmate>；`main` 是文档基线，S1 在 `chore/s1-scaffold`，待 PR 合并。
 - 答辩材料：提案 / 讲稿 / Q&A 已转写为 md，见 [materials/README.md](materials/README.md)。
 

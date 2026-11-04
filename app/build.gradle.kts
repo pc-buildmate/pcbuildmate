@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":feature"))
     implementation(project(":data"))
+    implementation(project(":domain:rules"))
+    implementation(project(":domain:replacement"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
