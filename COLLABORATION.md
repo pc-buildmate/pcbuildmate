@@ -32,12 +32,13 @@ node ci/check-boundaries.mjs && node ci/check-keywords.mjs
 ### 0.3 当前状态（2026-11-04）
 
 - 规格、契约、规则、fixture、原型：**已完成并自检全绿**。
-- Android 工程：**尚未创建**（没有 `settings.gradle.kts` / `app/`）。
-- Git 仓库 / GitHub：**尚未初始化**。
-- 网络：当前无代理，`dl.google.com` / `github.com` 均超时；Gradle 只能用本机缓存离线构建
-  （缓存里有 Compose / activity / lifecycle，**没有 Room / Navigation**）。新模拟器镜像、GitHub push、
-  CI 都要等代理。
-- 因此 L1 的「可构建」从 **S1（工程骨架）** 合入 `main` 之日起生效；在此之前以四个 node 脚本为准。
+- Android 工程：**S1 骨架已建**（14 模块，`compileSdk 37` / `minSdk 31`），`:app:assembleDebug` 通过。
+- D1 数据层：**已完成**（解析 + seed 校验 + `CataloguePort` + 26 条单测）。
+- D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60/60 fixture）。
+- Git：本地已初始化，基线 `main` + `chore/s1-scaffold`；GitHub 共享账号待建，push/CI 未接。
+- 网络：代理 `127.0.0.1:1080` 可用；Gradle 走阿里云镜像（`settings.gradle.kts`），
+  不提交私人代理地址。API 31+ 模拟器镜像仍需下载。
+- L1 的「可构建」从 S1 合入 `main` 起生效；合并前以本地门禁为准。
 
 ---
 
@@ -179,17 +180,32 @@ ai:ready  needs-human  solo-merge  good-first-task
 列：`Backlog → Ready → Doing → Review → Done`。
 Issue 的 `status:*` 标签与列一一对应；**任务包文件是权威，Issue 只是索引**。
 
-### 3.6 本地与远程
+### 3.6 本地与远程（已接通，2026-11-04）
 
 ```bash
 cd PC_BUILDMATE
-git init
-git remote add origin git@github.com:<owner>/pc-buildmate.git
-git branch -M main
+git remote add origin git@github.com:pc-buildmate/pcbuildmate.git
+git push -u origin main
+git push -u origin chore/s1-scaffold
 ```
 
-> 代理没配好之前：**先本地 git**，push 稍后。CI 不跑时，以本机门禁命令为准；
-> push 之后 CI 是唯一权威。不要把 `local.properties`、`.DS_Store`、`build/` 提交上去。
+- 仓库：<https://github.com/pc-buildmate/pcbuildmate>（public，默认分支 `main`）
+- 认证：仓库级 **Deploy Key**（`dsh-agent-1`，已勾选 write access）；私钥在本地 `.ssh/`，已 gitignore
+- `main` 目前只有文档基线；S1 在 `chore/s1-scaffold`，走 PR 合并
+- 不要把 `local.properties`、`.ssh/`、`.DS_Store`、`build/`、`.gradle-home/` 提交上去
+
+### 3.7 提交身份（2026-11-04 起）
+
+| 用途 | 身份 |
+|---|---|
+| 仓库 owner / 共享账号 | `pc-buildmate`（`pcbuildmate@this.org.cn`） |
+| 个人提交身份 | **Ruan L.K** `<72515069@cityu-dg.edu.cn>`，GitHub [@MoeField](https://github.com/MoeField) |
+| 本机 git 配置 | `user.name=Ruan L.K`、`user.email=72515069@cityu-dg.edu.cn` |
+
+- 个人邮箱必须先在 GitHub **Settings → Emails** 添加并验证，commit 才会关联到 @MoeField；
+- 共享账号的 `pcbuildmate@this.org.cn` 只用于 owner 身份，不再用于日常 commit；
+- 其他成员加入后，各自在本机设置自己的 `user.name` / `user.email`，不要共用；
+- 历史 commit（S1/D1/D3）作者是共享身份，PR 用 **Squash and merge** 后，`main` 上的合并 commit 会记在点击合并的人名下。
 
 ---
 

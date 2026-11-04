@@ -11,6 +11,7 @@
 | [0004](0004-pure-jvm-domain.md) | 纯 JVM domain + 端口 | 用编译期隔离代替纪律 | 模块构建 > 3 分钟 |
 | [0005](0005-rules-as-data.md) | 规则数据化 | 新增代际只改数据与 fixture | 出现第 3 条 formula 规则 |
 | [0006](0006-three-state-evidence.md) | 三态证据模型 | 三种"责任"，最弱传播，缺字段不通过 | 需要连续置信度 |
+| [0007](0007-rule-def-in-contracts.md) | `RuleDef` 放 contracts | 数据解析、领域判定，两边都不认识对方实现 | 第 8 种 kind / formula 变表达式 |
 
 ## 写 ADR 的格式
 
