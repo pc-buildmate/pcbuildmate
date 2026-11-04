@@ -1,6 +1,6 @@
 # RELEASE-01 · 签名 APK 与发布
 
-> 状态：**backlog**｜建议 owner：@MoeField（可换）｜预估：半天｜依赖：D4/D6/QA
+> 状态：**backlog**｜认领：开放（先改 BOARD）｜预估：半天｜依赖：D4/D6/QA
 
 ## 目标
 

@@ -50,17 +50,18 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 要求：JDK 17+、Android SDK Platform 37、`minSdk 31`。CI 只跑文档 + JVM 测试；
 Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.apk`。
 
-## 团队与分工
+## 团队
 
-| GitHub | 建议负责 | 现在 |
-|---|---|---|
-| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI / Release | D4、UI 打磨 |
-| [@LIU132578](https://github.com/LIU132578) | 目录数据 / 持久化 | DEMO-01、DATA-02 |
-| [@yys1yys2yys](https://github.com/yys1yys2yys) | 测试 / 答辩材料 | QA-01、DEFENSE-01 |
-| 待加入 | 推荐 / 比较 / 文案 | 认领 [BOARD](docs/tasks/BOARD.md) |
+| GitHub | 现在 |
+|---|---|
+| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；在做 D4 |
+| [@LIU132578](https://github.com/LIU132578) | 已加入；任务自由认领 |
+| [@yys1yys2yys](https://github.com/yys1yys2yys) | 已加入；任务自由认领 |
+| 待加入 | 随时加，直接认领 [BOARD](docs/tasks/BOARD.md) |
 
-> 分工是**建议**，不是锁死。认领时在 [docs/tasks/BOARD.md](docs/tasks/BOARD.md) 把自己的 handle 填进 owner，
+> **这个阶段不锁分工**：看到想做的，就在 [BOARD](docs/tasks/BOARD.md) 把 owner 改成自己，
 > 开 `feat/<id>-<slug>` 分支，按 [COLLABORATION.md](COLLABORATION.md) 走 PR。
+> 不要求按优先级做，也不要求每人只做一个模块；两人想做同一块就拆模块或拆 PR，别抢同一个文件。
 
 ## 模块地图
 

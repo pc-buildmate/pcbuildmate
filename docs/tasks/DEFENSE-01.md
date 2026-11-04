@@ -1,6 +1,6 @@
 # DEFENSE-01 · 答辩材料与演示脚本
 
-> 状态：**backlog**｜建议 owner：@yys1yys2yys（可换）｜预估：2 天｜依赖：D2/D4/D6
+> 状态：**backlog**｜认领：开放（先改 BOARD）｜预估：2 天｜依赖：D2/D4/D6
 
 ## 目标
 

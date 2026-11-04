@@ -1,6 +1,6 @@
 # POLISH-01 · UI 打磨与可访问性
 
-> 状态：**doing**｜建议 owner：@MoeField（可换）｜预估：2 天｜依赖：D2/D6
+> 状态：**doing**｜认领：@MoeField｜预估：2 天｜依赖：D2/D6
 
 ## 目标
 
