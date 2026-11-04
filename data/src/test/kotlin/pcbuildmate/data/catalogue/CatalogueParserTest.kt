@@ -18,9 +18,9 @@ class CatalogueParserTest {
     fun `parses the demo catalogue with stable version and date`() {
         val snapshot = CatalogueParser.parse(demoJson())
 
-        assertEquals(16, snapshot.records.size)
+        assertEquals(31, snapshot.records.size)
         assertEquals("static-v1", snapshot.catalogueVersion)
-        assertEquals("2026-10-31", snapshot.priceDate)
+        assertEquals("2026-11-04", snapshot.priceDate)
         assertTrue(snapshot.isDemo)
         assertTrue(snapshot.records.all { it.isDemo }, "demo 目录中的每条记录都必须 isDemo=true（INV-11）")
         assertEquals(snapshot.records.map { it.componentId }.sorted(), snapshot.records.map { it.componentId })

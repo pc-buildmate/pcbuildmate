@@ -1,6 +1,6 @@
 # DEMO-01 · 目录扩充
 
-> 状态：**backlog**｜认领：开放（先改 BOARD）｜预估：2–3 天｜依赖：D1
+> 状态：**done**（31 条，2026-11-04）｜认领：@MoeField｜预估：2–3 天｜依赖：D1
 
 ## 目标
 
@@ -8,7 +8,7 @@
 
 ## 现状
 
-`assets/catalogue/demo-v1.json` 有 16 条记录；每类只有 2 件。D5 的 337→300 锚点靠 `gpu-demo-300` 支撑。
+`assets/catalogue/demo-v1.json` 已从 16 条扩到 **31 条**，8 类每类 ≥3；来源见 [SOURCES.md](../../assets/catalogue/SOURCES.md)。D5 的 337→300 锚点仍靠 `gpu-demo-300` 支撑。
 
 ## 需要写
 
@@ -25,7 +25,7 @@ node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
 ```
 
-- 16 → 24+ 条，8 类每类 ≥3；
+- 31 条，8 类每类 ≥3；
 - `CatalogueParser` seed 校验全过；
 - `:domain:rules:test` 60/60 不变；
 - D5 仍能给出 300mm 候选。

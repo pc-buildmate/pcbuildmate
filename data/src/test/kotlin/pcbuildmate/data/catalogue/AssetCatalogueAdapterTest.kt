@@ -52,7 +52,7 @@ class AssetCatalogueAdapterTest {
         val port = adapter()
 
         assertEquals("static-v1", port.catalogueVersion())
-        assertEquals("2026-10-31", port.priceDate())
+        assertEquals("2026-11-04", port.priceDate())
         assertEquals(port.catalogueVersion(), port.catalogueVersion())
     }
 
