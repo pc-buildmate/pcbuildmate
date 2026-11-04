@@ -36,6 +36,7 @@ node ci/check-boundaries.mjs && node ci/check-keywords.mjs
 - D1 数据层：**已完成**（解析 + seed 校验 + `CataloguePort` + 26 条单测）。
 - D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60/60 fixture）。
 - D5 替换建议：**已完成**（5 条测试；337→300 锚点）。
+- D6 比较：**已完成**（4 条测试；真机 A/B 对比）。
 - Git：本地已初始化，基线 `main` + `chore/s1-scaffold`；GitHub 共享账号待建，push/CI 未接。
 - 网络：代理 `127.0.0.1:1080` 可用；Gradle 走阿里云镜像（`settings.gradle.kts`），
   不提交私人代理地址。API 31+ 模拟器镜像仍需下载。

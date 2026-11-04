@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain:rules"))
     implementation(project(":domain:replacement"))
+    implementation(project(":domain:compare"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

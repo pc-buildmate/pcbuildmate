@@ -43,6 +43,7 @@ import pcbuildmate.contracts.ReplacementState
 import pcbuildmate.contracts.RiskLevel
 import pcbuildmate.contracts.RuleOutcome
 import pcbuildmate.contracts.Severity
+import pcbuildmate.contracts.TextKey
 import pcbuildmate.contracts.UnverifiedReason
 import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.contracts.WorkspaceUiState
@@ -123,6 +124,7 @@ fun WorkspaceScreen(
     labels: Map<String, String>,
     onIntent: (WorkspaceIntent) -> Unit,
     onCheck: () -> Unit,
+    onCompare: () -> Unit,
     onBack: () -> Unit,
 ) {
     val revision = state.revision
@@ -184,6 +186,19 @@ fun WorkspaceScreen(
                         Spacer(Modifier.size(8.dp))
                     }
                     Text("检查兼容性")
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { onIntent(WorkspaceIntent.SaveBuild) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(if (state.isSaved) "已保存（再次点击会更新诊断）" else "保存当前配置")
+                }
+                if (state.savedBuilds.size >= 2) {
+                    Spacer(Modifier.height(8.dp))
+                    Button(onClick = onCompare, modifier = Modifier.fillMaxWidth()) {
+                        Text("比较已保存的 ${state.savedBuilds.size} 份配置")
+                    }
                 }
                 Spacer(Modifier.height(24.dp))
             }
@@ -315,22 +330,148 @@ fun DiagnosticsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompareScreen(onBack: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text("构建比较", style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(8.dp))
-        Text("保存两份配置后，可在这里并排比较。", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(onClick = onBack) { Text("返回") }
+fun CompareScreen(
+    result: pcbuildmate.contracts.ComparisonResult,
+    labels: Map<String, String>,
+    onBack: () -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("构建比较") },
+                navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
+                actions = { DemoBadge() },
+            )
+        },
+    ) { padding ->
+        if (result.revisions.size < 2) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("至少保存两份配置才能比较")
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "先检查并保存第一份，替换后再保存第二份。",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    OutlinedButton(onClick = onBack) { Text("返回") }
+                }
+            }
+            return@Scaffold
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            if (TextKey.COMPARE_DIAGNOSTICS_STALE in result.warnings) {
+                item { Banner("有配置的诊断已过期；该列只显示“请重新检查”，不展示旧结论。") }
+            }
+
+            item {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    result.revisions.forEachIndexed { index, rev ->
+                        Card(modifier = Modifier.weight(1f)) {
+                            Column(Modifier.padding(10.dp)) {
+                                Text(
+                                    if (index == 0) "配置 A" else "配置 B",
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                                Text(
+                                    money(rev.totalCny),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    "revision #${rev.id}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                )
+                                val diag = result.diagnoses.getOrNull(index)
+                                Text(
+                                    diag?.let { statusLabel(it.overall.name) } ?: "请重新检查",
+                                    color = if (diag == null) {
+                                        Color(0xFF9A6700)
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            item { SectionTitle("差异") }
+            items(result.deltas, key = { it.field }) { delta ->
+                DeltaRow(delta, labels)
+            }
+            item { Spacer(Modifier.height(24.dp)) }
+        }
     }
 }
+
+@Composable
+private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String, String>) {
+    val fieldLabel = when (delta.field) {
+        "totalCny" -> "总价"
+        "status" -> "兼容状态"
+        else -> categoryLabelByName(delta.field)
+    }
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (delta.highlighted) {
+                Color(0xFFFFF6E0)
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
+        ),
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            Text(fieldLabel, style = MaterialTheme.typography.labelMedium)
+            Spacer(Modifier.height(4.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                delta.values.forEach { value ->
+                    Text(
+                        formatDeltaValue(delta.field, value),
+                        modifier = Modifier.weight(1f),
+                        fontWeight = if (delta.highlighted) FontWeight.Bold else FontWeight.Normal,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun formatDeltaValue(field: String, value: String): String =
+    if (field == "totalCny" || field in Category.entries.map { it.name }) {
+        value.toLongOrNull()?.let { money(it) } ?: value
+    } else {
+        statusLabel(value)
+    }
+
+private fun statusLabel(value: String): String = when (value) {
+    "PASSED" -> "全部通过"
+    "CONFLICT" -> "存在冲突"
+    "MIXED" -> "冲突 + 未验证"
+    "UNVERIFIED" -> "有未验证项"
+    "UNCHECKED" -> "未检查"
+    else -> value
+}
+
+private fun categoryLabelByName(name: String): String =
+    Category.entries.firstOrNull { it.name == name }?.let { categoryLabels[it] } ?: name
 
 // ------------------------------------------------------------------ pieces
 
