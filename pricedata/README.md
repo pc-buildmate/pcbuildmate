@@ -22,6 +22,25 @@
 理由：2020 前的平台大量 EOL（Windows 11、驱动、保修、库存），给新手推荐老硬件是不负责任的。
 2020 以后的 AM4/B550、LGA1200、RTX 30、DDR4/DDR5 仍有可买新件，才适合做“起始配置”。
 
+### 1.1 类目范围（2026-11-04 确认）
+
+| 类目 | 长期价格数据 | App 推荐 | 说明 |
+|---|---|---|---|
+| CPU | ✅ 必收 | ✅ | |
+| 主板 | ✅ 必收 | ✅ | |
+| 内存 | ✅ 必收 | ✅ | 联想官方配件页可作参考 |
+| 硬盘 | ✅ 必收 | ✅ | 联想官方配件页可作参考 |
+| 电源 | ✅ 必收 | ✅ | |
+| 显卡 | ✅ 收 | ✅ 可选 | 核显/办公配置可以没有独显 |
+| 机箱 | ❌ 不做 | ⚠️ 仅 demo | 不采历史价；App 保留 `case-demo-320` 做 337/320 锚点 |
+| 散热 | ❌ 不做 | ⚠️ 仅 demo | 不采历史价；App 保留 1 条 demo 散热做扣具/高度演示 |
+| 无线网卡 / 显示器 / 外设 | ❌ 不做 | ❌ | 课程作业范围外 |
+
+> **为什么 App 还留机箱/散热**：答辩的核心锚点是“337mm 显卡 vs 320mm 机箱”。
+> 数据管道不采它们的长期价格，但 App 的 demo 目录保留 1–2 条记录；
+> 如果以后要彻底去掉机箱，必须同时删 `GPU_CASE_*` / `MB_CASE_FORM_FACTOR` / `COOLER_CASE_HEIGHT`
+> 规则与 fixture，属于契约变更，不在本次范围。
+
 ---
 
 ## 2. 两层数据
@@ -110,7 +129,8 @@ pricedata/
 |---|---|---|
 | 华硕商城 `store.asus.com.cn` | 华硕主板/显卡/机箱当前价 | 低频率；优先找页面自身 JSON；Playwright 兜底 |
 | 七彩虹商城 `skycolorful.com` | 七彩虹显卡/主板当前价 | 低频率；页面价 |
-| 其他厂商官方商城 | 当前价 | 逐个加 adapter |
+| 其他厂商官方商城（华硕、七彩虹、微星、技嘉、华擎、三星、WD、Crucial、金士顿、海韵、海盗船等） | 当前价 | 有官方商城且能稳定取价就加 adapter；没有就人工 CSV |
+| 联想官方配件页 | SSD / 内存参考价 | 只收标准消费级型号；OEM/专有件不进兼容规则 |
 | Wayback Machine | 2020–2025 历史 | CDX + 存档页；限速 1 req/s；缓存 |
 | ZOL / 太平洋 | 历史参数/价格 | 低频；只做交叉核对 |
 | 京东 / 淘宝 | 当前价人工抽样 | **只做 manual CSV**，不自动抓 |
@@ -169,6 +189,8 @@ uv run pricepipe export --out data/derived --version 2026.11
 ```
 
 - `isDemo=true` 直到每条记录都有来源、日期、复核人；不要为了去掉“演示数据”标签而提前改 false。
+- 显卡是可选的：`UseCase.GAMING` 默认需要独显；办公/学习配置可以没有 GPU。
+  没有 GPU 时，PSU 公式规则按 `docs/03 §3.7` 返回 `UNVERIFIED`，不要假装 PASSED。
 - App 只读 assets 里的快照；**不**在运行时请求 GitHub Pages。
 - `manifest.json` 记录 `datasetVersion / generatedAt / datasetStart / minRecommendYear / productCount / priceCount / commit`。
 - 版本 pin：App PR 更新 `assets/catalogue/catalogue-2026.11.json` 和 `SOURCES.md` 一起提交。
@@ -222,6 +244,28 @@ uv run pricepipe export --out data/derived --version 2026.11
 
 - 直接改 `dataset_start`，重跑 export；历史表可保留在 `prices.csv`，不影响 App；
 - 如果答辩不需要趋势，删掉也无妨，但别声称“覆盖 10 年”。
+
+### 9.6 想彻底不做机箱/散热
+
+不要只删数据。机箱/散热牵连 5 条规则：
+
+`GPU_CASE_LENGTH`、`GPU_CASE_THICKNESS`、`GPU_CASE_SLOT_WIDTH`、`COOLER_CASE_HEIGHT`、`MB_CASE_FORM_FACTOR`。
+
+要删就按契约变更走：
+
+1. 改 `docs/03 §3.3` 字段表、§3.6 规则明细；
+2. 改 `assets/rules/rules-v1.json` 与 60 条 fixture（删对应 20 条）；
+3. 改 `assets/fixtures/fixtures-anchor-v1.json` 的 337/320 锚点；
+4. 改 `docs/06` D2/D5/D6 与 UI 文案；
+5. 写 ADR + scope-change，说明答辩演示改用什么冲突。
+
+**课程作业不建议**：337/320 是最直观的演示，删了要重新设计整条故事线。
+
+### 9.7 想加无线网卡/显示器
+
+- 不要往 `Category` 里加枚举；契约冻结；
+- 单独 `peripherals.csv`，不参与兼容规则；
+- 或者等课程结束再提 ADR。
 
 ---
 

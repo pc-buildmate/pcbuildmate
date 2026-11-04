@@ -22,7 +22,7 @@
 | ID | 模块 | 状态 | 认领 | 依赖 | 文档 |
 |---|---|---|---|---|---|
 | D4-01 | 预算推荐：预算+用途 → 完整配置 | **doing** | @MoeField | D1/D3 | [D4-01](D4-01.md) |
-| PRICEDATA-01 | 2020+ 价格数据管道（半自动） | **design** | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
+| PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | **design** | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 | QA-01 | 矩阵 / 变异 / 批次报告 | ready | 开放 | D1–D6 | [QA-01](QA-01.md) |
 | DATA-02 | Room 持久化 | backlog | 开放 | D2 | [DATA-02](DATA-02.md) |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | doing | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |

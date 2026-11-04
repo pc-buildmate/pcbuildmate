@@ -5,6 +5,11 @@ dataset_start: "2020-01-01"
 min_recommend_year: 2020
 currency: CNY
 
+# 长期价格数据只采这些类目；GPU 可选（核显配置可以没有）
+categories: [CPU, MOTHERBOARD, MEMORY, STORAGE, PSU, GPU]
+optional_categories: [GPU]
+# 机箱 / 散热 / 无线网卡不采历史价；App demo 保留 case/cooler 锚点
+
 sources:
   - id: colorful_store
     name: 七彩虹商城
