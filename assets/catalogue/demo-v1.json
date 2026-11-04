@@ -1505,6 +1505,47 @@
       "catalogueVersion": "static-v1",
       "priceDate": "2026-11-04",
       "isDemo": true
+    },
+    {
+      "componentId": "cpu-demo-7500f",
+      "category": "CPU",
+      "manufacturer": "AMD",
+      "model": "Ryzen 5 7500F",
+      "partNumber": "100-100000597",
+      "priceCny": 999,
+      "attributes": {
+        "socket": {
+          "value": "AM5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "supportedChipsets": {
+          "value": "B650,X670,B850,X870",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "tdpW": {
+          "value": "65",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 65
+        },
+        "minBiosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
     }
   ]
 }

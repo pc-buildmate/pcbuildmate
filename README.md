@@ -82,7 +82,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 | `:testing` | Fake / Stub | 待补 | [docs/07](docs/07-unit-verification.md) |
 | `:test-oracle` | 独立参考模型 | 待补 | [QA-01](docs/tasks/QA-01.md) |
 
-> 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：31 条、2026-11-04 参考快照，不承诺实时/库存。
+> 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：32 条、2026-11-04 参考快照，不承诺实时/库存。
 > 价格数据管道（2020+，半自动，App 只读快照）见 [pricedata/README.md](pricedata/README.md)。
 > 长期只采 CPU / 主板 / 内存 / 硬盘 / 电源 / 显卡；机箱、散热、无线网卡只保留 App demo，不采历史价。
 
@@ -91,7 +91,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 按 [BOARD](docs/tasks/BOARD.md) 的顺序：
 
 1. **D4 预算推荐**：Entry 支持预算/用途输入，生成 8 类起始配置；权重可见。
-2. **DEMO 目录**：已到 31 条（8 类 ≥3）；下一步补到每类 4+，先补机箱/散热/存储。
+2. **DEMO 目录**：已到 32 条（8 类 ≥3）；下一步补到每类 4+，先补机箱/散热/存储。
 3. **QA 矩阵**：`check-matrix` 读真实测试结果，不再只打印规格。
 4. **Room 持久化**：杀进程后 A/B 还在。
 5. 以上完成后：更新演示脚本、截图、签名 APK。
