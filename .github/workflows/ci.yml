@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    name: docs / boundaries / keywords / demo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Document and scope checks
+        run: |
+          node tools/check-docs.mjs
+          node ci/check-boundaries.mjs
+          node ci/check-keywords.mjs
+          node tools/check-matrix.mjs
+      - name: Prototype regression
+        run: |
+          node tools/test-demo-engine.mjs
+          node tools/test-demo-flow.mjs
+          node tools/test-demo-ui.mjs
+
+  jvm:
+    name: JVM tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Contracts + rule engine
+        run: ./gradlew :contracts:test :domain:rules:test --no-daemon --console=plain
+
+# Android 构建（:data / :app）暂不进 CI：
+# GitHub hosted runner 上的 compileSdk 37 平台包名尚未验证（本机是 android-37.0），
+# 先在本地跑 :data:testDebugUnitTest + :app:assembleDebug，确认 runner 可用后再加。
