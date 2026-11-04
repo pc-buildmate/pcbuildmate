@@ -1,6 +1,6 @@
 {
   "catalogueVersion": "static-v1",
-  "priceDate": "2026-10-31",
+  "priceDate": "2026-11-04",
   "isDemo": true,
   "note": "概念数据，仅用于 fixture 与答辩演示；禁止进入生产 seed（INV-11）。",
   "components": [
@@ -42,7 +42,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -83,7 +83,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -166,7 +166,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -249,7 +249,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -290,7 +290,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -331,7 +331,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -386,7 +386,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -441,7 +441,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -468,7 +468,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -495,7 +495,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -550,7 +550,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -605,7 +605,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -632,7 +632,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -659,7 +659,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -679,7 +679,7 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
       "isDemo": true
     },
     {
@@ -699,7 +699,811 @@
         }
       },
       "catalogueVersion": "static-v1",
-      "priceDate": "2026-10-31",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "cpu-demo-9600x",
+      "category": "CPU",
+      "manufacturer": "AMD",
+      "model": "Ryzen 5 9600X",
+      "partNumber": "100-100001405WOF",
+      "priceCny": 1349,
+      "attributes": {
+        "socket": {
+          "value": "AM5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "supportedChipsets": {
+          "value": "B650,X670,B850,X870",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "tdpW": {
+          "value": "65",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 65
+        },
+        "minBiosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "cpu-demo-245k",
+      "category": "CPU",
+      "manufacturer": "Intel",
+      "model": "Core Ultra 5 245K",
+      "partNumber": "BX80768245K",
+      "priceCny": 1229,
+      "attributes": {
+        "socket": {
+          "value": "LGA1851",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "supportedChipsets": {
+          "value": "B860,Z890",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "tdpW": {
+          "value": "125",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 125
+        },
+        "minBiosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "mb-demo-b850-cvn",
+      "category": "MOTHERBOARD",
+      "manufacturer": "COLORFUL",
+      "model": "CVN B850 GAMING PRO WIFI7 V14",
+      "partNumber": "CVN-B850-PRO",
+      "priceCny": 1499,
+      "attributes": {
+        "socket": {
+          "value": "AM5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "chipset": {
+          "value": "B850",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "biosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        },
+        "memoryGeneration": {
+          "value": "DDR5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "memorySlots": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "maxMemoryGb": {
+          "value": "256",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 256
+        },
+        "formFactor": {
+          "value": "ATX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "m2Slots": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "sataPorts": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "storageInterfaces": {
+          "value": "M2_NVME,SATA",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "mb-demo-b850m",
+      "category": "MOTHERBOARD",
+      "manufacturer": "COLORFUL",
+      "model": "iGame B850M ULTRA-S V14",
+      "partNumber": "IGAME-B850M-U",
+      "priceCny": 1399,
+      "attributes": {
+        "socket": {
+          "value": "AM5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "chipset": {
+          "value": "B850",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "biosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        },
+        "memoryGeneration": {
+          "value": "DDR5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "memorySlots": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "maxMemoryGb": {
+          "value": "256",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 256
+        },
+        "formFactor": {
+          "value": "MICRO_ATX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "m2Slots": {
+          "value": "2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 2
+        },
+        "sataPorts": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "storageInterfaces": {
+          "value": "M2_NVME,SATA",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "mb-demo-z890m",
+      "category": "MOTHERBOARD",
+      "manufacturer": "COLORFUL",
+      "model": "iGame Z890M ULTRA W V20",
+      "partNumber": "IGAME-Z890M-W",
+      "priceCny": 1599,
+      "attributes": {
+        "socket": {
+          "value": "LGA1851",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "chipset": {
+          "value": "Z890",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "biosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        },
+        "memoryGeneration": {
+          "value": "DDR5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "memorySlots": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "maxMemoryGb": {
+          "value": "192",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 192
+        },
+        "formFactor": {
+          "value": "MICRO_ATX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "m2Slots": {
+          "value": "5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 5
+        },
+        "sataPorts": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "storageInterfaces": {
+          "value": "M2_NVME,SATA",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "mb-demo-b550m",
+      "category": "MOTHERBOARD",
+      "manufacturer": "COLORFUL",
+      "model": "BATTLE-AX B550M GAMING WIFI6E V14",
+      "partNumber": "B550M-WIFI6E",
+      "priceCny": 549,
+      "attributes": {
+        "socket": {
+          "value": "AM4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "chipset": {
+          "value": "B550",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "biosGeneration": {
+          "value": "1.0",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1.0
+        },
+        "memoryGeneration": {
+          "value": "DDR4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "memorySlots": {
+          "value": "2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 2
+        },
+        "maxMemoryGb": {
+          "value": "64",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 64
+        },
+        "formFactor": {
+          "value": "MICRO_ATX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "m2Slots": {
+          "value": "1",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1
+        },
+        "sataPorts": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "storageInterfaces": {
+          "value": "M2_NVME,SATA",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "gpu-demo-5060",
+      "category": "GPU",
+      "manufacturer": "COLORFUL",
+      "model": "iGame RTX 5060 Ultra W DUO OC 8GB",
+      "partNumber": "IGAME-5060-UW",
+      "priceCny": 4099,
+      "attributes": {
+        "lengthMm": {
+          "value": "231",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 231
+        },
+        "thicknessMm": {
+          "value": "49",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 49
+        },
+        "slotWidth": {
+          "value": "2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 2
+        },
+        "tdpW": {
+          "value": "145",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 145
+        },
+        "recommendedPsuW": {
+          "value": "550",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 550
+        },
+        "requiredPsuConnectors": {
+          "value": "8PIN",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "gpu-demo-5070",
+      "category": "GPU",
+      "manufacturer": "COLORFUL",
+      "model": "iGame RTX 5070 Vulcan X OC 12GB",
+      "partNumber": "IGAME-5070-VX",
+      "priceCny": 9799,
+      "attributes": {
+        "lengthMm": {
+          "value": "312.6",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 312.6
+        },
+        "thicknessMm": {
+          "value": "53.3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 53.3
+        },
+        "slotWidth": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "tdpW": {
+          "value": "270",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 270
+        },
+        "recommendedPsuW": {
+          "value": "650",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 650
+        },
+        "requiredPsuConnectors": {
+          "value": "12VHPWR",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "gpu-demo-5070ti",
+      "category": "GPU",
+      "manufacturer": "COLORFUL",
+      "model": "战斧 RTX 5070 Ti 豪华版 SFF 16GB",
+      "partNumber": "BATTLEAX-5070TI-SFF",
+      "priceCny": 13399,
+      "attributes": {
+        "lengthMm": {
+          "value": "310.4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 310.4
+        },
+        "thicknessMm": {
+          "value": "50",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 50
+        },
+        "slotWidth": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "tdpW": {
+          "value": "300",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 300
+        },
+        "recommendedPsuW": {
+          "value": "750",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 750
+        },
+        "requiredPsuConnectors": {
+          "value": "12VHPWR",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "gpu-demo-5080",
+      "category": "GPU",
+      "manufacturer": "COLORFUL",
+      "model": "iGame RTX 5080 Ultra W OC 16GB",
+      "partNumber": "IGAME-5080-UW",
+      "priceCny": 21099,
+      "attributes": {
+        "lengthMm": {
+          "value": "331",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 331
+        },
+        "thicknessMm": {
+          "value": "59.7",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 59.7
+        },
+        "slotWidth": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "tdpW": {
+          "value": "380",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 380
+        },
+        "recommendedPsuW": {
+          "value": "850",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 850
+        },
+        "requiredPsuConnectors": {
+          "value": "12VHPWR",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "psu-demo-rm750e",
+      "category": "PSU",
+      "manufacturer": "Corsair",
+      "model": "RM750e 750W",
+      "partNumber": "CP-9020262-CN",
+      "priceCny": 849,
+      "attributes": {
+        "continuousW": {
+          "value": "750",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 750
+        },
+        "connectors": {
+          "value": "12VHPWR,8PIN_X2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "case-demo-l216",
+      "category": "CASE",
+      "manufacturer": "LIAN LI",
+      "model": "Lancool 216",
+      "partNumber": "LANCOOL-216",
+      "priceCny": 579,
+      "attributes": {
+        "maxGpuLengthMm": {
+          "value": "392",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 392
+        },
+        "maxGpuThicknessMm": {
+          "value": "80",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 80
+        },
+        "maxGpuSlots": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        },
+        "maxCoolerHeightMm": {
+          "value": "180",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 180
+        },
+        "supportedFormFactors": {
+          "value": "EATX,ATX,MICRO_ATX,MINI_ITX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "driveBays": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "cooler-demo-pa120max",
+      "category": "COOLER",
+      "manufacturer": "Thermalright",
+      "model": "PA120 VISION MAX ARGB",
+      "partNumber": "PA120-VISION-MAX",
+      "priceCny": 439,
+      "attributes": {
+        "heightMm": {
+          "value": "155",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 155
+        },
+        "socketMounts": {
+          "value": "AM5,AM4,LGA1700,LGA1851",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "storage-demo-sn580",
+      "category": "STORAGE",
+      "manufacturer": "Western Digital",
+      "model": "WD Blue SN580 1TB",
+      "partNumber": "WDS100T3B0E",
+      "priceCny": 969,
+      "attributes": {
+        "interface": {
+          "value": "M2_NVME",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "mem-demo-ddr5-16",
+      "category": "MEMORY",
+      "manufacturer": "Kingston",
+      "model": "FURY Beast DDR5 6000 16GB",
+      "partNumber": "KF560C40BB-16",
+      "priceCny": 1349,
+      "attributes": {
+        "generation": {
+          "value": "DDR5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "moduleCapacityGb": {
+          "value": "16",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 16
+        },
+        "kitCapacityGb": {
+          "value": "16",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 16
+        },
+        "moduleCount": {
+          "value": "1",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 1
+        }
+      },
+      "catalogueVersion": "static-v1",
+      "priceDate": "2026-11-04",
       "isDemo": true
     }
   ]

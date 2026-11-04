@@ -14,7 +14,17 @@ globalThis.PBEngine = require(join(ROOT, "site/engine.js"));
 const engine = globalThis.PBEngine;
 const S = require(join(ROOT, "site/state.js"));
 
-const data = JSON.parse(readFileSync(join(ROOT, "assets/catalogue/demo-v1.json"), "utf8"));
+// 原型只验证 16 条锚点目录；App 的 31 条目录由 :data / :app 的测试覆盖。
+// 新目录里的 AM4/AM5 混合型号会让原型的简易 recommend 选到不兼容组合，
+// 这里保持原型测试的输入与 site/data.generated.js 一致。
+const PROTOTYPE_IDS = new Set([
+  "cpu-demo-7600x", "cpu-demo-13600k", "mb-demo-b650", "mb-demo-lga1700",
+  "mem-demo-ddr5-32", "mem-demo-ddr4-32", "gpu-demo-337", "gpu-demo-300",
+  "psu-demo-750", "psu-demo-550", "case-demo-320", "case-demo-itx",
+  "cooler-demo-160", "cooler-demo-175", "storage-demo-nvme", "storage-demo-sata",
+]);
+const rawData = JSON.parse(readFileSync(join(ROOT, "assets/catalogue/demo-v1.json"), "utf8"));
+const data = { ...rawData, components: rawData.components.filter((c) => PROTOTYPE_IDS.has(c.componentId)) };
 const rules = JSON.parse(readFileSync(join(ROOT, "assets/rules/rules-v1.json"), "utf8")).rules;
 
 const BUILD_A = {
