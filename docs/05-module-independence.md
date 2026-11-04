@@ -24,14 +24,14 @@
 |---|---|---|---|---|---|---|
 | 1 | `:contracts` | Kotlin/JVM | 否 | 仅 stdlib | JVM | 已冻结 |
 | 2 | `:contracts-test` | Kotlin/JVM | 否 | contracts + kotlin-test | JVM | 小 |
-| 3 | `:domain:build` | Kotlin/JVM | 否 | contracts | JVM | 小 |
+| 3 | `:domain:revision` | Kotlin/JVM | 否 | contracts | JVM | 小 |
 | 4 | `:domain:rules` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 5 | `:domain:replacement` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 6 | `:domain:recommend` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 7 | `:domain:compare` | Kotlin/JVM | 否 | contracts | JVM | 小 |
 | 8 | `:domain:state` | Kotlin/JVM | 否 | contracts | JVM | 小（但测试最多） |
 | 9 | `:data` | Android Library | 是 | contracts + Room + assets | Robolectric / 内存 | 中 |
-| 10 | `:feature` | Android Library | 是 | contracts + domain:state + domain:build | JVM（协程测试） | 大 |
+| 10 | `:feature` | Android Library | 是 | contracts + domain:state + domain:revision | JVM（协程测试） | 大 |
 | 11 | `:ui` | Android Library | 是 | contracts + Compose | Robolectric（semantics） | 大 |
 | 12 | `:app` | Android App | 是 | 全部 | Instrumented（少量） | 小 |
 | 13 | `:testing` | Kotlin/JVM | 否 | contracts + kotlin-test | JVM | 小 |
@@ -47,10 +47,10 @@
 
 行 = 消费者，列 = 被依赖者。✔ = 允许，✘ = 禁止（CI 直接 fail）。
 
-| 消费者 \ 提供者 | contracts | domain:build | domain:rules | domain:repl | domain:recom | domain:comp | domain:state | data | feature | ui | testing |
+| 消费者 \ 提供者 | contracts | domain:revision | domain:rules | domain:repl | domain:recom | domain:comp | domain:state | data | feature | ui | testing |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **contracts** | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
-| **domain:build** | ✔ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
+| **domain:revision** | ✔ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:rules** | ✔ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:replacement** | ✔ | ✘ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:recommend** | ✔ | ✘ | ✘ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
@@ -173,7 +173,7 @@ internal object RuleDslParser
   │  WorkspaceIntent
   ▼
 [feature] WorkspaceViewModel
-  │  1. 调 domain:build 生成新 BuildRevision（纯函数）
+  │  1. 调 domain:revision 生成新 BuildRevision（纯函数）
   │  2. 把 BuildEdited(rev) 喂给两个状态机
   ▼
 [domain:state] transition(Done(rev1), BuildEdited(rev2))

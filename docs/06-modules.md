@@ -154,7 +154,7 @@ val state: StateFlow<WorkspaceUiState>
 
 ### 独立性约束
 
-允许依赖：`contracts`、`domain:state`、`domain:build`。
+允许依赖：`contracts`、`domain:state`、`domain:revision`。
 **禁止** import `domain:rules` / `domain:replacement` / `domain:recommend` / `domain:compare` 的**实现类**（只能经接口）。
 
 ---

@@ -1,9 +1,12 @@
 pluginManagement {
     repositories {
-        // 国内直连优先；官方仓库作为回退（CI / 海外机器）。
-        maven("https://maven.aliyun.com/repository/gradle-plugin")
-        maven("https://maven.aliyun.com/repository/google")
-        maven("https://maven.aliyun.com/repository/public")
+        // 本机在国内，阿里云镜像优先；GitHub Actions 在海外，直接用官方仓库，
+        // 避免 runner 访问阿里云超时/403（CI=true 由 GitHub 自动注入）。
+        if (System.getenv("CI") != "true") {
+            maven("https://maven.aliyun.com/repository/gradle-plugin")
+            maven("https://maven.aliyun.com/repository/google")
+            maven("https://maven.aliyun.com/repository/public")
+        }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -13,8 +16,10 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven("https://maven.aliyun.com/repository/google")
-        maven("https://maven.aliyun.com/repository/public")
+        if (System.getenv("CI") != "true") {
+            maven("https://maven.aliyun.com/repository/google")
+            maven("https://maven.aliyun.com/repository/public")
+        }
         google()
         mavenCentral()
     }
@@ -25,7 +30,7 @@ rootProject.name = "pc-buildmate"
 include(
     ":contracts",
     ":contracts-test",
-    ":domain:build",
+    ":domain:revision",
     ":domain:rules",
     ":domain:replacement",
     ":domain:recommend",

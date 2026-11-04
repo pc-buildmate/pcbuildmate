@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation(project(":contracts"))
     implementation(project(":domain:state"))
-    implementation(project(":domain:build"))
+    implementation(project(":domain:revision"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.coroutines.android)
 

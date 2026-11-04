@@ -144,7 +144,7 @@ domain 不依赖 Android；feature 不依赖 Room；UI 不依赖 domain 实现�
 ```
 app/                      Android 应用（只做装配与导航）
 contracts/                纯 Kotlin 模型 + 端口 + UI 契约（只读区）
-domain/build/             纯 JVM：revision、总价、diff、草稿
+domain/revision/             纯 JVM：revision、总价、diff、草稿
 domain/rules/             纯 JVM：规则引擎
 domain/replacement/       纯 JVM：候选过滤与排序
 domain/recommend/         纯 JVM：预算分配

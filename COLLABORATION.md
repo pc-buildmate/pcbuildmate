@@ -206,6 +206,8 @@ git push -u origin chore/s1-scaffold
 - 共享账号的 `pcbuildmate@this.org.cn` 只用于 owner 身份，不再用于日常 commit；
 - 其他成员加入后，各自在本机设置自己的 `user.name` / `user.email`，不要共用；
 - 历史 commit（S1/D1/D3）作者是共享身份，PR 用 **Squash and merge** 后，`main` 上的合并 commit 会记在点击合并的人名下。
+- **deploy key 只负责 push 传输，不改变 commit 作者**；作者由上面的 `user.name` / `user.email` 决定。
+- 仓库 owner 目前仍是共享账号 `pc-buildmate`；若要把仓库转到 @MoeField，在答辩后做（Settings → General → Transfer ownership），转移会改 URL，deploy key 随仓库走。
 
 ---
 

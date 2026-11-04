@@ -12,7 +12,7 @@
 
 | 模块 | 单元 | 隔离手段 | Oracle | 环境 |
 |---|---|---|---|---|
-| `domain:build` | 一次编辑产生的新快照（含总价、id） | 纯函数，无依赖 | 不变量 + 属性 | JVM |
+| `domain:revision` | 一次编辑产生的新快照（含总价、id） | 纯函数，无依赖 | 不变量 + 属性 | JVM |
 | `domain:rules` | 一条规则对一组字段的判定 | 目录通过接口注入；fixture 自带数据 | fixture 期望 + 参考模型 | JVM |
 | `domain:replacement` | 一次候选过滤 + 排序 | 引擎通过接口注入（Fake 返回固定结果） | 不变量 + 排序键 | JVM |
 | `domain:recommend` | 一次预算分配 | 同上 | 不变量（预算/可行性） | JVM |
