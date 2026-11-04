@@ -194,6 +194,19 @@ git push -u origin chore/s1-scaffold
 - `main` 目前只有文档基线；S1 在 `chore/s1-scaffold`，走 PR 合并
 - 不要把 `local.properties`、`.ssh/`、`.DS_Store`、`build/`、`.gradle-home/` 提交上去
 
+### 3.7 提交身份（2026-11-04 起）
+
+| 用途 | 身份 |
+|---|---|
+| 仓库 owner / 共享账号 | `pc-buildmate`（`pcbuildmate@this.org.cn`） |
+| 个人提交身份 | **Ruan L.K** `<72515069@cityu-dg.edu.cn>`，GitHub [@MoeField](https://github.com/MoeField) |
+| 本机 git 配置 | `user.name=Ruan L.K`、`user.email=72515069@cityu-dg.edu.cn` |
+
+- 个人邮箱必须先在 GitHub **Settings → Emails** 添加并验证，commit 才会关联到 @MoeField；
+- 共享账号的 `pcbuildmate@this.org.cn` 只用于 owner 身份，不再用于日常 commit；
+- 其他成员加入后，各自在本机设置自己的 `user.name` / `user.email`，不要共用；
+- 历史 commit（S1/D1/D3）作者是共享身份，PR 用 **Squash and merge** 后，`main` 上的合并 commit 会记在点击合并的人名下。
+
 ---
 
 ## 4. 分支、提交、PR
