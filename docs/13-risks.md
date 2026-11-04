@@ -24,7 +24,7 @@
 
 | # | TBD | 建议值 | 何时必须定 |
 |---|---|---|---|
-| T1 | 最低 Android API | 26（Compose 要求） | S1 前 |
+| T1 | 最低 Android API | **31（Android 12+，已定）** | 已定 |
 | T2 | 每批随机 seed 数 N | 50 | S4 前 |
 | T3 | 「复制配置 / 另存为」是否在首版 | **建议在**（复用 SaveBuild + 新 buildId，不加新 Intent） | S4 前 |
 | T4 | 静态目录条目数 | 8 类 × 3–8 件 | S1 前 |

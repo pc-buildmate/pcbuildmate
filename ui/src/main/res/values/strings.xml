@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">PC Buildmate</string>
+    <string name="home_subtitle">预算 → 配置 → 检查 → 替换 → 比较</string>
+    <string name="home_demo_badge">演示数据 · 离线可用</string>
+    <string name="home_start">开始配置</string>
+</resources>

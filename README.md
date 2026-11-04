@@ -123,8 +123,10 @@ node tools/test-demo-ui.mjs      # 全部界面的渲染冒烟测试
 ## 9. 当前状态（2026-11-04）
 
 - 规格、契约、规则、fixture、交互原型：**已完成**，四个自检脚本全绿。
-- Android 工程：**尚未创建**（无 `settings.gradle.kts` / `app/`）；首次构建从 S1 开始。
-- Git / GitHub：**尚未初始化**；协作方式见 [COLLABORATION.md](COLLABORATION.md)。
+- Android 工程：**S1 骨架已建**（14 模块，`compileSdk 37` / `minSdk 31`），`:app:assembleDebug` 通过，产出 debug APK。
+- D1 数据层：**已完成**（目录解析 + 路径/CSV/版本校验 + `CataloguePort` 实现 + 26 条单测）。
+- D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60 条 fixture 全绿）。
+- Git：本地仓库已初始化，基线在 `main`，S1 在 `chore/s1-scaffold`；GitHub 共享账号待建。
 - 答辩材料：提案 / 讲稿 / Q&A 已转写为 md，见 [materials/README.md](materials/README.md)。
 
 ## 10. 原始材料
@@ -132,3 +134,23 @@ node tools/test-demo-ui.mjs      # 全部界面的渲染冒烟测试
 `materials/source/` 下是提案 docx、15 分钟讲稿 PDF、Q&A PDF 的 md 转写，
 **只用于答辩口径与历史对照，不是规格**。与本仓库冲突时以 `docs/` + `contracts/` 为准；
 五处已知差异列在 [materials/README.md](materials/README.md)。
+
+## 11. 工程与构建（S1 起）
+
+- 模块矩阵与 `ci/modules.json` 一致：`:contracts`、`:contracts-test`、`:domain:{build,rules,replacement,recommend,compare,state}`、`:data`、`:feature`、`:ui`、`:app`、`:testing`、`:test-oracle`。
+- `compileSdk = 37`，`minSdk = 31`（Android 12+），`arm64-v8a` 为发布基线。
+- 依赖仓库在 `settings.gradle.kts`：阿里云镜像优先，官方仓库回退；**不提交任何私人代理地址**。
+- 本机 SDK 写在 `local.properties`（已 gitignore）：
+
+```bash
+export ANDROID_HOME=/Volumes/SA500/Library/Android/sdk
+./gradlew :app:assembleDebug
+./gradlew :data:testDebugUnitTest
+```
+
+首次构建需要 JDK 17+ 与 Android SDK Platform 37。若本机网络需要代理，用 `GRADLE_OPTS` 注入，不要写进仓库：
+
+```bash
+export GRADLE_OPTS="-Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1080 \
+  -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=1080"
+```

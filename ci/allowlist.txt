@@ -2,3 +2,4 @@
 #   <文件相对路径> | <关键词或 import 前缀> | <理由> | <批准人> | <日期>
 # 只允许出现在测试 / 文档 / 注释；不允许生产标识符或权限。
 # 每新增一条，都会在批次报告中被列出（docs/09-ci-and-scope.md §9.3）。
+domain/rules/src/test/kotlin/pcbuildmate/domain/rules/FixtureTest.kt | kotlinx.serialization | 测试解析 fixture/rules JSON；只进 test，不进 main | Captain | 2026-11-04

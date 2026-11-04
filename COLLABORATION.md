@@ -32,12 +32,13 @@ node ci/check-boundaries.mjs && node ci/check-keywords.mjs
 ### 0.3 当前状态（2026-11-04）
 
 - 规格、契约、规则、fixture、原型：**已完成并自检全绿**。
-- Android 工程：**尚未创建**（没有 `settings.gradle.kts` / `app/`）。
-- Git 仓库 / GitHub：**尚未初始化**。
-- 网络：当前无代理，`dl.google.com` / `github.com` 均超时；Gradle 只能用本机缓存离线构建
-  （缓存里有 Compose / activity / lifecycle，**没有 Room / Navigation**）。新模拟器镜像、GitHub push、
-  CI 都要等代理。
-- 因此 L1 的「可构建」从 **S1（工程骨架）** 合入 `main` 之日起生效；在此之前以四个 node 脚本为准。
+- Android 工程：**S1 骨架已建**（14 模块，`compileSdk 37` / `minSdk 31`），`:app:assembleDebug` 通过。
+- D1 数据层：**已完成**（解析 + seed 校验 + `CataloguePort` + 26 条单测）。
+- D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60/60 fixture）。
+- Git：本地已初始化，基线 `main` + `chore/s1-scaffold`；GitHub 共享账号待建，push/CI 未接。
+- 网络：代理 `127.0.0.1:1080` 可用；Gradle 走阿里云镜像（`settings.gradle.kts`），
+  不提交私人代理地址。API 31+ 模拟器镜像仍需下载。
+- L1 的「可构建」从 S1 合入 `main` 起生效；合并前以本地门禁为准。
 
 ---
 

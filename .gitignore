@@ -32,3 +32,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local Gradle user home (sandbox workaround)
+.gradle-home/
+
+# Local SDK/emulator state
+.android-home/
