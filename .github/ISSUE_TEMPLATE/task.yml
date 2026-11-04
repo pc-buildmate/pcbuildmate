@@ -1,0 +1,90 @@
+name: 任务包
+description: 创建一个 AI 可执行的任务（九块填满才标 status:ready）
+title: "[TASK] "
+labels: ["status:ready", "ai:ready"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        任务包文件是权威：先创建 `docs/tasks/<task-id>.md`（用 `docs/tasks/TEMPLATE.md`），
+        再把链接填到下面。Issue 只做索引与状态，不复制规格。
+
+  - type: input
+    id: task_id
+    attributes:
+      label: 任务 ID
+      placeholder: "D3-02"
+    validations:
+      required: true
+
+  - type: input
+    id: spec
+    attributes:
+      label: 任务包路径
+      placeholder: "docs/tasks/D3-02.md"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: 模块
+      options:
+        - D1 数据
+        - D3 规则
+        - D5 替换
+        - D2 工作区
+        - D4 推荐
+        - D6 比较
+        - D7 UI
+        - CI / 工程
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Owner（GitHub 用户名）
+      placeholder: "@someone"
+    validations:
+      required: true
+
+  - type: input
+    id: deadline
+    attributes:
+      label: 截止日期
+      placeholder: "2026-11-15"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收命令
+      description: 一条可复制执行的命令；不要写「功能正常」
+      placeholder: "./gradlew :domain:rules:test"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 允许修改的路径
+      description: 精确到目录；越界即失败
+      placeholder: |
+        domain/rules/**
+        domain/rules/src/test/**
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: Ready 检查
+      options:
+        - label: 九块已填满（目标 / 路径 / 只读输入 / 输出契约 / 验收 / 反例 / 范围外 / 空白 / 交付）
+          required: true
+        - label: 依赖已合并
+          required: true
+        - label: 已指定 reviewer
+          required: true

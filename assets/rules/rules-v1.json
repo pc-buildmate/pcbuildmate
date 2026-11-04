@@ -1,0 +1,308 @@
+{
+  "rulesVersion": "rules-v1",
+  "catalogueVersion": "static-v1",
+  "rules": [
+    {
+      "ruleId": "CPU_SOCKET_MATCH",
+      "kind": "EQUALS",
+      "left": {
+        "category": "CPU",
+        "path": "socket"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "socket"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_cpu_socket_match_pass",
+        "fx_cpu_socket_match_conflict",
+        "fx_cpu_socket_match_unverified",
+        "fx_cpu_socket_match_missing"
+      ]
+    },
+    {
+      "ruleId": "CPU_MB_CHIPSET_SUPPORT",
+      "kind": "CSV_CONTAINS",
+      "left": {
+        "category": "CPU",
+        "path": "supportedChipsets"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "chipset"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_cpu_mb_chipset_support_pass",
+        "fx_cpu_mb_chipset_support_conflict",
+        "fx_cpu_mb_chipset_support_unverified",
+        "fx_cpu_mb_chipset_support_missing"
+      ]
+    },
+    {
+      "ruleId": "CPU_MB_BIOS_SUPPORT",
+      "kind": "NUMERIC_GE",
+      "left": {
+        "category": "MOTHERBOARD",
+        "path": "biosGeneration"
+      },
+      "right": {
+        "category": "CPU",
+        "path": "minBiosGeneration"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_cpu_mb_bios_support_pass",
+        "fx_cpu_mb_bios_support_conflict",
+        "fx_cpu_mb_bios_support_unverified",
+        "fx_cpu_mb_bios_support_missing"
+      ]
+    },
+    {
+      "ruleId": "MEMORY_DDR_GENERATION",
+      "kind": "EQUALS",
+      "left": {
+        "category": "MEMORY",
+        "path": "generation"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "memoryGeneration"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "PER_ITEM",
+      "fixtures": [
+        "fx_memory_ddr_generation_pass",
+        "fx_memory_ddr_generation_conflict",
+        "fx_memory_ddr_generation_unverified",
+        "fx_memory_ddr_generation_missing"
+      ]
+    },
+    {
+      "ruleId": "MEMORY_SLOT_COUNT",
+      "kind": "COUNT_LE",
+      "left": {
+        "category": "MEMORY",
+        "path": "moduleCount"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "memorySlots"
+      },
+      "severity": "MAJOR",
+      "aggregation": "COUNT",
+      "fixtures": [
+        "fx_memory_slot_count_pass",
+        "fx_memory_slot_count_conflict",
+        "fx_memory_slot_count_unverified",
+        "fx_memory_slot_count_missing"
+      ]
+    },
+    {
+      "ruleId": "MEMORY_CAPACITY_LIMIT",
+      "kind": "SUM_LE",
+      "left": {
+        "category": "MEMORY",
+        "path": "kitCapacityGb"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "maxMemoryGb"
+      },
+      "severity": "MAJOR",
+      "aggregation": "SUM",
+      "fixtures": [
+        "fx_memory_capacity_limit_pass",
+        "fx_memory_capacity_limit_conflict",
+        "fx_memory_capacity_limit_unverified",
+        "fx_memory_capacity_limit_missing"
+      ]
+    },
+    {
+      "ruleId": "GPU_CASE_LENGTH",
+      "kind": "NUMERIC_LE",
+      "left": {
+        "category": "GPU",
+        "path": "lengthMm"
+      },
+      "right": {
+        "category": "CASE",
+        "path": "maxGpuLengthMm"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_gpu_case_length_pass",
+        "fx_gpu_case_length_conflict",
+        "fx_gpu_case_length_unverified",
+        "fx_gpu_case_length_missing"
+      ]
+    },
+    {
+      "ruleId": "GPU_CASE_THICKNESS",
+      "kind": "NUMERIC_LE",
+      "left": {
+        "category": "GPU",
+        "path": "thicknessMm"
+      },
+      "right": {
+        "category": "CASE",
+        "path": "maxGpuThicknessMm"
+      },
+      "severity": "MAJOR",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_gpu_case_thickness_pass",
+        "fx_gpu_case_thickness_conflict",
+        "fx_gpu_case_thickness_unverified",
+        "fx_gpu_case_thickness_missing"
+      ]
+    },
+    {
+      "ruleId": "GPU_CASE_SLOT_WIDTH",
+      "kind": "NUMERIC_LE",
+      "left": {
+        "category": "GPU",
+        "path": "slotWidth"
+      },
+      "right": {
+        "category": "CASE",
+        "path": "maxGpuSlots"
+      },
+      "severity": "MAJOR",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_gpu_case_slot_width_pass",
+        "fx_gpu_case_slot_width_conflict",
+        "fx_gpu_case_slot_width_unverified",
+        "fx_gpu_case_slot_width_missing"
+      ]
+    },
+    {
+      "ruleId": "PSU_CONTINUOUS_POWER",
+      "kind": "NUMERIC_GE",
+      "left": {
+        "category": "PSU",
+        "path": "continuousW"
+      },
+      "right": {
+        "category": "CPU",
+        "path": "tdpW"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "formula": "requiredW = ceil((cpu.tdpW + gpu.tdpW + 100) * 1.2)",
+      "formulaTarget": "PSU.continuousW",
+      "fixtures": [
+        "fx_psu_continuous_power_pass",
+        "fx_psu_continuous_power_conflict",
+        "fx_psu_continuous_power_unverified",
+        "fx_psu_continuous_power_missing"
+      ]
+    },
+    {
+      "ruleId": "PSU_CONNECTORS",
+      "kind": "CSV_SUBSET",
+      "left": {
+        "category": "PSU",
+        "path": "connectors"
+      },
+      "right": {
+        "category": "GPU",
+        "path": "requiredPsuConnectors"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_psu_connectors_pass",
+        "fx_psu_connectors_conflict",
+        "fx_psu_connectors_unverified",
+        "fx_psu_connectors_missing"
+      ]
+    },
+    {
+      "ruleId": "COOLER_CASE_HEIGHT",
+      "kind": "NUMERIC_LE",
+      "left": {
+        "category": "COOLER",
+        "path": "heightMm"
+      },
+      "right": {
+        "category": "CASE",
+        "path": "maxCoolerHeightMm"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_cooler_case_height_pass",
+        "fx_cooler_case_height_conflict",
+        "fx_cooler_case_height_unverified",
+        "fx_cooler_case_height_missing"
+      ]
+    },
+    {
+      "ruleId": "COOLER_CPU_SOCKET",
+      "kind": "CSV_CONTAINS",
+      "left": {
+        "category": "COOLER",
+        "path": "socketMounts"
+      },
+      "right": {
+        "category": "CPU",
+        "path": "socket"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_cooler_cpu_socket_pass",
+        "fx_cooler_cpu_socket_conflict",
+        "fx_cooler_cpu_socket_unverified",
+        "fx_cooler_cpu_socket_missing"
+      ]
+    },
+    {
+      "ruleId": "MB_CASE_FORM_FACTOR",
+      "kind": "CSV_CONTAINS",
+      "left": {
+        "category": "CASE",
+        "path": "supportedFormFactors"
+      },
+      "right": {
+        "category": "MOTHERBOARD",
+        "path": "formFactor"
+      },
+      "severity": "BLOCKER",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_mb_case_form_factor_pass",
+        "fx_mb_case_form_factor_conflict",
+        "fx_mb_case_form_factor_unverified",
+        "fx_mb_case_form_factor_missing"
+      ]
+    },
+    {
+      "ruleId": "STORAGE_MB_INTERFACE",
+      "kind": "CSV_CONTAINS",
+      "left": {
+        "category": "MOTHERBOARD",
+        "path": "storageInterfaces"
+      },
+      "right": {
+        "category": "STORAGE",
+        "path": "interface"
+      },
+      "severity": "MAJOR",
+      "aggregation": "SINGLE",
+      "fixtures": [
+        "fx_storage_mb_interface_pass",
+        "fx_storage_mb_interface_conflict",
+        "fx_storage_mb_interface_unverified",
+        "fx_storage_mb_interface_missing"
+      ]
+    }
+  ]
+}

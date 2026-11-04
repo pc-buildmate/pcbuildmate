@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PC Buildmate · 交互原型（演示数据）</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <section class="stage">
+      <div class="stage-head">
+        <div class="brand">
+          <span class="logo">PC</span>
+          <div>
+            <h1>PC Buildmate</h1>
+            <p>装机单 · 证据化兼容检查（交互原型 v1.0）</p>
+          </div>
+        </div>
+        <div class="badges">
+          <span class="chip chip-demo">演示数据</span>
+          <span class="chip" id="chip-catalogue">static-v1</span>
+          <span class="chip" id="chip-price">价格日 —</span>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="phone-inner">
+          <div class="statusbar">
+            <span id="clock">09:41</span>
+            <span class="statusbar-right">5G · 100%</span>
+          </div>
+          <main id="screen" class="screen" aria-live="polite"></main>
+          <div id="sheet" class="sheet" hidden></div>
+        </div>
+      </div>
+
+      <p class="footnote">
+        这个原型用来核对 <strong>UI 逻辑</strong>：每次编辑都会产生新的 revision，
+        诊断绑定 revision，旧结论不会覆盖新配置；替换必须「预览 → 全量重检 → 应用」。
+        规则引擎与状态机都是纯函数，已被 60 条 fixture 与 8 条锚点验证过。
+      </p>
+    </section>
+
+    <aside class="inspector" aria-label="开发者面板">
+      <div class="tabs" id="tabs">
+        <button class="tab is-active" data-tab="state">状态</button>
+        <button class="tab" data-tab="invariants">不变量</button>
+        <button class="tab" data-tab="log">事件日志</button>
+        <button class="tab" data-tab="evidence">证据模拟</button>
+        <button class="tab" data-tab="about">说明</button>
+      </div>
+      <div class="inspector-body" id="inspector-body"></div>
+      <div class="inspector-foot">
+        <label class="switch">
+          <input type="checkbox" id="slow-check" />
+          <span>慢检查（2.6s，用于演示迟到结果）</span>
+        </label>
+      </div>
+    </aside>
+  </div>
+
+  <script src="data.generated.js"></script>
+  <script src="engine.js"></script>
+  <script src="state.js"></script>
+  <script src="ui.js"></script>
+  <script>
+    PBUi.mount(document, {
+      screen: document.getElementById("screen"),
+      sheet: document.getElementById("sheet"),
+      inspector: document.getElementById("inspector-body"),
+      tabs: document.getElementById("tabs"),
+      chipCatalogue: document.getElementById("chip-catalogue"),
+      chipPrice: document.getElementById("chip-price"),
+      slow: document.getElementById("slow-check")
+    });
+    var clock = document.getElementById("clock");
+    if (clock) {
+      clock.textContent = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "note": "范围外关键词表。加词的判断标准见 docs/09-ci-and-scope.md §9.5：只加'只可能属于范围外功能'的词。",
+  "identifiers": [
+    "FPS",
+    "fps",
+    "BenchmarkPrediction",
+    "PerformanceBand",
+    "LiveInventory",
+    "SecondHand",
+    "RealtimePrice",
+    "PricePolling",
+    "AutoRefresh",
+    "Camera",
+    "ARPreview",
+    "PushNotification"
+  ],
+  "permissions": [
+    "INTERNET",
+    "CAMERA",
+    "POST_NOTIFICATIONS",
+    "ACCESS_FINE_LOCATION",
+    "FOREGROUND_SERVICE"
+  ],
+  "gradleDeps": [
+    "okhttp",
+    "retrofit",
+    "ktor-client",
+    "firebase-messaging",
+    "play-services-location",
+    "camerax",
+    "arcore",
+    "jsoup",
+    "selenium"
+  ],
+  "userStrings": [
+    "实时价格",
+    "库存同步",
+    "帧率预测",
+    "跑分",
+    "二手价",
+    "3D 装配"
+  ],
+  "hygiene": [
+    "TODO",
+    "FIXME",
+    "println("
+  ],
+  "skipDirs": [
+    "build/",
+    ".gradle/",
+    "assets/",
+    "docs/",
+    "ci/",
+    "tools/"
+  ]
+}

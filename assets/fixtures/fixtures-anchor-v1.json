@@ -1,0 +1,1425 @@
+{
+  "fixturesVersion": "fx-anchor-v1",
+  "rulesVersion": "rules-v1",
+  "catalogueVersion": "static-v1",
+  "fixtures": [
+    {
+      "fixtureId": "fx_gpu_len_conflict_337_320",
+      "purpose": "答辩锚点：337 mm 显卡 vs 320 mm 机箱",
+      "isDemo": true,
+      "buildId": "fx-anchor-337",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3400
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "quantity": 1,
+          "unitPriceCny": 400
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 Ti (337mm)",
+          "partNumber": "DEMO-337",
+          "priceCny": 3400,
+          "attributes": {
+            "lengthMm": {
+              "value": "337",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 337
+            },
+            "thicknessMm": {
+              "value": "61",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 61
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "285",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 285
+            },
+            "recommendedPsuW": {
+              "value": "750",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 750
+            },
+            "requiredPsuConnectors": {
+              "value": "12VHPWR",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "manufacturer": "Fractal",
+          "model": "North (320mm)",
+          "partNumber": "FD-NORTH",
+          "priceCny": 400,
+          "attributes": {
+            "maxGpuLengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "maxGpuThicknessMm": {
+              "value": "60",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 60
+            },
+            "maxGpuSlots": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "maxCoolerHeightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "supportedFormFactors": {
+              "value": "ATX,MICRO_ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "driveBays": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            }
+          }
+        }
+      ],
+      "expected": {
+        "GPU_CASE_LENGTH": {
+          "outcome": "CONFLICT",
+          "severity": "BLOCKER",
+          "weakest": "VERIFIED",
+          "conflictId": "GPU_CASE_LENGTH:gpu-demo-337.lengthMm:case-demo-320.maxGpuLengthMm",
+          "leftValue": "337",
+          "rightValue": "320"
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_gpu_len_pass_300_320",
+      "purpose": "边界：300 <= 320 必须 PASSED（杀死 <= 改 < 的变异）",
+      "isDemo": true,
+      "buildId": "fx-anchor-300",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "gpu-demo-300",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3500
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "quantity": 1,
+          "unitPriceCny": 400
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "gpu-demo-300",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 (300mm)",
+          "partNumber": "DEMO-300",
+          "priceCny": 3500,
+          "attributes": {
+            "lengthMm": {
+              "value": "300",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 300
+            },
+            "thicknessMm": {
+              "value": "55",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 55
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "200",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 200
+            },
+            "recommendedPsuW": {
+              "value": "650",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 650
+            },
+            "requiredPsuConnectors": {
+              "value": "8PIN_X2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "manufacturer": "Fractal",
+          "model": "North (320mm)",
+          "partNumber": "FD-NORTH",
+          "priceCny": 400,
+          "attributes": {
+            "maxGpuLengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "maxGpuThicknessMm": {
+              "value": "60",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 60
+            },
+            "maxGpuSlots": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "maxCoolerHeightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "supportedFormFactors": {
+              "value": "ATX,MICRO_ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "driveBays": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            }
+          }
+        }
+      ],
+      "expected": {
+        "GPU_CASE_LENGTH": {
+          "outcome": "PASSED",
+          "weakest": "VERIFIED"
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_gpu_len_equal_320_320",
+      "purpose": "边界：320 <= 320 必须 PASSED（等号边界）",
+      "isDemo": true,
+      "buildId": "fx-anchor-eq",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "gpu-demo-300",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3500
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "quantity": 1,
+          "unitPriceCny": 400
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "gpu-demo-300",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 (300mm)",
+          "partNumber": "DEMO-300",
+          "priceCny": 3500,
+          "attributes": {
+            "lengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "thicknessMm": {
+              "value": "55",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 55
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "200",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 200
+            },
+            "recommendedPsuW": {
+              "value": "650",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 650
+            },
+            "requiredPsuConnectors": {
+              "value": "8PIN_X2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "manufacturer": "Fractal",
+          "model": "North (320mm)",
+          "partNumber": "FD-NORTH",
+          "priceCny": 400,
+          "attributes": {
+            "maxGpuLengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "maxGpuThicknessMm": {
+              "value": "60",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 60
+            },
+            "maxGpuSlots": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "maxCoolerHeightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "supportedFormFactors": {
+              "value": "ATX,MICRO_ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "driveBays": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            }
+          }
+        }
+      ],
+      "expected": {
+        "GPU_CASE_LENGTH": {
+          "outcome": "PASSED",
+          "weakest": "VERIFIED"
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_bios_missing",
+      "purpose": "答辩锚点：BIOS 字段 EMPTY -> UNVERIFIED，missingField 指向它",
+      "isDemo": true,
+      "buildId": "fx-anchor-bios",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "quantity": 1,
+          "unitPriceCny": 1500
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "quantity": 1,
+          "unitPriceCny": 900
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "manufacturer": "AMD",
+          "model": "Ryzen 5 7600X",
+          "partNumber": "100-100000593WOF",
+          "priceCny": 1500,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "supportedChipsets": {
+              "value": "B650,X670",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "tdpW": {
+              "value": "105",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 105
+            },
+            "minBiosGeneration": {
+              "value": "1.0",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 1
+            }
+          }
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "manufacturer": "ASUS",
+          "model": "TUF B650-PLUS",
+          "partNumber": "TUF-B650-PLUS",
+          "priceCny": 900,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "chipset": {
+              "value": "B650",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "biosGeneration": {
+              "value": null,
+              "state": "EMPTY",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "memoryGeneration": {
+              "value": "DDR5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "memorySlots": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "maxMemoryGb": {
+              "value": "128",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 128
+            },
+            "formFactor": {
+              "value": "ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "m2Slots": {
+              "value": "2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 2
+            },
+            "sataPorts": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "storageInterfaces": {
+              "value": "M2_NVME,SATA",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        }
+      ],
+      "expected": {
+        "CPU_MB_BIOS_SUPPORT": {
+          "outcome": "UNVERIFIED",
+          "reason": "MISSING_FIELD",
+          "weakest": "EMPTY",
+          "missingField": {
+            "componentId": "mb-demo-b650",
+            "fieldPath": "biosGeneration"
+          }
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_source_conflict_gpu_len",
+      "purpose": "答辩锚点：两个 reported 来源 337 / 335 -> UNVERIFIED(SOURCE_CONFLICT)，不得按 337 比较",
+      "isDemo": true,
+      "buildId": "fx-anchor-conflict",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3400
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "quantity": 1,
+          "unitPriceCny": 400
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 Ti (337mm)",
+          "partNumber": "DEMO-337",
+          "priceCny": 3400,
+          "attributes": {
+            "lengthMm": {
+              "value": "337",
+              "state": "REPORTED",
+              "conflict": true,
+              "numeric": null,
+              "sources": [
+                {
+                  "source": "retailer-a",
+                  "rawValue": "337",
+                  "state": "REPORTED"
+                },
+                {
+                  "source": "retailer-b",
+                  "rawValue": "335",
+                  "state": "REPORTED"
+                }
+              ]
+            },
+            "thicknessMm": {
+              "value": "61",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 61
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "285",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 285
+            },
+            "recommendedPsuW": {
+              "value": "750",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 750
+            },
+            "requiredPsuConnectors": {
+              "value": "12VHPWR",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "manufacturer": "Fractal",
+          "model": "North (320mm)",
+          "partNumber": "FD-NORTH",
+          "priceCny": 400,
+          "attributes": {
+            "maxGpuLengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "maxGpuThicknessMm": {
+              "value": "60",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 60
+            },
+            "maxGpuSlots": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "maxCoolerHeightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "supportedFormFactors": {
+              "value": "ATX,MICRO_ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "driveBays": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            }
+          }
+        }
+      ],
+      "expected": {
+        "GPU_CASE_LENGTH": {
+          "outcome": "UNVERIFIED",
+          "reason": "SOURCE_CONFLICT",
+          "weakest": "REPORTED",
+          "missingField": {
+            "componentId": "gpu-demo-337",
+            "fieldPath": "lengthMm"
+          }
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_psu_power_conflict",
+      "purpose": "答辩锚点：requiredW 606 > continuousW 550",
+      "isDemo": true,
+      "buildId": "fx-anchor-psu",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "quantity": 1,
+          "unitPriceCny": 1500
+        },
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3400
+        },
+        {
+          "componentId": "psu-demo-550",
+          "category": "PSU",
+          "quantity": 1,
+          "unitPriceCny": 450
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "manufacturer": "AMD",
+          "model": "Ryzen 5 7600X",
+          "partNumber": "100-100000593WOF",
+          "priceCny": 1500,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "supportedChipsets": {
+              "value": "B650,X670",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "tdpW": {
+              "value": "105",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 105
+            },
+            "minBiosGeneration": {
+              "value": "1.0",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 1
+            }
+          }
+        },
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 Ti (337mm)",
+          "partNumber": "DEMO-337",
+          "priceCny": 3400,
+          "attributes": {
+            "lengthMm": {
+              "value": "337",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 337
+            },
+            "thicknessMm": {
+              "value": "61",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 61
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "285",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 285
+            },
+            "recommendedPsuW": {
+              "value": "750",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 750
+            },
+            "requiredPsuConnectors": {
+              "value": "12VHPWR",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "psu-demo-550",
+          "category": "PSU",
+          "manufacturer": "Cooler Master",
+          "model": "MWE 550",
+          "partNumber": "MWE550",
+          "priceCny": 450,
+          "attributes": {
+            "continuousW": {
+              "value": "550",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 550
+            },
+            "connectors": {
+              "value": "8PIN_X2,SATA",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        }
+      ],
+      "expected": {
+        "PSU_CONTINUOUS_POWER": {
+          "outcome": "CONFLICT",
+          "severity": "BLOCKER",
+          "weakest": "VERIFIED",
+          "note": "requiredW = ceil((105 + 285 + 100) * 1.2) = ceil(588) = 588 > 550"
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_memory_gen_conflict",
+      "purpose": "DDR4 内存插 DDR5 主板",
+      "isDemo": true,
+      "buildId": "fx-anchor-mem",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "mem-demo-ddr4-32",
+          "category": "MEMORY",
+          "quantity": 1,
+          "unitPriceCny": 380
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "quantity": 1,
+          "unitPriceCny": 900
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "mem-demo-ddr4-32",
+          "category": "MEMORY",
+          "manufacturer": "Kingston",
+          "model": "FURY Beast 32GB DDR4",
+          "partNumber": "KF432C16BBK2-32",
+          "priceCny": 380,
+          "attributes": {
+            "generation": {
+              "value": "DDR4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "moduleCapacityGb": {
+              "value": "16",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 16
+            },
+            "kitCapacityGb": {
+              "value": "32",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 32
+            },
+            "moduleCount": {
+              "value": "2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 2
+            }
+          }
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "manufacturer": "ASUS",
+          "model": "TUF B650-PLUS",
+          "partNumber": "TUF-B650-PLUS",
+          "priceCny": 900,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "chipset": {
+              "value": "B650",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "biosGeneration": {
+              "value": "1.2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 1.2
+            },
+            "memoryGeneration": {
+              "value": "DDR5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "memorySlots": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "maxMemoryGb": {
+              "value": "128",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 128
+            },
+            "formFactor": {
+              "value": "ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "m2Slots": {
+              "value": "2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 2
+            },
+            "sataPorts": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "storageInterfaces": {
+              "value": "M2_NVME,SATA",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        }
+      ],
+      "expected": {
+        "MEMORY_DDR_GENERATION": {
+          "outcome": "CONFLICT",
+          "severity": "BLOCKER",
+          "weakest": "VERIFIED",
+          "leftValue": "DDR4",
+          "rightValue": "DDR5"
+        }
+      }
+    },
+    {
+      "fixtureId": "fx_suggestion_300_plus_100",
+      "purpose": "端到端锚点：7800 -> 7900，GPU_CASE_LENGTH 转 PASSED，BIOS 仍 UNVERIFIED",
+      "isDemo": true,
+      "buildId": "fx-anchor-e2e",
+      "revisionId": 1,
+      "items": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "quantity": 1,
+          "unitPriceCny": 1500
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "quantity": 1,
+          "unitPriceCny": 900
+        },
+        {
+          "componentId": "mem-demo-ddr5-32",
+          "category": "MEMORY",
+          "quantity": 1,
+          "unitPriceCny": 500
+        },
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "quantity": 1,
+          "unitPriceCny": 3400
+        },
+        {
+          "componentId": "psu-demo-750",
+          "category": "PSU",
+          "quantity": 1,
+          "unitPriceCny": 600
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "quantity": 1,
+          "unitPriceCny": 400
+        },
+        {
+          "componentId": "cooler-demo-160",
+          "category": "COOLER",
+          "quantity": 1,
+          "unitPriceCny": 300
+        },
+        {
+          "componentId": "storage-demo-nvme",
+          "category": "STORAGE",
+          "quantity": 1,
+          "unitPriceCny": 200
+        }
+      ],
+      "catalogue": [
+        {
+          "componentId": "cpu-demo-7600x",
+          "category": "CPU",
+          "manufacturer": "AMD",
+          "model": "Ryzen 5 7600X",
+          "partNumber": "100-100000593WOF",
+          "priceCny": 1500,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "supportedChipsets": {
+              "value": "B650,X670",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "tdpW": {
+              "value": "105",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 105
+            },
+            "minBiosGeneration": {
+              "value": "1.0",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 1
+            }
+          }
+        },
+        {
+          "componentId": "mb-demo-b650",
+          "category": "MOTHERBOARD",
+          "manufacturer": "ASUS",
+          "model": "TUF B650-PLUS",
+          "partNumber": "TUF-B650-PLUS",
+          "priceCny": 900,
+          "attributes": {
+            "socket": {
+              "value": "AM5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "chipset": {
+              "value": "B650",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "biosGeneration": {
+              "value": null,
+              "state": "EMPTY",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "memoryGeneration": {
+              "value": "DDR5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "memorySlots": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "maxMemoryGb": {
+              "value": "128",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 128
+            },
+            "formFactor": {
+              "value": "ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "m2Slots": {
+              "value": "2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 2
+            },
+            "sataPorts": {
+              "value": "4",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 4
+            },
+            "storageInterfaces": {
+              "value": "M2_NVME,SATA",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "mem-demo-ddr5-32",
+          "category": "MEMORY",
+          "manufacturer": "Kingston",
+          "model": "FURY Beast 32GB",
+          "partNumber": "KF560C36BBEK2-32",
+          "priceCny": 500,
+          "attributes": {
+            "generation": {
+              "value": "DDR5",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "moduleCapacityGb": {
+              "value": "16",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 16
+            },
+            "kitCapacityGb": {
+              "value": "32",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 32
+            },
+            "moduleCount": {
+              "value": "2",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 2
+            }
+          }
+        },
+        {
+          "componentId": "gpu-demo-337",
+          "category": "GPU",
+          "manufacturer": "NVIDIA",
+          "model": "RTX 4070 Ti (337mm)",
+          "partNumber": "DEMO-337",
+          "priceCny": 3400,
+          "attributes": {
+            "lengthMm": {
+              "value": "337",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 337
+            },
+            "thicknessMm": {
+              "value": "61",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 61
+            },
+            "slotWidth": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "tdpW": {
+              "value": "285",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 285
+            },
+            "recommendedPsuW": {
+              "value": "750",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 750
+            },
+            "requiredPsuConnectors": {
+              "value": "12VHPWR",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "psu-demo-750",
+          "category": "PSU",
+          "manufacturer": "Seasonic",
+          "model": "FOCUS GX-750",
+          "partNumber": "GX-750",
+          "priceCny": 600,
+          "attributes": {
+            "continuousW": {
+              "value": "750",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 750
+            },
+            "connectors": {
+              "value": "12VHPWR,8PIN_X2,SATA",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "case-demo-320",
+          "category": "CASE",
+          "manufacturer": "Fractal",
+          "model": "North (320mm)",
+          "partNumber": "FD-NORTH",
+          "priceCny": 400,
+          "attributes": {
+            "maxGpuLengthMm": {
+              "value": "320",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 320
+            },
+            "maxGpuThicknessMm": {
+              "value": "60",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 60
+            },
+            "maxGpuSlots": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            },
+            "maxCoolerHeightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "supportedFormFactors": {
+              "value": "ATX,MICRO_ATX",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            },
+            "driveBays": {
+              "value": "3",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 3
+            }
+          }
+        },
+        {
+          "componentId": "cooler-demo-160",
+          "category": "COOLER",
+          "manufacturer": "Thermalright",
+          "model": "PA120",
+          "partNumber": "PA120",
+          "priceCny": 300,
+          "attributes": {
+            "heightMm": {
+              "value": "160",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": 160
+            },
+            "socketMounts": {
+              "value": "AM5,AM4,LGA1700",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        },
+        {
+          "componentId": "storage-demo-nvme",
+          "category": "STORAGE",
+          "manufacturer": "Samsung",
+          "model": "990 EVO 1TB",
+          "partNumber": "MZ-V9E1T0",
+          "priceCny": 200,
+          "attributes": {
+            "interface": {
+              "value": "M2_NVME",
+              "state": "VERIFIED",
+              "sources": [],
+              "conflict": false,
+              "numeric": null
+            }
+          }
+        }
+      ],
+      "expectedBefore": {
+        "totalCny": 7800,
+        "GPU_CASE_LENGTH": {
+          "outcome": "CONFLICT",
+          "severity": "BLOCKER"
+        },
+        "CPU_MB_BIOS_SUPPORT": {
+          "outcome": "UNVERIFIED",
+          "reason": "MISSING_FIELD"
+        }
+      },
+      "suggestion": {
+        "conflictId": "GPU_CASE_LENGTH:gpu-demo-337.lengthMm:case-demo-320.maxGpuLengthMm",
+        "candidateComponentId": "gpu-demo-300",
+        "priceDeltaCny": 100,
+        "rank": 1
+      },
+      "expectedAfter": {
+        "totalCny": 7900,
+        "GPU_CASE_LENGTH": {
+          "outcome": "PASSED"
+        },
+        "CPU_MB_BIOS_SUPPORT": {
+          "outcome": "UNVERIFIED",
+          "reason": "MISSING_FIELD"
+        },
+        "budgetCny": 8000,
+        "withinBudget": true
+      }
+    }
+  ]
+}

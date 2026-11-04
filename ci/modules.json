@@ -1,0 +1,246 @@
+{
+  "$schema": "./modules.schema.md",
+  "note": "唯一的依赖矩阵配置。改动必须同步 docs/05-module-independence.md §5.3。",
+  "modules": [
+    {
+      "name": "contracts",
+      "projectPath": ":contracts",
+      "srcPath": "contracts/src",
+      "type": "jvm",
+      "allowed": [],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "okhttp3.",
+        "retrofit2.",
+        "kotlinx.serialization"
+      ]
+    },
+    {
+      "name": "contracts-test",
+      "projectPath": ":contracts-test",
+      "srcPath": "contracts-test/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "pcbuildmate.data.",
+        "pcbuildmate.domain.",
+        "pcbuildmate.feature."
+      ]
+    },
+    {
+      "name": "domain-build",
+      "projectPath": ":domain:build",
+      "srcPath": "domain/build/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain."
+      ]
+    },
+    {
+      "name": "domain-rules",
+      "projectPath": ":domain:rules",
+      "srcPath": "domain/rules/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain.",
+        "kotlinx.serialization"
+      ]
+    },
+    {
+      "name": "domain-replacement",
+      "projectPath": ":domain:replacement",
+      "srcPath": "domain/replacement/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain."
+      ]
+    },
+    {
+      "name": "domain-recommend",
+      "projectPath": ":domain:recommend",
+      "srcPath": "domain/recommend/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain."
+      ]
+    },
+    {
+      "name": "domain-compare",
+      "projectPath": ":domain:compare",
+      "srcPath": "domain/compare/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain."
+      ]
+    },
+    {
+      "name": "domain-state",
+      "projectPath": ":domain:state",
+      "srcPath": "domain/state/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "android.",
+        "androidx.",
+        "java.io.",
+        "java.net.",
+        "java.time.",
+        "kotlin.random.",
+        "pcbuildmate.domain."
+      ]
+    },
+    {
+      "name": "data",
+      "projectPath": ":data",
+      "srcPath": "data/src",
+      "type": "android",
+      "allowed": [
+        ":contracts",
+        ":contracts-test"
+      ],
+      "forbiddenImports": [
+        "pcbuildmate.domain.",
+        "pcbuildmate.feature.",
+        "pcbuildmate.ui."
+      ]
+    },
+    {
+      "name": "feature",
+      "projectPath": ":feature",
+      "srcPath": "feature/src",
+      "type": "android",
+      "allowed": [
+        ":contracts",
+        ":domain:state",
+        ":domain:build"
+      ],
+      "forbiddenImports": [
+        "pcbuildmate.domain.rules.",
+        "pcbuildmate.domain.replacement.",
+        "pcbuildmate.domain.recommend.",
+        "pcbuildmate.domain.compare.",
+        "pcbuildmate.data.",
+        "androidx.room."
+      ]
+    },
+    {
+      "name": "ui",
+      "projectPath": ":ui",
+      "srcPath": "ui/src",
+      "type": "android",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "pcbuildmate.feature.",
+        "pcbuildmate.data.",
+        "pcbuildmate.domain.",
+        "androidx.room."
+      ]
+    },
+    {
+      "name": "app",
+      "projectPath": ":app",
+      "srcPath": "app/src",
+      "type": "android",
+      "allowed": [
+        ":contracts",
+        ":data",
+        ":feature",
+        ":ui",
+        ":domain:build",
+        ":domain:rules",
+        ":domain:replacement",
+        ":domain:recommend",
+        ":domain:compare",
+        ":domain:state"
+      ],
+      "forbiddenImports": []
+    },
+    {
+      "name": "testing",
+      "projectPath": ":testing",
+      "srcPath": "testing/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "pcbuildmate.data.",
+        "pcbuildmate.feature.",
+        "pcbuildmate.ui."
+      ]
+    },
+    {
+      "name": "test-oracle",
+      "projectPath": ":test-oracle",
+      "srcPath": "test-oracle/src",
+      "type": "jvm",
+      "allowed": [
+        ":contracts"
+      ],
+      "forbiddenImports": [
+        "pcbuildmate.domain.",
+        "pcbuildmate.data.",
+        "pcbuildmate.feature.",
+        "pcbuildmate.ui.",
+        "android.",
+        "androidx."
+      ]
+    }
+  ]
+}

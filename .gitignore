@@ -1,0 +1,34 @@
+# Android / Gradle
+.gradle/
+build/
+*/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env / caches
+.env
+.uv-cache/
+.kotlin/
+
+# Generated site data (regenerate with tools/gen-site-data.mjs)
+# site/data.generated.js  # 目前提交，便于直接打开原型；若要改，先跑生成脚本
+
+# Logs
+*.log
