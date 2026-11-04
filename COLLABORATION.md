@@ -97,6 +97,8 @@ build/** .gradle/**         # 构建产物，已在 .gitignore
 
 ---
 
+> 当前任务清单与建议 owner：[docs/tasks/BOARD.md](docs/tasks/BOARD.md)。认领后把 handle 填进 owner。
+
 ## 2. 角色与所有权
 
 ### 2.1 人类角色
