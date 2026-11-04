@@ -25,6 +25,7 @@ import pcbuildmate.contracts.ReplacementAdvisorPort
 import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.data.catalogue.assetCatalogue
 import pcbuildmate.data.rules.RuleParser
+import pcbuildmate.domain.compare.DefaultBuildComparator
 import pcbuildmate.domain.replacement.DefaultReplacementAdvisor
 import pcbuildmate.domain.rules.DefaultRuleEngine
 import pcbuildmate.feature.workspace.WorkspaceViewModel
@@ -95,6 +96,7 @@ private fun PcBuildmateRoot(
                 viewModel.onIntent(WorkspaceIntent.StartCheck)
                 screen = Screen.Diagnostics.name
             },
+            onCompare = { screen = Screen.Compare.name },
             onBack = { screen = Screen.Entry.name },
         )
 
@@ -105,7 +107,19 @@ private fun PcBuildmateRoot(
             onBack = { screen = Screen.Workspace.name },
         )
 
-        Screen.Compare -> CompareScreen(onBack = { screen = Screen.Workspace.name })
+        Screen.Compare -> {
+            val snapshot = viewModel.savedSnapshot()
+            val comparison = DefaultBuildComparator(
+                builds = snapshot.builds,
+                revisions = snapshot.revisions,
+                diagnoses = snapshot.diagnoses,
+            ).compare(snapshot.builds.map { it.buildId })
+            CompareScreen(
+                result = comparison,
+                labels = labels,
+                onBack = { screen = Screen.Workspace.name },
+            )
+        }
     }
 }
 

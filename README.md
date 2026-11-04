@@ -128,6 +128,7 @@ node tools/test-demo-ui.mjs      # 全部界面的渲染冒烟测试
 - D3 规则引擎：**已完成**（15 条规则 + PSU 公式；60 条 fixture 全绿）。
 - D5 替换建议：**已完成**（先过滤 BLOCKER，再按价格/影响/ID 排序；5 条测试，含 337→300 锚点）。
 - D2 工作区：**已完成**（76 格状态机 + ViewModel；Entry/Workspace/Diagnostics 三屏真机跑通，7800→7900）。
+- D6 比较：**已完成**（2 份保存配置并排；总价/状态/分类差异高亮；过期诊断不显示旧结论）。
 - Git：已推送到 <https://github.com/pc-buildmate/pcbuildmate>；`main` 是文档基线，S1 在 `chore/s1-scaffold`，待 PR 合并。
 - 答辩材料：提案 / 讲稿 / Q&A 已转写为 md，见 [materials/README.md](materials/README.md)。
 

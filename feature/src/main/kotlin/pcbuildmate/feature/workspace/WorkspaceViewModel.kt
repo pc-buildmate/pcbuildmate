@@ -61,6 +61,10 @@ class WorkspaceViewModel(
     private var lastBanner: TextKey? = null
     private var isSaved: Boolean = false
 
+    private val savedBuilds = mutableListOf<Build>()
+    private val savedRevisions = mutableMapOf<String, BuildRevision>()
+    private val savedDiagnoses = mutableMapOf<String, Diagnosis?>()
+
     /** Entry 页“载入演示配置”。演示锚点：8 类零件，总价 7800。 */
     fun startDemo() {
         val ids = listOf(
@@ -112,6 +116,9 @@ class WorkspaceViewModel(
         lastRejection = null
         lastBanner = null
         isSaved = false
+        savedBuilds.clear()
+        savedRevisions.clear()
+        savedDiagnoses.clear()
         publish()
     }
 
@@ -127,9 +134,12 @@ class WorkspaceViewModel(
             is WorkspaceIntent.DismissNoCandidate -> dismissNoCandidate()
             is WorkspaceIntent.SetQuantity -> setQuantity(intent.componentId, intent.quantity)
             is WorkspaceIntent.SaveBuild -> {
+                saveCurrentSnapshot()
                 isSaved = true
                 publish()
             }
+
+            is WorkspaceIntent.SwitchBuild -> switchBuild(intent.buildId)
 
             else -> Unit
         }
@@ -168,6 +178,7 @@ class WorkspaceViewModel(
                         ctx,
                     ),
                 )
+                saveCurrentSnapshot()
             }
 
             Effect.CancelDiagnosis -> Unit
@@ -355,6 +366,7 @@ class WorkspaceViewModel(
                 previewRevision = applied
                 diagnosisState = DiagnosisState.Done(applied.id)
                 isSaved = false
+                saveCurrentSnapshot()
             }
 
             is Effect.SaveDraft -> Unit
@@ -402,6 +414,63 @@ class WorkspaceViewModel(
         publish()
     }
 
+    // ------------------------------------------------------------ save / compare
+
+    /**
+     * 把当前 revision 存成一份可比较配置。
+     *
+     * 同一个 revision 重复保存时只更新诊断，不再产生重复列。
+     */
+    private fun saveCurrentSnapshot() {
+        val b = build ?: return
+        val r = revision ?: return
+        val existing = savedBuilds.firstOrNull { savedRevisions[it.buildId]?.id == r.id }
+        if (existing != null) {
+            val index = savedBuilds.indexOf(existing)
+            savedBuilds[index] = existing.copy(
+                currentRevisionId = r.id,
+                updatedAt = catalogue.priceDate(),
+            )
+            savedDiagnoses[existing.buildId] = diagnosis?.takeIf { it.revisionId == r.id }
+            return
+        }
+
+        val id = "saved-${savedBuilds.size + 1}"
+        savedBuilds += b.copy(
+            buildId = id,
+            currentRevisionId = r.id,
+            updatedAt = catalogue.priceDate(),
+        )
+        savedRevisions[id] = r.copy(buildId = id)
+        savedDiagnoses[id] = diagnosis?.takeIf { it.revisionId == r.id }
+    }
+
+    private fun switchBuild(buildId: String) {
+        val saved = savedBuilds.firstOrNull { it.buildId == buildId } ?: return
+        val rev = savedRevisions[buildId] ?: return
+        build = saved
+        revision = rev
+        diagnosis = savedDiagnoses[buildId]
+        diagnosisState = if (diagnosis != null) DiagnosisState.Done(rev.id) else DiagnosisState.Idle
+        replacementState = ReplacementState.Idle
+        suggestions = null
+        previewRevision = null
+        isSaved = true
+        publish()
+    }
+
+    data class SavedSnapshot(
+        val builds: List<Build>,
+        val revisions: Map<String, BuildRevision>,
+        val diagnoses: Map<String, Diagnosis?>,
+    )
+
+    fun savedSnapshot(): SavedSnapshot = SavedSnapshot(
+        builds = savedBuilds.toList(),
+        revisions = savedRevisions.toMap(),
+        diagnoses = savedDiagnoses.toMap(),
+    )
+
     // ------------------------------------------------------------ publish
 
     private fun publish() {
@@ -413,6 +482,7 @@ class WorkspaceViewModel(
             replacementState = replacementState,
             suggestions = suggestions,
             previewRevision = previewRevision,
+            savedBuilds = savedBuilds.toList(),
             banner = lastBanner,
             rejection = lastRejection,
             isSaved = isSaved,
