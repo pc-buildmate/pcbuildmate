@@ -88,6 +88,43 @@ class FixtureTest {
     }
 
     @Test
+    fun `weakest takes the weaker side`() {
+        val rule = RuleDef(
+            ruleId = "CPU_SOCKET_MATCH",
+            kind = RuleKind.EQUALS,
+            left = RuleOperand(Category.CPU, "socket"),
+            right = RuleOperand(Category.MOTHERBOARD, "socket"),
+            severity = Severity.BLOCKER,
+        )
+        val cpu = CatalogueRecord(
+            componentId = "cpu", category = Category.CPU,
+            manufacturer = "d", model = "d", partNumber = "d",
+            attributes = mapOf("socket" to FieldValue("AM5", VerificationState.VERIFIED)),
+            priceCny = 100, priceDate = "2026-11-04", catalogueVersion = "v1", isDemo = true,
+        )
+        val mb = CatalogueRecord(
+            componentId = "mb", category = Category.MOTHERBOARD,
+            manufacturer = "d", model = "d", partNumber = "d",
+            attributes = mapOf("socket" to FieldValue("AM5", VerificationState.REPORTED)),
+            priceCny = 100, priceDate = "2026-11-04", catalogueVersion = "v1", isDemo = true,
+        )
+        val revision = BuildRevision(
+            id = 1, buildId = "mix",
+            items = listOf(
+                BuildItem("cpu", Category.CPU, 1, 100),
+                BuildItem("mb", Category.MOTHERBOARD, 1, 100),
+            ),
+            totalCny = 200, catalogueVersion = "v1", priceDate = "2026-11-04", userModified = false,
+        )
+
+        val outcome = DefaultRuleEngine(listOf(rule), MapCatalogue(listOf(cpu, mb)))
+            .evaluate(revision)
+            .single()
+
+        assertEquals(VerificationState.REPORTED, outcome.weakest)
+    }
+
+    @Test
     fun `evaluation is deterministic`() {
         val rules = loadRules()
         val fx = loadFixtures("fixtures/fixtures-rules-v1.json").first()
