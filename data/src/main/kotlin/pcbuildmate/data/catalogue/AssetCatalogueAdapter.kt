@@ -45,7 +45,7 @@ class AssetCatalogueAdapter(
 /** 生产入口：只读 assets，不联网。 */
 fun assetCatalogue(
     context: Context,
-    assetPath: String = "catalogue/demo-v1.json",
+    assetPath: String = "catalogue/catalogue-app.json",
 ): CataloguePort = AssetCatalogueAdapter {
     context.assets.open(assetPath).bufferedReader().use { it.readText() }
 }

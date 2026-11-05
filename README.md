@@ -75,14 +75,14 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 | `:domain:state` | 诊断/替换状态机 | 完成 | [D2-01](docs/tasks/D2-01.md) |
 | `:domain:compare` | A/B 比较 | 完成 | [D6-01](docs/tasks/D6-01.md) |
 | `:domain:recommend` | 预算推荐 | 完成 | [D4-01](docs/tasks/D4-01.md) |
-| `:domain:build` | revision 构造 | 暂由 `:feature` 代做 | [docs/06](docs/06-modules.md) |
+| `:domain:revision` | revision 构造 + 无显示输出 guard | 完成 | [D2-03](docs/tasks/D2-03.md) |
 | `:feature` | ViewModel / MVI 编排 | 核心完成 | [docs/06](docs/06-modules.md) |
 | `:ui` | Compose 四屏 | 可用；待打磨 | [POLISH-01](docs/tasks/POLISH-01.md) |
 | `:app` | Activity / 手动导航 / 装配 | 完成 | [docs/05](docs/05-module-independence.md) |
 | `:testing` | Fake / Stub | 待补 | [docs/07](docs/07-unit-verification.md) |
 | `:test-oracle` | 独立参考模型 | 待补 | [QA-01](docs/tasks/QA-01.md) |
 
-> 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：32 条、2026-11-04 参考快照，不承诺实时/库存。
+> 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：App 使用 30 条合并快照（26 active + 4 demo anchors），2026-11-04 参考价，不承诺实时/库存。
 > 价格数据管道（2020+，半自动，App 只读快照）见 [pricedata/README.md](pricedata/README.md)。
 > 长期只采 CPU / 主板 / 内存 / 硬盘 / 电源 / 显卡；机箱、散热、无线网卡只保留 App demo，不采历史价。
 

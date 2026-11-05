@@ -62,7 +62,7 @@
 
 | ID | 任务 | 验收 |
 |---|---|---|
-| D2-03 | `DisplayOutputGuard`：无 GPU + CPU `integratedGraphics != YES` → rejected；GPU 存在则放行 | `:domain:build:test` 3 条；StartCheck/Import 前调用 |
+| D2-03 | `DisplayOutputGuard`：无 GPU + CPU `integratedGraphics != YES` → rejected；GPU 存在则放行 | `:domain:revision:test` 3 条；StartCheck/Import 前调用 |
 | INT-01 | 合并 `pricedata` active 26 条 + demo overlay（case/cooler/337/320）→ `assets/catalogue/catalogue-app.json` | 真机 demo 仍 7800→7900；D4 仍 8000 可行 |
 | DATA-02 | Room `BuildStore`/`DraftStore` + 契约测试 | 杀进程后 A/B 还在；`:data:testDebugUnitTest` 绿 |
 | QA-01 | `gen-matrix` 读 JUnit XML → `matrix.json`；`check-matrix` 真实模式 | rules 60/60、fsm 76/76、inv 18/18 |

@@ -134,7 +134,9 @@ def _catalogue(rows: list[Row], version: str) -> dict:
             value = spec.get("value")
             attrs[path] = {
                 "value": value,
-                "state": "VERIFIED" if r.confidence == "high" else "REPORTED",
+                "state": "EMPTY" if value is None else (
+                    "VERIFIED" if r.confidence == "high" else "REPORTED"
+                ),
                 "sources": [],
                 "conflict": False,
                 "numeric": spec.get("numeric"),

@@ -31,6 +31,7 @@ import pcbuildmate.contracts.TextKey
 import pcbuildmate.contracts.UseCase
 import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.contracts.WorkspaceUiState
+import pcbuildmate.domain.revision.DisplayOutputGuard
 import pcbuildmate.domain.state.DiagnosisContext
 import pcbuildmate.domain.state.DiagnosisMachine
 import pcbuildmate.domain.state.ReplacementMachine
@@ -195,6 +196,11 @@ class WorkspaceViewModel(
 
     private fun startCheck() {
         val rev = revision
+        if (rev != null && !DisplayOutputGuard.hasDisplayOutput(rev, catalogue)) {
+            lastBanner = TextKey.NO_DISPLAY_OUTPUT
+            publish()
+            return
+        }
         val ctx = DiagnosisContext(build = build, revision = rev, diagnosis = diagnosis)
         val result = DiagnosisMachine.transition(diagnosisState, DiagnosisEvent.StartCheck, ctx)
         applyDiagnosis(result)
@@ -302,6 +308,12 @@ class WorkspaceViewModel(
     }
 
     private fun applySuggestion() {
+        val preview = previewRevision
+        if (preview != null && !DisplayOutputGuard.hasDisplayOutput(preview, catalogue)) {
+            lastBanner = TextKey.NO_DISPLAY_OUTPUT
+            publish()
+            return
+        }
         applyReplacement(
             ReplacementMachine.transition(
                 replacementState,

@@ -1,6 +1,6 @@
 # INT-01 · App 目录快照合并
 
-> 状态：**ready**｜认领：@MoeField｜预估：1 天｜依赖：pricedata MVP
+> 状态：**done**（2026-11-05）｜认领：@MoeField｜预估：1 天｜依赖：pricedata MVP
 
 ## 目标
 
@@ -29,6 +29,13 @@ data/src/test/**
 - demo 8 件总价仍 7800；337 vs 320 仍 BLOCKER；
 - D4 8000/GAMING 仍可行；
 - `node ci/check-boundaries.mjs` 绿。
+
+## 结果
+
+- `assets/catalogue/catalogue-app.json`：26 active + 4 demo anchors = 30 条；
+- App 默认路径改为 `catalogue/catalogue-app.json`；
+- 真机 demo 仍 7800、8 件；`catalogueVersion=2026.11`；
+- `pricedata/tests` 4/4；merge CLI 可复现。
 
 ## 不做
 
