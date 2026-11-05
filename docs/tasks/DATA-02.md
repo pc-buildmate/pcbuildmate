@@ -48,4 +48,6 @@
 
 - 端口是同步的，Room 用 `allowMainThreadQueries()`；演示规模小，后续可换 suspend + Dispatchers.IO；
 - 诊断结果不持久化，恢复后重新检查；这是有意的（诊断绑定 revision）；
-- Room 的 JVM 单测未加 Robolectric，Room 路径由真机验证；契约测试覆盖两种内存实现。
+- Room 路径用 **instrumented** 契约测试（`data/src/androidTest`）跑真机 8/8；
+- 测试抓到 `@Insert(REPLACE)` 删除父 build 会级联删 revision，已改 `@Upsert`；
+- Room 不在 CI（runner 无设备）；本地验收命令 `:data:connectedDebugAndroidTest`。

@@ -11,6 +11,7 @@
 | 状态机 4×4 + 6×10 | **76/76** | `DiagnosisMachineTest` / `ReplacementMachineTest` 的 `full matrix` |
 | 不变量 INV-01..18 | **18/18** | 见下表；测试 + CI 检查 |
 | 关键变异 MUT-01..12 | **12/12** | `tools/run-mutations.mjs`；每条改坏源码后目标测试必须失败 |
+| Room 契约 | **8/8** | `:data:connectedDebugAndroidTest`（真机，不是 JVM） |
 
 ```bash
 node tools/gen-matrix.mjs
@@ -42,14 +43,17 @@ node tools/check-matrix.mjs --mutations
 | 14 替换过滤 | `DefaultReplacementAdvisorTest.300mm gpu` |
 | 15 确定性 | `FixtureTest.evaluation is deterministic` |
 | 16 依赖矩阵 | `node ci/check-boundaries.mjs` |
-| 17 端口契约 | `InMemoryBuildStoreTest`（Room 另由真机验证） |
+| 17 端口契约 | `InMemoryBuildStoreTest` + `RoomBuildStoreTest`（真机 instrumented） |
 | 18 无 I/O | `node ci/check-boundaries.mjs` |
 
 ## 仍要补的
 
-- **Room 契约测试**：目前只在真机验证；JVM 契约测试只覆盖内存实现，不能算 18/18 的 Room 证据。
 - **`:test-oracle` 参考模型**：还没单独建模块；目前靠 JS 原型差分 + fixture。
+- **Room 不在 CI**：契约测试是真机 instrumented；CI 没有设备，不能自动跑。
 - **UI semantics**：Node 原型 + 真机 smoke，没有 Compose 测试。
+
+Room 契约已补：`:data:connectedDebugAndroidTest` 8/8；契约测试抓到了
+`@Insert(REPLACE)` 删除父 build 触发 revision 级联删除的真实 bug，已改 `@Upsert`。
 
 D4 全规则集成已补：`:app:testDebugUnitTest` 的 `RecommendationIntegrationTest`
 用完整 15 条规则 + 30 条合并目录，断言预算/无 BLOCKER/无 GPU 核显，不断言具体型号。
