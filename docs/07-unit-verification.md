@@ -111,6 +111,9 @@ node tools/check-matrix.mjs
 **为什么不用行覆盖率**：行覆盖率 90% 的规则引擎，可能漏掉"来源冲突"整条分支，因为那一行被别的用例覆盖到了。
 矩阵覆盖看的是**语义维度**，行覆盖看的是**代码维度**——前者才是我们要的。
 
+**`MISSING` 的映射**：fixture id 以 `_missing` 结尾（RuleOutcome 仍是 `UNVERIFIED`），
+不是第四种 outcome；生成器从 id 后缀取 case，避免把 45 格误报成 60 格。
+
 ## 7.6 端口契约测试（Fake 与真实实现的一致性）
 
 每个端口一份抽象测试（已提供 `CataloguePortContract` 作为样例）：
