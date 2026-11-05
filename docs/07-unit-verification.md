@@ -100,13 +100,24 @@ fun `gpu length conflict 337 vs 320`() { ... }
 
 ### 7.5.3 矩阵检查器行为
 
+分两步：先把 JUnit XML 变成矩阵，再校验。生成器与校验器共用
+`tools/matrix-spec.mjs` 里的期望定义，避免两边各写一份。
+
 ```bash
-node tools/check-matrix.mjs
-# 读取 build/test-results/**/*.xml
+./gradlew :domain:rules:test :domain:state:test
+node tools/gen-matrix.mjs     # 读 build/test-results/**/*.xml -> build/reports/matrix.json
+node tools/check-matrix.mjs   # 读 matrix.json
 # 1) 期望：rules-v1.json 的 15 条 × 4 case；状态机 76 格；INV-01..18
-# 2) 实际：XML 里出现的 tag 组合（且必须 passed）
-# 3) 差集非空 -> 退出码 1，并打印缺失清单
+# 2) 实际：matrix.json 里 status=passed 的 tag 组合
+# 3) 已接入的块差集非空 -> 退出码 1，打印缺失清单
+# 4) 尚未接入的块（例如 inv）打印"未接入"；--strict 时也判失败
 ```
+
+- 规则格子的 `case` 直接取 fixture 的 `case` 字段；
+  fixture 的 `case=MISSING` 对应引擎结果 `UNVERIFIED + reason=MISSING_FIELD`。
+- 状态机 76 格不是从测试名猜的：`DiagnosisMachineTest` / `ReplacementMachineTest`
+  各有一个测试断言“case 列表覆盖文档转移表全部格子”，full-matrix 通过才把该机器的 76 格记 `passed`。
+- 没有 `matrix.json` 时仍进入规格模式（只打印期望），避免本地未跑测试时误判。
 
 **为什么不用行覆盖率**：行覆盖率 90% 的规则引擎，可能漏掉"来源冲突"整条分支，因为那一行被别的用例覆盖到了。
 矩阵覆盖看的是**语义维度**，行覆盖看的是**代码维度**——前者才是我们要的。

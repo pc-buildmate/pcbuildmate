@@ -129,6 +129,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 node tools/check-docs.mjs
 node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
+node tools/gen-matrix.mjs      # 先跑 :domain:rules:test :domain:state:test
 node tools/check-matrix.mjs
 
 node tools/test-demo-engine.mjs

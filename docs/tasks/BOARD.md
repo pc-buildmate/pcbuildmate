@@ -27,8 +27,7 @@
 |---|---|---|---|---|---|
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | **doing** | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 
-| QA-01 | 矩阵 / 变异 / 批次报告 | ready | 开放 | D1–D6 | [QA-01](QA-01.md) |
-
+| QA-01 | 矩阵 / 变异 / 批次报告 | **doing** | @yys1yys2yys | D1–D6 | [QA-01](QA-01.md) |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | doing | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
 | DEFENSE-01 | 讲稿 / 演示脚本 / Q&A | backlog | 开放 | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
 | RELEASE-01 | 签名 APK / Release | backlog | @MoeField | QA | [RELEASE-01](RELEASE-01.md) |

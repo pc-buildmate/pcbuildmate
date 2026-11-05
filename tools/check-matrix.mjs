@@ -2,7 +2,7 @@
 /**
  * 验证矩阵完整性检查（docs/07-unit-verification.md 7.5）。
  *
- * 输入：build/reports/matrix.json，由 Gradle TestListener 产出，格式：
+ * 输入：build/reports/matrix.json，由 `node tools/gen-matrix.mjs` 从 JUnit XML 产出，格式：
  *   { "tests": [ { "id": "...", "status": "passed|failed|skipped", "tags": ["rule:GPU_CASE_LENGTH","case:PASSED"] } ] }
  *
  * 标签约定（冻结）：
@@ -14,16 +14,17 @@
  * 用法：
  *   node tools/check-matrix.mjs                      # 读默认路径
  *   node tools/check-matrix.mjs --file path.json     # 指定文件（自测用）
+ *   node tools/check-matrix.mjs --strict             # 三块矩阵都必须已接入
  *   node tools/check-matrix.mjs --mutations          # 检查 12 条关键变异
  *
- * 退出码：0 通过（或仅规格模式）；1 有空格子。
+ * 退出码：0 通过（或仅规格模式）；1 已接入的矩阵有空格子（--strict 时含未接入）。
  */
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { expectedRules, expectedFsm, expectedInvariants } from "./matrix-spec.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const CASES = ["PASSED", "CONFLICT", "UNVERIFIED", "MISSING"];
 const argFile = (() => {
   const i = process.argv.indexOf("--file");
   return i > -1 ? process.argv[i + 1] : null;
@@ -31,30 +32,6 @@ const argFile = (() => {
 const MUTATION_MODE = process.argv.includes("--mutations");
 
 const readJson = (rel) => JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
-
-function expectedRules() {
-  const rules = readJson("assets/rules/rules-v1.json").rules;
-  const out = new Set();
-  for (const r of rules) for (const c of CASES) out.add("rule:" + r.ruleId + "|case:" + c);
-  return out;
-}
-
-function expectedFsm() {
-  const diagnosisStates = ["Idle", "Running", "Done", "Failed"];
-  const diagnosisEvents = ["StartCheck", "CheckCompleted", "CheckFailed", "BuildEdited"];
-  const replStates = ["Idle", "Candidates", "Previewing", "Rechecking", "Applied", "NoCandidate"];
-  const replEvents = ["ConflictSelected", "CandidatesLoaded", "PreviewCandidate", "PreviewBuilt", "Apply", "Cancel", "RecheckCompleted", "RecheckRejected", "BuildEdited", "Dismiss"];
-  const out = new Set();
-  for (const s of diagnosisStates) for (const e of diagnosisEvents) out.add("fsm:diagnosis:" + s + ":" + e);
-  for (const s of replStates) for (const e of replEvents) out.add("fsm:replacement:" + s + ":" + e);
-  return out;
-}
-
-function expectedInvariants() {
-  const out = new Set();
-  for (let i = 1; i <= 18; i++) out.add("inv:INV-" + String(i).padStart(2, "0"));
-  return out;
-}
 
 function diff(expected, actual, label) {
   const missing = [...expected].filter((x) => !actual.has(x)).sort();
@@ -100,8 +77,9 @@ if (!existsSync(join(ROOT, matrixPath))) {
 }
 
 const data = readJson(matrixPath);
-const passed = (data.tests || []).filter((t) => t.status === "passed");
-const skipped = (data.tests || []).filter((t) => t.status === "skipped");
+const allTests = data.tests || [];
+const passed = allTests.filter((t) => t.status === "passed");
+const skipped = allTests.filter((t) => t.status === "skipped");
 if (skipped.length) console.warn("! 有 " + skipped.length + " 条 skipped 用例——跳过即视为空格");
 
 const ruleActual = new Set();
@@ -118,16 +96,37 @@ for (const t of passed) {
   }
 }
 
-const okRules = diff(expectedRules(), ruleActual, "规则矩阵");
-const okFsm = diff(expectedFsm(), fsmActual, "状态机矩阵");
-const okInv = diff(expectedInvariants(), invActual, "不变量矩阵");
+// 只有矩阵里真的出现了该块的条目，才把它当作"已接入"；否则是尚未接线，不是空格。
+const wired = {
+  rules: allTests.some((t) => (t.tags || []).some((x) => x.startsWith("rule:"))),
+  fsm: allTests.some((t) => (t.tags || []).some((x) => x.startsWith("fsm:"))),
+  inv: allTests.some((t) => (t.tags || []).some((x) => x.startsWith("inv:"))),
+};
 
-console.log("[matrix] rules " + ruleActual.size + "/" + expectedRules().size +
-  ", fsm " + fsmActual.size + "/" + expectedFsm().size +
-  ", inv " + invActual.size + "/" + expectedInvariants().size);
+const okRules = !wired.rules || diff(expectedRules(), ruleActual, "规则矩阵");
+const okFsm = !wired.fsm || diff(expectedFsm(), fsmActual, "状态机矩阵");
+const okInv = !wired.inv || diff(expectedInvariants(), invActual, "不变量矩阵");
+
+const count = (actual, expected, isWired) =>
+  isWired ? actual + "/" + expected : "未接入（0/" + expected + "）";
+
+console.log("[matrix] rules " + count(ruleActual.size, expectedRules().size, wired.rules) +
+  ", fsm " + count(fsmActual.size, expectedFsm().size, wired.fsm) +
+  ", inv " + count(invActual.size, expectedInvariants().size, wired.inv));
+
+if (process.argv.includes("--strict")) {
+  const unwired = Object.entries(wired).filter(([, on]) => !on).map(([name]) => name);
+  if (unwired.length) {
+    console.error("[matrix] --strict：以下矩阵尚未接入真实测试产物：" + unwired.join(", "));
+    process.exit(1);
+  }
+}
 
 if (!okRules || !okFsm || !okInv) {
   console.error("[matrix] 矩阵不完整：空格子即视为未完成（docs/07-unit-verification.md 7.5）");
   process.exit(1);
 }
-console.log("[matrix] OK — 三块矩阵无空格。");
+for (const [name, on] of Object.entries(wired)) {
+  if (!on) console.warn("! " + name + " 尚未接入真实测试产物（见 docs/tasks/QA-01.md）");
+}
+console.log("[matrix] OK — 已接入的矩阵无空格。");

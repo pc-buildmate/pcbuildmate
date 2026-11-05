@@ -956,4 +956,42 @@ class ReplacementMachineTest {
             ).state,
         )
     }
+
+    /**
+     * 矩阵门禁：docs/04 的 6×10 转移表里每一格都必须至少有一个 case。
+     * 只靠 "replacement full matrix" 通过不能证明覆盖完整——删掉一个 case 它仍会绿。
+     */
+    @Test
+    fun `case list covers every documented state-event cell`() {
+        val states = listOf("Idle", "Candidates", "Previewing", "Rechecking", "Applied", "NoCandidate")
+        val events = listOf(
+            "ConflictSelected", "CandidatesLoaded", "PreviewCandidate", "PreviewBuilt", "Apply",
+            "Cancel", "RecheckCompleted", "RecheckRejected", "BuildEdited", "Dismiss",
+        )
+        val covered = cases.map { it.from.cellName() to it.event.cellName() }.toSet()
+        val expected = states.flatMap { s -> events.map { e -> s to e } }.toSet()
+        assertEquals(expected, covered)
+    }
+
+    private fun ReplacementState.cellName(): String = when (this) {
+        ReplacementState.Idle -> "Idle"
+        is ReplacementState.Candidates -> "Candidates"
+        is ReplacementState.Previewing -> "Previewing"
+        is ReplacementState.Rechecking -> "Rechecking"
+        is ReplacementState.Applied -> "Applied"
+        is ReplacementState.NoCandidate -> "NoCandidate"
+    }
+
+    private fun ReplacementEvent.cellName(): String = when (this) {
+        is ReplacementEvent.ConflictSelected -> "ConflictSelected"
+        is ReplacementEvent.CandidatesLoaded -> "CandidatesLoaded"
+        is ReplacementEvent.PreviewCandidate -> "PreviewCandidate"
+        is ReplacementEvent.PreviewBuilt -> "PreviewBuilt"
+        ReplacementEvent.Apply -> "Apply"
+        ReplacementEvent.Cancel -> "Cancel"
+        is ReplacementEvent.RecheckCompleted -> "RecheckCompleted"
+        is ReplacementEvent.RecheckRejected -> "RecheckRejected"
+        is ReplacementEvent.BuildEdited -> "BuildEdited"
+        ReplacementEvent.Dismiss -> "Dismiss"
+    }
 }

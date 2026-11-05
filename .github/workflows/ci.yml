@@ -61,4 +61,8 @@ jobs:
             echo "::error title=gradle::$msg"
           fi
           exit "$status"
+      - name: Matrix from real test output
+        run: |
+          node tools/gen-matrix.mjs
+          node tools/check-matrix.mjs
 
