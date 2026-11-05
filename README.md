@@ -54,7 +54,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 
 | GitHub | 现在 |
 |---|---|
-| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；D4 完成，在做持久化/QA |
+| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；核心与 QA 已收口，暂停等组员 |
 | [@LIU132578](https://github.com/LIU132578) | 已加入；任务自由认领 |
 | [@yys1yys2yys](https://github.com/yys1yys2yys) | 已加入；任务自由认领 |
 | 待加入 | 随时加，直接认领 [BOARD](docs/tasks/BOARD.md) |
@@ -88,13 +88,13 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 
 ## 这一周做什么
 
-按 [BOARD](docs/tasks/BOARD.md) 的顺序：
+核心 + QA 已收口，**暂停一周等组员提交**。从 [HANDOFF.md](HANDOFF.md) 开始：
 
-1. **D4 预算推荐**：Entry 支持预算/用途输入，生成 6 类起始配置；权重可见；无 GPU 强制核显。
-2. **DEMO 目录**：已到 32 条（8 类 ≥3）；下一步补到每类 4+，先补机箱/散热/存储。
-3. **QA 矩阵**：`check-matrix` 读真实测试结果，不再只打印规格。
-4. **Room 持久化**：已完成；杀进程后 A/B 还在。
-5. 以上完成后：更新演示脚本、截图、签名 APK。
+1. **答辩材料**：讲稿 / 9 步演示 / Q&A / PPT（DEFENSE-01）
+2. **签名 APK**：`v1.0-defense`（RELEASE-01）
+3. **UI 收口**：文案、可访问性、截图（POLISH-01）
+4. **数据管道**：华硕/七彩虹 adapter、Wayback（PRICEDATA-01，P2）
+5. 组员按 [BOARD](docs/tasks/BOARD.md) 自由认领；没人做的 @MoeField 兜底。
 
 每个任务都有一页小文档，放在 [docs/tasks/](docs/tasks/)。
 开工前只读：任务包 + 本模块卡（06）+ 相关契约（02/`contracts/`）+ 相关规则/状态机。
@@ -144,6 +144,7 @@ node tools/test-demo-ui.mjs
 - 目录是 **demo 数据**，不是实时市场；价格带日期，但不承诺库存。
 - 不做 FPS / 跑分 / 性能分档；不做 3D 装配；不接账号 / 云同步。
 - Room 持久化已完成；杀进程后保存的 A/B 可恢复（诊断需重新检查）。
+- 组员入口见 [HANDOFF.md](HANDOFF.md)；当前 `main` 的测试/矩阵/变异状态以它为准。
 - 比较页目前只输出总价、状态、分类花费；功耗/升级余量/物理尺寸待补。
 - 演示只覆盖 2 份配置；3 份需要横向滚动。
 

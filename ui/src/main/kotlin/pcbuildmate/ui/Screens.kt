@@ -258,6 +258,15 @@ fun WorkspaceScreen(
                     }
                     Text("检查兼容性")
                 }
+                if (state.canUndo) {
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = { onIntent(WorkspaceIntent.Undo) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("撤销上一步")
+                    }
+                }
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = { onIntent(WorkspaceIntent.SaveBuild) },
