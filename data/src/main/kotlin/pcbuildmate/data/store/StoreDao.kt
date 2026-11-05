@@ -3,6 +3,7 @@ package pcbuildmate.data.store
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Upsert
 import androidx.room.Query
 
 @Dao
@@ -16,10 +17,10 @@ interface BuildDao {
     @Query("SELECT * FROM revisions WHERE buildId = :buildId ORDER BY id ASC")
     fun listRevisions(buildId: String): List<RevisionEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     fun upsertBuild(build: BuildEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     fun upsertRevision(revision: RevisionEntity)
 
     @Query("DELETE FROM builds WHERE buildId = :buildId")
