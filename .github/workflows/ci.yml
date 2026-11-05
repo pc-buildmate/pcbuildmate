@@ -53,7 +53,7 @@ jobs:
       - name: Contracts + rule engine
         run: |
           set -o pipefail
-          ./gradlew :contracts:test :domain:rules:test --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
+          ./gradlew :contracts:test :domain:rules:test :domain:recommend:test :domain:replacement:test :domain:state:test :domain:compare:test --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
           status=$?
           if [ "$status" -ne 0 ]; then
             tail -40 /tmp/gradle.log

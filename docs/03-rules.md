@@ -76,6 +76,7 @@ if (mb.biosGeneration < cpu.minBiosGeneration) return Conflict(...)
 | CPU | `supportedChipsets` | csv | 大写 token，如 `B650,X670` |
 | CPU | `tdpW` | number | W |
 | CPU | `minBiosGeneration` | version | `主.次`，如 `1.0` |
+| CPU | `integratedGraphics` | string | `YES / NO`（无独显配置必须 YES） |
 | MOTHERBOARD | `socket` | string | 同上 |
 | MOTHERBOARD | `chipset` | string | 大写 token |
 | MOTHERBOARD | `biosGeneration` | version | `主.次` |

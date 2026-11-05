@@ -16,12 +16,12 @@
 | D5-01 | 替换建议 | done | @MoeField | [D5-01](D5-01.md) |
 | D6-01 | 比较 + 快照 | done | @MoeField | [D6-01](D6-01.md) |
 | DEMO-01 | 目录扩到 32 条（8 类 ≥3）+ 来源表 | done | @MoeField | [DEMO-01](DEMO-01.md) |
+| D4-01 | 预算推荐（6 类，权重可见，iGPU 过滤） | done | @MoeField | [D4-01](D4-01.md) |
 
 ## 待做（按优先级）
 
 | ID | 模块 | 状态 | 认领 | 依赖 | 文档 |
 |---|---|---|---|---|---|
-| D4-01 | 预算推荐：预算+用途 → 完整配置 | **doing** | @MoeField | D1/D3 | [D4-01](D4-01.md) |
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | **design** | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 | QA-01 | 矩阵 / 变异 / 批次报告 | ready | 开放 | D1–D6 | [QA-01](QA-01.md) |
 | DATA-02 | Room 持久化 | backlog | 开放 | D2 | [DATA-02](DATA-02.md) |
