@@ -54,7 +54,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 
 | GitHub | 现在 |
 |---|---|
-| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；在做 D4 |
+| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；D4 完成，在做持久化/QA |
 | [@LIU132578](https://github.com/LIU132578) | 已加入；任务自由认领 |
 | [@yys1yys2yys](https://github.com/yys1yys2yys) | 已加入；任务自由认领 |
 | 待加入 | 随时加，直接认领 [BOARD](docs/tasks/BOARD.md) |
@@ -69,7 +69,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 |---|---|---|---|
 | `:contracts` | 类型、端口、不变量 | 冻结 | [docs/02](docs/02-contracts.md) |
 | `:contracts-test` | 端口契约测试基类 | 冻结 | [docs/07](docs/07-unit-verification.md) |
-| `:data` | 目录解析、seed 校验、存储 | D1 完成；Room 待做 | [D1-01](docs/tasks/D1-01.md) |
+| `:data` | 目录解析、seed 校验、Room 存储 | 完成 | [D1-01](docs/tasks/D1-01.md) · [DATA-02](docs/tasks/DATA-02.md) |
 | `:domain:rules` | 15 条兼容规则 + PSU 公式 | 完成 | [D3-01](docs/tasks/D3-01.md) |
 | `:domain:replacement` | 替换候选过滤/排序 | 完成 | [D5-01](docs/tasks/D5-01.md) |
 | `:domain:state` | 诊断/替换状态机 | 完成 | [D2-01](docs/tasks/D2-01.md) |
@@ -93,7 +93,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 1. **D4 预算推荐**：Entry 支持预算/用途输入，生成 6 类起始配置；权重可见；无 GPU 强制核显。
 2. **DEMO 目录**：已到 32 条（8 类 ≥3）；下一步补到每类 4+，先补机箱/散热/存储。
 3. **QA 矩阵**：`check-matrix` 读真实测试结果，不再只打印规格。
-4. **Room 持久化**：杀进程后 A/B 还在。
+4. **Room 持久化**：已完成；杀进程后 A/B 还在。
 5. 以上完成后：更新演示脚本、截图、签名 APK。
 
 每个任务都有一页小文档，放在 [docs/tasks/](docs/tasks/)。
@@ -143,7 +143,7 @@ node tools/test-demo-ui.mjs
 
 - 目录是 **demo 数据**，不是实时市场；价格带日期，但不承诺库存。
 - 不做 FPS / 跑分 / 性能分档；不做 3D 装配；不接账号 / 云同步。
-- 目前没有 Room 持久化；杀进程后保存的 A/B 会丢。
+- Room 持久化已完成；杀进程后保存的 A/B 可恢复（诊断需重新检查）。
 - 比较页目前只输出总价、状态、分类花费；功耗/升级余量/物理尺寸待补。
 - 演示只覆盖 2 份配置；3 份需要横向滚动。
 
