@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import pcbuildmate.contracts.BudgetRecommenderPort
 import pcbuildmate.contracts.CataloguePort
 import pcbuildmate.contracts.CompatibilityEvaluator
 import pcbuildmate.contracts.ReplacementAdvisorPort
@@ -26,6 +27,7 @@ import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.data.catalogue.assetCatalogue
 import pcbuildmate.data.rules.RuleParser
 import pcbuildmate.domain.compare.DefaultBuildComparator
+import pcbuildmate.domain.recommend.DefaultBudgetRecommender
 import pcbuildmate.domain.replacement.DefaultReplacementAdvisor
 import pcbuildmate.domain.rules.DefaultRuleEngine
 import pcbuildmate.feature.workspace.WorkspaceViewModel
@@ -52,11 +54,12 @@ class MainActivity : ComponentActivity() {
         }.getOrElse { emptyList() }
         val evaluator = DefaultRuleEngine(rules, catalogue)
         val advisor = DefaultReplacementAdvisor(catalogue, evaluator)
+        val recommender = DefaultBudgetRecommender(catalogue, evaluator)
 
         setContent {
             PcBuildmateTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    PcBuildmateRoot(catalogue, evaluator, advisor)
+                    PcBuildmateRoot(catalogue, evaluator, advisor, recommender)
                 }
             }
         }
@@ -68,9 +71,10 @@ private fun PcBuildmateRoot(
     catalogue: CataloguePort,
     evaluator: CompatibilityEvaluator,
     advisor: ReplacementAdvisorPort,
+    recommender: BudgetRecommenderPort,
 ) {
     val viewModel: WorkspaceViewModel = viewModel(
-        factory = WorkspaceViewModelFactory(catalogue, evaluator, advisor),
+        factory = WorkspaceViewModelFactory(catalogue, evaluator, advisor, recommender),
     )
     val state by viewModel.uiState.collectAsState()
     val labels = remember(catalogue) {
@@ -78,26 +82,46 @@ private fun PcBuildmateRoot(
     }
 
     var screen by rememberSaveable { mutableStateOf(Screen.Entry.name) }
+    var entryError by rememberSaveable { mutableStateOf<String?>(null) }
+    var weights by remember { mutableStateOf<Map<pcbuildmate.contracts.Category, Double>>(emptyMap()) }
     val current = runCatching { Screen.valueOf(screen) }.getOrDefault(Screen.Entry)
 
     when (current) {
         Screen.Entry -> EntryScreen(
             onStartDemo = {
+                entryError = null
+                weights = emptyMap()
                 viewModel.startDemo()
                 screen = Screen.Workspace.name
             },
+            onRecommend = { budget, useCase ->
+                val result = viewModel.recommend(budget, useCase)
+                if (result.feasible) {
+                    entryError = null
+                    weights = result.weightsVisible
+                    screen = Screen.Workspace.name
+                } else {
+                    entryError = "当前预算不可行" +
+                        if (result.shortfallCny > 0) "，还差约 ¥${result.shortfallCny}" else ""
+                }
+            },
+            error = entryError,
         )
 
         Screen.Workspace -> WorkspaceScreen(
             state = state,
             labels = labels,
+            weights = weights,
             onIntent = viewModel::onIntent,
             onCheck = {
                 viewModel.onIntent(WorkspaceIntent.StartCheck)
                 screen = Screen.Diagnostics.name
             },
             onCompare = { screen = Screen.Compare.name },
-            onBack = { screen = Screen.Entry.name },
+            onBack = {
+                entryError = null
+                screen = Screen.Entry.name
+            },
         )
 
         Screen.Diagnostics -> DiagnosticsScreen(
@@ -129,12 +153,13 @@ private class WorkspaceViewModelFactory(
     private val catalogue: CataloguePort,
     private val evaluator: CompatibilityEvaluator,
     private val advisor: ReplacementAdvisorPort,
+    private val recommender: BudgetRecommenderPort,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         require(modelClass.isAssignableFrom(WorkspaceViewModel::class.java)) {
             "Unknown ViewModel: ${modelClass.name}"
         }
-        return WorkspaceViewModel(catalogue, evaluator, advisor) as T
+        return WorkspaceViewModel(catalogue, evaluator, advisor, recommender) as T
     }
 }

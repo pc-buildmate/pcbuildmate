@@ -74,7 +74,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 | `:domain:replacement` | 替换候选过滤/排序 | 完成 | [D5-01](docs/tasks/D5-01.md) |
 | `:domain:state` | 诊断/替换状态机 | 完成 | [D2-01](docs/tasks/D2-01.md) |
 | `:domain:compare` | A/B 比较 | 完成 | [D6-01](docs/tasks/D6-01.md) |
-| `:domain:recommend` | 预算推荐 | **待做** | [D4-01](docs/tasks/D4-01.md) |
+| `:domain:recommend` | 预算推荐 | 完成 | [D4-01](docs/tasks/D4-01.md) |
 | `:domain:build` | revision 构造 | 暂由 `:feature` 代做 | [docs/06](docs/06-modules.md) |
 | `:feature` | ViewModel / MVI 编排 | 核心完成 | [docs/06](docs/06-modules.md) |
 | `:ui` | Compose 四屏 | 可用；待打磨 | [POLISH-01](docs/tasks/POLISH-01.md) |
@@ -90,7 +90,7 @@ Android 构建在本地跑，产物是 `app/build/outputs/apk/debug/app-debug.ap
 
 按 [BOARD](docs/tasks/BOARD.md) 的顺序：
 
-1. **D4 预算推荐**：Entry 支持预算/用途输入，生成 8 类起始配置；权重可见。
+1. **D4 预算推荐**：Entry 支持预算/用途输入，生成 6 类起始配置；权重可见；无 GPU 强制核显。
 2. **DEMO 目录**：已到 32 条（8 类 ≥3）；下一步补到每类 4+，先补机箱/散热/存储。
 3. **QA 矩阵**：`check-matrix` 读真实测试结果，不再只打印规格。
 4. **Room 持久化**：杀进程后 A/B 还在。

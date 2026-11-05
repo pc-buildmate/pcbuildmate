@@ -39,6 +39,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "static-v1",
@@ -80,6 +87,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "static-v1",
@@ -737,6 +751,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "static-v1",
@@ -778,6 +799,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "static-v1",
@@ -1541,6 +1569,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "NO",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "static-v1",

@@ -5,3 +5,5 @@
 domain/rules/src/test/kotlin/pcbuildmate/domain/rules/FixtureTest.kt | kotlinx.serialization | 测试解析 fixture/rules JSON；只进 test，不进 main | Captain | 2026-11-04
 domain/replacement/build.gradle.kts | :domain:rules | 仅测试用真实规则引擎跑 D5 锚点；生产实现仍只依赖 contracts | Captain | 2026-11-04
 domain/replacement/src/test/kotlin/pcbuildmate/domain/replacement/DefaultReplacementAdvisorTest.kt | pcbuildmate.domain. | 仅测试引用 DefaultRuleEngine 作为 ReplacementAdvisor 的 evaluator | Captain | 2026-11-04
+domain/recommend/build.gradle.kts | :domain:rules | 仅测试用真实规则引擎验证 D4 推荐结果无 BLOCKER；生产只依赖 contracts | Captain | 2026-11-05
+domain/recommend/src/test/kotlin/pcbuildmate/domain/recommend/DefaultBudgetRecommenderTest.kt | pcbuildmate.domain. | 仅测试引用 DefaultRuleEngine | Captain | 2026-11-05

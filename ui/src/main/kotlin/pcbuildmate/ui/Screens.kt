@@ -20,17 +20,25 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pcbuildmate.contracts.BuildRevision
@@ -45,6 +53,7 @@ import pcbuildmate.contracts.RuleOutcome
 import pcbuildmate.contracts.Severity
 import pcbuildmate.contracts.TextKey
 import pcbuildmate.contracts.UnverifiedReason
+import pcbuildmate.contracts.UseCase
 import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.contracts.WorkspaceUiState
 import pcbuildmate.ui.theme.PcBuildmateTheme
@@ -78,17 +87,23 @@ private val ruleLabels: Map<String, String> = mapOf(
     "STORAGE_MB_INTERFACE" to "硬盘接口",
 )
 
-@Composable
-fun PcBuildmateApp() {
-    PcBuildmateTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            EntryScreen(onStartDemo = {})
-        }
-    }
-}
+private val useCaseLabels: Map<UseCase, String> = mapOf(
+    UseCase.GAMING to "游戏",
+    UseCase.STUDY_OFFICE to "办公/学习",
+    UseCase.CONTENT_CREATION to "内容创作",
+    UseCase.LOCAL_AI to "本地 AI",
+)
 
 @Composable
-fun EntryScreen(onStartDemo: () -> Unit) {
+fun EntryScreen(
+    onStartDemo: () -> Unit,
+    onRecommend: (Long, UseCase) -> Unit,
+    error: String? = null,
+) {
+    var budgetText by rememberSaveable { mutableStateOf("8000") }
+    var useCase by rememberSaveable { mutableStateOf(UseCase.GAMING) }
+    val budget = budgetText.toLongOrNull() ?: 0L
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,14 +118,52 @@ fun EntryScreen(onStartDemo: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge,
         )
         Spacer(Modifier.height(20.dp))
-        AssistChip(onClick = {}, label = { Text("演示数据 · 离线可用") })
-        Spacer(Modifier.height(24.dp))
-        Button(onClick = onStartDemo, modifier = Modifier.fillMaxWidth()) {
+        AssistChip(onClick = {}, label = { Text("参考价 · 离线可用") })
+        Spacer(Modifier.height(18.dp))
+
+        OutlinedTextField(
+            value = budgetText,
+            onValueChange = { budgetText = it.filter { c -> c.isDigit() }.take(7) },
+            label = { Text("预算（CNY）") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(10.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            UseCase.entries.forEach { uc ->
+                FilterChip(
+                    selected = useCase == uc,
+                    onClick = { useCase = uc },
+                    label = { Text(useCaseLabels.getValue(uc), style = MaterialTheme.typography.labelSmall) },
+                )
+            }
+        }
+
+        Spacer(Modifier.height(14.dp))
+        Button(
+            onClick = { onRecommend(budget, useCase) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = budget > 0,
+        ) {
+            Text("生成配置")
+        }
+        if (error != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(error, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+        }
+
+        Spacer(Modifier.height(18.dp))
+        OutlinedButton(onClick = onStartDemo, modifier = Modifier.fillMaxWidth()) {
             Text("载入演示配置 · ¥7,800")
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            "8 类零件 · 预算 ¥8,000 · 含 1 个 BLOCKER",
+            "演示配置固定 8 类零件，用于答辩锚点；生成配置按 6 类推荐。",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         )
@@ -122,6 +175,7 @@ fun EntryScreen(onStartDemo: () -> Unit) {
 fun WorkspaceScreen(
     state: WorkspaceUiState,
     labels: Map<String, String>,
+    weights: Map<Category, Double> = emptyMap(),
     onIntent: (WorkspaceIntent) -> Unit,
     onCheck: () -> Unit,
     onCompare: () -> Unit,
@@ -150,6 +204,9 @@ fun WorkspaceScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item { BudgetCard(revision, state) }
+            if (weights.isNotEmpty()) {
+                item { WeightCard(weights) }
+            }
             if (state.isDiagnosisStale) {
                 item {
                     Banner("配置已修改，请重新检查兼容性")
@@ -478,6 +535,24 @@ private fun categoryLabelByName(name: String): String =
 @Composable
 private fun DemoBadge() {
     AssistChip(onClick = {}, label = { Text("演示数据") })
+}
+
+@Composable
+private fun WeightCard(weights: Map<Category, Double>) {
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+        Column(Modifier.padding(12.dp)) {
+            Text("推荐权重（可见、可解释）", style = MaterialTheme.typography.labelLarge)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                weights.entries
+                    .sortedByDescending { it.value }
+                    .joinToString(" · ") { (category, w) ->
+                        "${categoryLabels[category] ?: category.name} ${(w * 100).toInt()}%"
+                    },
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
 }
 
 @Composable

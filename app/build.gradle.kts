@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":domain:rules"))
     implementation(project(":domain:replacement"))
     implementation(project(":domain:compare"))
+    implementation(project(":domain:recommend"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

@@ -20,6 +20,7 @@ internal object FieldPathRegistry {
             "supportedChipsets" to FieldType.CSV,
             "tdpW" to FieldType.NUMBER,
             "minBiosGeneration" to FieldType.VERSION,
+            "integratedGraphics" to FieldType.STRING,
         ),
         Category.MOTHERBOARD to mapOf(
             "socket" to FieldType.STRING,

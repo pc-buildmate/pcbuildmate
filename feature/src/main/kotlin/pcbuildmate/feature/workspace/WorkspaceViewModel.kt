@@ -15,6 +15,9 @@ import pcbuildmate.contracts.DiagnosisState
 import pcbuildmate.contracts.Effect
 import pcbuildmate.contracts.OverallStatus
 import pcbuildmate.contracts.Preferences
+import pcbuildmate.contracts.BudgetRecommenderPort
+import pcbuildmate.contracts.RecommendationRequest
+import pcbuildmate.contracts.RecommendationResult
 import pcbuildmate.contracts.ReplacementAdvisorPort
 import pcbuildmate.contracts.Rejection
 import pcbuildmate.contracts.RejectionReason
@@ -44,6 +47,7 @@ class WorkspaceViewModel(
     private val catalogue: CataloguePort,
     private val evaluator: CompatibilityEvaluator,
     private val advisor: ReplacementAdvisorPort,
+    private val recommender: BudgetRecommenderPort,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WorkspaceUiState())
@@ -120,6 +124,48 @@ class WorkspaceViewModel(
         savedRevisions.clear()
         savedDiagnoses.clear()
         publish()
+    }
+
+    /**
+     * D4：按预算/用途生成起始配置。
+     * 不可行时返回结果给 UI 展示 shortfall；不替换当前工作区。
+     */
+    fun recommend(budgetCny: Long, useCase: UseCase): RecommendationResult {
+        val result = recommender.recommend(
+            RecommendationRequest(
+                budgetCny = budgetCny,
+                useCase = useCase,
+                preferences = Preferences(),
+            ),
+        )
+        val rev = result.build
+        if (result.feasible && rev != null) {
+            val b = Build(
+                buildId = rev.buildId,
+                budgetCny = budgetCny,
+                useCase = useCase,
+                preferences = Preferences(),
+                currentRevisionId = rev.id,
+                userModified = false,
+                createdAt = catalogue.priceDate(),
+                updatedAt = catalogue.priceDate(),
+            )
+            build = b
+            revision = rev
+            diagnosis = null
+            diagnosisState = DiagnosisState.Idle
+            replacementState = ReplacementState.Idle
+            suggestions = null
+            previewRevision = null
+            lastRejection = null
+            lastBanner = null
+            isSaved = false
+            savedBuilds.clear()
+            savedRevisions.clear()
+            savedDiagnoses.clear()
+            publish()
+        }
+        return result
     }
 
     fun onIntent(intent: WorkspaceIntent) {
