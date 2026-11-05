@@ -618,6 +618,7 @@ class WorkspaceViewModel(
             isSaved = isSaved,
             isBusy = diagnosisState is DiagnosisState.Running ||
                 replacementState is ReplacementState.Rechecking,
+            canUndo = revisionHistory.isNotEmpty(),
         )
     }
 }

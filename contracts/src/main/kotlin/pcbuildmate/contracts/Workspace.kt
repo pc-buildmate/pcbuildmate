@@ -180,6 +180,7 @@ data class WorkspaceUiState(
     val rejection: Rejection? = null,
     val isSaved: Boolean = false,
     val isBusy: Boolean = false,
+    val canUndo: Boolean = false,
 ) {
     /** 只有当诊断的 revisionId 等于当前 revision 时才返回，否则 null。 */
     val currentDiagnosis: Diagnosis?

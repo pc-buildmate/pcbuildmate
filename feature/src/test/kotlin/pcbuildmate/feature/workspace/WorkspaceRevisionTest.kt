@@ -31,16 +31,19 @@ class WorkspaceRevisionTest {
         vm.startDemo()
         val base = vm.uiState.value.revision!!
         assertEquals(1L, base.id)
+        assertTrue(!vm.uiState.value.canUndo)
 
         vm.onIntent(WorkspaceIntent.SetQuantity("gpu-demo-337", 2))
         val edited = vm.uiState.value.revision!!
         assertTrue(edited.id > base.id, "INV-02: 编辑后 revision id 必须递增")
+        assertTrue(vm.uiState.value.canUndo)
 
         vm.onIntent(WorkspaceIntent.Undo)
         val undone = vm.uiState.value.revision!!
         assertTrue(undone.id > edited.id, "INV-10: Undo 必须产生更大的 id")
         assertEquals(base.totalCny, undone.totalCny)
         assertEquals(base.items, undone.items)
+        assertTrue(!vm.uiState.value.canUndo)
     }
 
     @Test
