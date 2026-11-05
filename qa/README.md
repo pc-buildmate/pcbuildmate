@@ -43,9 +43,11 @@ node tools/check-matrix.mjs
 ## 仍要补的
 
 - **Room 契约测试**：目前只在真机验证；JVM 契约测试只覆盖内存实现，不能算 18/18 的 Room 证据。
-- **D4 全规则集成**：现有 D4 测试用手写小目录 + 9 条规则；需要补完整 15 条规则 + 30 条合并目录的集成测试（只断言性质）。
 - **MUT-01..12**：还没跑；矩阵 18/18 不等于变异全杀死。
 - **UI semantics**：Node 原型 + 真机 smoke，没有 Compose 测试。
+
+D4 全规则集成已补：`:app:testDebugUnitTest` 的 `RecommendationIntegrationTest`
+用完整 15 条规则 + 30 条合并目录，断言预算/无 BLOCKER/无 GPU 核显，不断言具体型号。
 
 ## 原则
 
