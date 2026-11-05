@@ -1,6 +1,6 @@
 # DATA-02 · Room 持久化
 
-> 状态：**backlog**｜认领：开放（先改 BOARD）｜预估：2 天｜依赖：D1 / D2
+> 状态：**done**（2026-11-05）｜认领：@MoeField｜预估：2 天｜依赖：D1 / D2
 
 ## 目标
 
@@ -36,6 +36,16 @@
 - 不做云同步/账号；
 - 不做价格历史。
 
-## 第一步
+## 结果
 
-先写 `BuildStorePortContract`，再让 Room 实现通过；不要先写 DAO。
+- `contracts-test` 增加 `BuildStorePortContract` / `DraftStorePortContract`；
+- `InMemoryBuildStore` / `InMemoryDraftStore` 通过契约测试；
+- `RoomBuildStore` / `RoomDraftStore` / `PcbuildmateDatabase`（Room 2.8.5 + KSP）；
+- App 启动时 hydrate，保存时写 Room；杀进程后 Entry 出现“继续上次配置 · 已保存 2 份”；
+- 真机验证：保存 A/B → force-stop → 重开 → 可恢复。
+
+## 注意
+
+- 端口是同步的，Room 用 `allowMainThreadQueries()`；演示规模小，后续可换 suspend + Dispatchers.IO；
+- 诊断结果不持久化，恢复后重新检查；这是有意的（诊断绑定 revision）；
+- Room 的 JVM 单测未加 Robolectric，Room 路径由真机验证；契约测试覆盖两种内存实现。

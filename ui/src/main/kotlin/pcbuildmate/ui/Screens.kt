@@ -99,6 +99,8 @@ fun EntryScreen(
     onStartDemo: () -> Unit,
     onRecommend: (Long, UseCase) -> Unit,
     error: String? = null,
+    savedBuilds: List<pcbuildmate.contracts.Build> = emptyList(),
+    onOpenSaved: (String) -> Unit = {},
 ) {
     var budgetText by rememberSaveable { mutableStateOf("8000") }
     var useCase by rememberSaveable { mutableStateOf(UseCase.GAMING) }
@@ -160,6 +162,15 @@ fun EntryScreen(
         Spacer(Modifier.height(18.dp))
         OutlinedButton(onClick = onStartDemo, modifier = Modifier.fillMaxWidth()) {
             Text("载入演示配置 · ¥7,800")
+        }
+        if (savedBuilds.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            OutlinedButton(
+                onClick = { onOpenSaved(savedBuilds.first().buildId) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("继续上次配置 · 已保存 ${savedBuilds.size} 份")
+            }
         }
         Spacer(Modifier.height(8.dp))
         Text(

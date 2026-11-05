@@ -16,6 +16,7 @@ import pcbuildmate.contracts.Effect
 import pcbuildmate.contracts.OverallStatus
 import pcbuildmate.contracts.Preferences
 import pcbuildmate.contracts.BudgetRecommenderPort
+import pcbuildmate.contracts.BuildStorePort
 import pcbuildmate.contracts.RecommendationRequest
 import pcbuildmate.contracts.RecommendationResult
 import pcbuildmate.contracts.ReplacementAdvisorPort
@@ -49,6 +50,7 @@ class WorkspaceViewModel(
     private val evaluator: CompatibilityEvaluator,
     private val advisor: ReplacementAdvisorPort,
     private val recommender: BudgetRecommenderPort,
+    private val buildStore: BuildStorePort? = null,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WorkspaceUiState())
@@ -69,6 +71,23 @@ class WorkspaceViewModel(
     private val savedBuilds = mutableListOf<Build>()
     private val savedRevisions = mutableMapOf<String, BuildRevision>()
     private val savedDiagnoses = mutableMapOf<String, Diagnosis?>()
+
+    init {
+        hydrateSaved()
+        publish()
+    }
+
+    private fun hydrateSaved() {
+        val store = buildStore ?: return
+        val saved = runCatching { store.listSavedBuilds() }.getOrDefault(emptyList())
+        savedBuilds.clear()
+        savedRevisions.clear()
+        savedDiagnoses.clear()
+        saved.forEach { b ->
+            savedBuilds += b
+            store.listRevisions(b.buildId).lastOrNull()?.let { savedRevisions[b.buildId] = it }
+        }
+    }
 
     /** Entry 页“载入演示配置”。演示锚点：8 类零件，总价 7800。 */
     fun startDemo() {
@@ -485,27 +504,41 @@ class WorkspaceViewModel(
         val existing = savedBuilds.firstOrNull { savedRevisions[it.buildId]?.id == r.id }
         if (existing != null) {
             val index = savedBuilds.indexOf(existing)
-            savedBuilds[index] = existing.copy(
+            val updated = existing.copy(
                 currentRevisionId = r.id,
                 updatedAt = catalogue.priceDate(),
             )
+            savedBuilds[index] = updated
             savedDiagnoses[existing.buildId] = diagnosis?.takeIf { it.revisionId == r.id }
+            buildStore?.saveRevision(updated, savedRevisions[existing.buildId] ?: r)
             return
         }
 
-        val id = "saved-${savedBuilds.size + 1}"
-        savedBuilds += b.copy(
+        val id = nextSavedId()
+        val savedBuild = b.copy(
             buildId = id,
             currentRevisionId = r.id,
             updatedAt = catalogue.priceDate(),
         )
-        savedRevisions[id] = r.copy(buildId = id)
+        val savedRevision = r.copy(buildId = id)
+        savedBuilds += savedBuild
+        savedRevisions[id] = savedRevision
         savedDiagnoses[id] = diagnosis?.takeIf { it.revisionId == r.id }
+        buildStore?.saveRevision(savedBuild, savedRevision)
+    }
+
+    private fun nextSavedId(): String {
+        val max = savedBuilds.mapNotNull {
+            it.buildId.removePrefix("saved-").toIntOrNull()
+        }.maxOrNull() ?: 0
+        return "saved-${max + 1}"
     }
 
     private fun switchBuild(buildId: String) {
         val saved = savedBuilds.firstOrNull { it.buildId == buildId } ?: return
-        val rev = savedRevisions[buildId] ?: return
+        val rev = savedRevisions[buildId]
+            ?: buildStore?.listRevisions(buildId)?.lastOrNull()
+            ?: return
         build = saved
         revision = rev
         diagnosis = savedDiagnoses[buildId]
@@ -522,6 +555,11 @@ class WorkspaceViewModel(
         val revisions: Map<String, BuildRevision>,
         val diagnoses: Map<String, Diagnosis?>,
     )
+
+    /** Entry 页恢复上次保存的配置。 */
+    fun openSaved(buildId: String) {
+        switchBuild(buildId)
+    }
 
     fun savedSnapshot(): SavedSnapshot = SavedSnapshot(
         builds = savedBuilds.toList(),

@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         // 本机在国内，阿里云镜像优先；GitHub Actions 在海外，直接用官方仓库，
         // 避免 runner 访问阿里云超时/403（CI=true 由 GitHub 自动注入）。
+        maven("https://repo1.maven.org/maven2")
         if (System.getenv("CI") != "true") {
             maven("https://maven.aliyun.com/repository/gradle-plugin")
             maven("https://maven.aliyun.com/repository/google")

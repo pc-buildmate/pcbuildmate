@@ -20,11 +20,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pcbuildmate.contracts.BudgetRecommenderPort
+import pcbuildmate.contracts.BuildStorePort
 import pcbuildmate.contracts.CataloguePort
 import pcbuildmate.contracts.CompatibilityEvaluator
 import pcbuildmate.contracts.ReplacementAdvisorPort
 import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.data.catalogue.assetCatalogue
+import pcbuildmate.data.store.PcbuildmateDatabase
+import pcbuildmate.data.store.RoomBuildStore
 import pcbuildmate.data.rules.RuleParser
 import pcbuildmate.domain.compare.DefaultBuildComparator
 import pcbuildmate.domain.recommend.DefaultBudgetRecommender
@@ -55,11 +58,12 @@ class MainActivity : ComponentActivity() {
         val evaluator = DefaultRuleEngine(rules, catalogue)
         val advisor = DefaultReplacementAdvisor(catalogue, evaluator)
         val recommender = DefaultBudgetRecommender(catalogue, evaluator)
+        val buildStore = RoomBuildStore(PcbuildmateDatabase.get(this))
 
         setContent {
             PcBuildmateTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    PcBuildmateRoot(catalogue, evaluator, advisor, recommender)
+                    PcBuildmateRoot(catalogue, evaluator, advisor, recommender, buildStore)
                 }
             }
         }
@@ -72,9 +76,10 @@ private fun PcBuildmateRoot(
     evaluator: CompatibilityEvaluator,
     advisor: ReplacementAdvisorPort,
     recommender: BudgetRecommenderPort,
+    buildStore: BuildStorePort,
 ) {
     val viewModel: WorkspaceViewModel = viewModel(
-        factory = WorkspaceViewModelFactory(catalogue, evaluator, advisor, recommender),
+        factory = WorkspaceViewModelFactory(catalogue, evaluator, advisor, recommender, buildStore),
     )
     val state by viewModel.uiState.collectAsState()
     val labels = remember(catalogue) {
@@ -106,6 +111,11 @@ private fun PcBuildmateRoot(
                 }
             },
             error = entryError,
+            savedBuilds = state.savedBuilds,
+            onOpenSaved = { buildId ->
+                viewModel.openSaved(buildId)
+                screen = Screen.Workspace.name
+            },
         )
 
         Screen.Workspace -> WorkspaceScreen(
@@ -154,12 +164,13 @@ private class WorkspaceViewModelFactory(
     private val evaluator: CompatibilityEvaluator,
     private val advisor: ReplacementAdvisorPort,
     private val recommender: BudgetRecommenderPort,
+    private val buildStore: BuildStorePort,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         require(modelClass.isAssignableFrom(WorkspaceViewModel::class.java)) {
             "Unknown ViewModel: ${modelClass.name}"
         }
-        return WorkspaceViewModel(catalogue, evaluator, advisor, recommender) as T
+        return WorkspaceViewModel(catalogue, evaluator, advisor, recommender, buildStore) as T
     }
 }
