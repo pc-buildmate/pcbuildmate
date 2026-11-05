@@ -1,6 +1,7 @@
 package pcbuildmate.feature.workspace
 
 import androidx.lifecycle.ViewModel
+import java.util.ArrayDeque
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,6 +69,7 @@ class WorkspaceViewModel(
     private var lastBanner: TextKey? = null
     private var isSaved: Boolean = false
 
+    private val revisionHistory = ArrayDeque<BuildRevision>()
     private val savedBuilds = mutableListOf<Build>()
     private val savedRevisions = mutableMapOf<String, BuildRevision>()
     private val savedDiagnoses = mutableMapOf<String, Diagnosis?>()
@@ -130,6 +132,7 @@ class WorkspaceViewModel(
             updatedAt = catalogue.priceDate(),
         )
         revisionSeq = 1L
+        revisionHistory.clear()
         build = b
         revision = rev
         diagnosis = null
@@ -180,6 +183,7 @@ class WorkspaceViewModel(
             lastRejection = null
             lastBanner = null
             isSaved = false
+            revisionHistory.clear()
             savedBuilds.clear()
             savedRevisions.clear()
             savedDiagnoses.clear()
@@ -206,6 +210,8 @@ class WorkspaceViewModel(
             }
 
             is WorkspaceIntent.SwitchBuild -> switchBuild(intent.buildId)
+
+            is WorkspaceIntent.Undo -> undo()
 
             else -> Unit
         }
@@ -333,6 +339,7 @@ class WorkspaceViewModel(
             publish()
             return
         }
+        revision?.let { revisionHistory.addLast(it) }
         applyReplacement(
             ReplacementMachine.transition(
                 replacementState,
@@ -471,6 +478,7 @@ class WorkspaceViewModel(
             return
         }
         val rev = revision ?: return
+        revisionHistory.addLast(rev)
         val items = rev.items.map {
             if (it.componentId == componentId) it.copy(quantity = quantity) else it
         }
@@ -488,6 +496,31 @@ class WorkspaceViewModel(
         previewRevision = null
         isSaved = false
         // diagnosis 保留，用于 UI 的 stale banner；revisionId 不匹配即过期
+        publish()
+    }
+
+    private fun undo() {
+        val previous = revisionHistory.pollLast() ?: return
+        val current = revision ?: return
+        val items = previous.items.map { it.copy() }
+        val next = BuildRevision(
+            id = ++revisionSeq,
+            buildId = current.buildId,
+            items = items,
+            totalCny = BuildRevision.computeTotal(items),
+            catalogueVersion = catalogue.catalogueVersion(),
+            priceDate = catalogue.priceDate(),
+            userModified = true,
+        )
+        build = build?.copy(currentRevisionId = next.id, userModified = true)
+        revision = next
+        diagnosisState = DiagnosisState.Idle
+        replacementState = ReplacementState.Idle
+        suggestions = null
+        previewRevision = null
+        isSaved = false
+        lastRejection = null
+        lastBanner = null
         publish()
     }
 
@@ -541,6 +574,7 @@ class WorkspaceViewModel(
             ?: return
         build = saved
         revision = rev
+        revisionHistory.clear()
         diagnosis = savedDiagnoses[buildId]
         diagnosisState = if (diagnosis != null) DiagnosisState.Done(rev.id) else DiagnosisState.Idle
         replacementState = ReplacementState.Idle

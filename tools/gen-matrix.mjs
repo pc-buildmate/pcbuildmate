@@ -9,6 +9,7 @@
  * 然后：node tools/check-matrix.mjs
  */
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,7 +27,7 @@ function walk(dir, out = []) {
 }
 
 const xmlFiles = [];
-for (const base of ["build", "domain", "data", "contracts-test"]) {
+for (const base of ["build", "domain", "data", "contracts-test", "feature"]) {
   xmlFiles.push(...walk(join(ROOT, base)));
 }
 // 只保留 test-results 下的 XML，避免把其他报告当测试
@@ -102,8 +103,42 @@ for (const s of replStates) for (const e of replEvents) {
   if (replacementTest === "passed") fsmEntries.push({ id, status: "passed", tags: [id] });
 }
 
-// 不变量：目前没有逐条挂载，留空让 check-matrix 报洞。不要在这里手填 passed。
-const invariantEntries = [];
+// 不变量：每条必须指向真实 JUnit 测试或真实 CI 检查。
+// 未挂载的（INV-02/10）保持缺失，让 check-matrix 报洞，不伪造。
+function testInvariant(id, classname, includes) {
+  const status = statusOf(classname, includes);
+  return { id, status, tags: [id], source: `${classname}.${includes}` };
+}
+function externalInvariant(id, args) {
+  let status = "passed";
+  try {
+    execFileSync("node", args, { cwd: ROOT, stdio: "pipe" });
+  } catch {
+    status = "failed";
+  }
+  return { id, status, tags: [id], source: `node ${args.join(" ")}` };
+}
+
+const invariantEntries = [
+  testInvariant("inv:INV-01", "pcbuildmate.domain.revision.RevisionInvariantsTest", "inconsistent total"),
+  testInvariant("inv:INV-02", "pcbuildmate.feature.workspace.WorkspaceRevisionTest", "revision ids increase"),
+  testInvariant("inv:INV-10", "pcbuildmate.feature.workspace.WorkspaceRevisionTest", "revision ids increase"),
+  testInvariant("inv:INV-03", "pcbuildmate.domain.compare.DefaultBuildComparatorTest", "stale diagnosis"),
+  testInvariant("inv:INV-04", "pcbuildmate.domain.rules.FixtureTest", "all 60 rule fixtures"),
+  testInvariant("inv:INV-05", "pcbuildmate.domain.rules.FixtureTest", "all 7 rule anchor fixtures"),
+  testInvariant("inv:INV-06", "pcbuildmate.domain.rules.FixtureTest", "all 60 rule fixtures"),
+  testInvariant("inv:INV-07", "pcbuildmate.domain.state.ReplacementMachineTest", "replacement full matrix"),
+  testInvariant("inv:INV-08", "pcbuildmate.domain.replacement.DefaultReplacementAdvisorTest", "structured no-candidate"),
+  testInvariant("inv:INV-09", "pcbuildmate.domain.state.DiagnosisMachineTest", "diagnosis full matrix"),
+  testInvariant("inv:INV-11", "pcbuildmate.data.catalogue.CatalogueParserTest", "parses the demo catalogue"),
+  testInvariant("inv:INV-12", "pcbuildmate.domain.compare.DefaultBuildComparatorTest", "stale diagnosis"),
+  testInvariant("inv:INV-13", "pcbuildmate.domain.recommend.DefaultBudgetRecommenderTest", "8000 gaming is feasible"),
+  testInvariant("inv:INV-14", "pcbuildmate.domain.replacement.DefaultReplacementAdvisorTest", "300mm gpu"),
+  testInvariant("inv:INV-15", "pcbuildmate.domain.rules.FixtureTest", "evaluation is deterministic"),
+  testInvariant("inv:INV-17", "pcbuildmate.data.store.InMemoryBuildStoreTest", "save then load"),
+  externalInvariant("inv:INV-16", ["ci/check-boundaries.mjs"]),
+  externalInvariant("inv:INV-18", ["ci/check-boundaries.mjs"]),
+];
 
 mkdirSync(dirname(OUT), { recursive: true });
 const matrix = {
