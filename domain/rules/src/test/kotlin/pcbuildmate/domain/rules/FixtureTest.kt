@@ -49,8 +49,17 @@ class FixtureTest {
 
     @Test
     fun `all 60 rule fixtures match expected outcomes`() {
+        checkFixtures("fixtures/fixtures-rules-v1.json", 60)
+    }
+
+    @Test
+    fun `all 7 rule anchor fixtures match expected outcomes`() {
+        checkFixtures("fixtures/fixtures-anchor-v1.json", 7)
+    }
+
+    private fun checkFixtures(path: String, expectedCount: Int) {
         val rules = loadRules()
-        val fixtures = loadFixtures()
+        val fixtures = loadFixtures(path)
         val failures = mutableListOf<String>()
 
         for (fx in fixtures) {
@@ -71,7 +80,7 @@ class FixtureTest {
             }
         }
 
-        assertEquals(60, fixtures.size, "fixture 数量应为 60")
+        assertEquals(expectedCount, fixtures.size, "fixture 数量应为 $expectedCount")
         assertTrue(
             failures.isEmpty(),
             "有 ${failures.size} 条 fixture 不符合预期：\n" + failures.joinToString("\n"),
@@ -81,7 +90,7 @@ class FixtureTest {
     @Test
     fun `evaluation is deterministic`() {
         val rules = loadRules()
-        val fx = loadFixtures().first()
+        val fx = loadFixtures("fixtures/fixtures-rules-v1.json").first()
         val port = MapCatalogue(fx.catalogue)
         val a = DefaultRuleEngine(rules, port).evaluate(fx.revision())
         val b = DefaultRuleEngine(rules, port).evaluate(fx.revision())
@@ -171,10 +180,12 @@ class FixtureTest {
         }
     }
 
-    private fun loadFixtures(): List<Fixture> {
-        val root = parse("fixtures/fixtures-rules-v1.json")
-        return root.getValue("fixtures").jsonArray.map { element ->
+    private fun loadFixtures(path: String): List<Fixture> {
+        val root = parse(path)
+        return root.getValue("fixtures").jsonArray.mapNotNull { element ->
             val o = element.jsonObject
+            // 第 8 条 anchor 是 suggestion 场景，没有 expected，只校验规则锚点。
+            if (!o.containsKey("expected")) return@mapNotNull null
             val items = o.getValue("items").jsonArray.map { itemEl ->
                 val i = itemEl.jsonObject
                 BuildItem(
