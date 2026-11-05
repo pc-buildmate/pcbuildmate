@@ -65,3 +65,25 @@ class ExportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MergeTest(unittest.TestCase):
+    def test_active_plus_overlay_keeps_anchors(self) -> None:
+        import json
+        import tempfile
+        from pathlib import Path
+        from pricepipe.merge import merge
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "catalogue-app.json"
+            info = merge(
+                ROOT / "data" / "derived" / "catalogue-2026.11.json",
+                ROOT / "overlay" / "demo-anchors.json",
+                out,
+            )
+            self.assertEqual(30, info["componentCount"])
+            data = json.loads(out.read_text(encoding="utf-8"))
+            ids = {c["componentId"] for c in data["components"]}
+            for cid in ("case-demo-320", "case-demo-itx", "cooler-demo-160", "cooler-demo-175"):
+                self.assertIn(cid, ids)
+            self.assertEqual("2026.11", data["catalogueVersion"])

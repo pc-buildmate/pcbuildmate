@@ -16,6 +16,8 @@
 | D5-01 | 替换建议 | done | @MoeField | [D5-01](D5-01.md) |
 | D6-01 | 比较 + 快照 | done | @MoeField | [D6-01](D6-01.md) |
 | DEMO-01 | 目录扩到 32 条（8 类 ≥3）+ 来源表 | done | @MoeField | [DEMO-01](DEMO-01.md) |
+| D2-03 | 无显示输出 Guard | done | @MoeField | [D2-03](D2-03.md) |
+| INT-01 | App 目录快照合并（30 条） | done | @MoeField | [INT-01](INT-01.md) |
 | D4-01 | 预算推荐（6 类，权重可见，iGPU 过滤） | done | @MoeField | [D4-01](D4-01.md) |
 
 ## 待做（按优先级）
@@ -23,8 +25,7 @@
 | ID | 模块 | 状态 | 认领 | 依赖 | 文档 |
 |---|---|---|---|---|---|
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | **doing** | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
-| D2-03 | 无显示输出 Guard | ready | 开放 | D2/D4 | [D2-03](D2-03.md) |
-| INT-01 | App 目录快照合并 | ready | @MoeField | pricedata | [INT-01](INT-01.md) |
+
 | QA-01 | 矩阵 / 变异 / 批次报告 | ready | 开放 | D1–D6 | [QA-01](QA-01.md) |
 | DATA-02 | Room 持久化 | backlog | 开放 | D2 | [DATA-02](DATA-02.md) |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | doing | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |

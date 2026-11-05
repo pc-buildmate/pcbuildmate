@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from .export import export, validate
+from .merge import merge
 from .models import load_seed
 
 
@@ -18,10 +19,20 @@ def main(argv: list[str] | None = None) -> int:
     p_export.add_argument("--version", required=True)
     p_export.add_argument("--generated-at", default=None)
 
+    p_merge = sub.add_parser("merge", help="active snapshot + demo overlay -> App catalogue")
+    p_merge.add_argument("--active", required=True, type=Path)
+    p_merge.add_argument("--overlay", required=True, type=Path)
+    p_merge.add_argument("--out", required=True, type=Path)
+
     p_validate = sub.add_parser("validate", help="只校验 seed CSV")
     p_validate.add_argument("--seed", required=True, type=Path)
 
     args = parser.parse_args(argv)
+
+    if args.cmd == "merge":
+        info = merge(args.active, args.overlay, args.out)
+        print(f"OK {info['componentCount']} components -> {args.out}")
+        return 0
 
     if args.cmd == "validate":
         errors = validate(load_seed(args.seed))

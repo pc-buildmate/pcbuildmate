@@ -207,6 +207,9 @@ fun WorkspaceScreen(
             if (weights.isNotEmpty()) {
                 item { WeightCard(weights) }
             }
+            state.banner?.let { key ->
+                item { Banner(bannerText(key)) }
+            }
             if (state.isDiagnosisStale) {
                 item {
                     Banner("配置已修改，请重新检查兼容性")
@@ -287,6 +290,9 @@ fun DiagnosticsScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
+            state.banner?.let { key ->
+                item { Banner(bannerText(key)) }
+            }
             when (val d = state.diagnosisState) {
                 is DiagnosisState.Running -> item { LoadingCard("正在检查兼容性…") }
                 is DiagnosisState.Failed -> item { ErrorCard("检查失败：${d.reason}") }
@@ -790,6 +796,16 @@ private fun EmptyState(text: String) {
 @Composable
 private fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 6.dp))
+}
+
+private fun bannerText(key: TextKey): String = when (key) {
+    TextKey.NO_DISPLAY_OUTPUT -> "没有显示输出：请加一张独显，或换一颗带核显的 CPU"
+    TextKey.QUANTITY_INVALID -> "数量必须至少为 1"
+    TextKey.DIAGNOSTICS_REQUIRED -> "先载入或生成一份配置"
+    TextKey.APPLY_REVISION_STALE -> "配置已过期，请重新检查"
+    TextKey.CANDIDATE_NOT_FOUND -> "候选已失效，请重新加载"
+    TextKey.CONFLICT_SELECTED_NONE -> "请选择一条冲突"
+    else -> key.key
 }
 
 private fun money(value: Long): String = "¥" + "%,d".format(value)

@@ -1,0 +1,172 @@
+{
+  "catalogueVersion": "2026.11",
+  "priceDate": "2026-11-04",
+  "isDemo": true,
+  "note": "demo anchors: case/cooler for 337/320; not part of price history",
+  "components": [
+    {
+      "componentId": "case-demo-320",
+      "category": "CASE",
+      "manufacturer": "Fractal",
+      "model": "North (320mm)",
+      "partNumber": "FD-NORTH",
+      "priceCny": 400,
+      "attributes": {
+        "maxGpuLengthMm": {
+          "value": "320",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 320
+        },
+        "maxGpuThicknessMm": {
+          "value": "60",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 60
+        },
+        "maxGpuSlots": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "maxCoolerHeightMm": {
+          "value": "160",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 160
+        },
+        "supportedFormFactors": {
+          "value": "ATX,MICRO_ATX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "driveBays": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        }
+      },
+      "catalogueVersion": "2026.11",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "case-demo-itx",
+      "category": "CASE",
+      "manufacturer": "Cooler Master",
+      "model": "NR200",
+      "partNumber": "NR200",
+      "priceCny": 350,
+      "attributes": {
+        "maxGpuLengthMm": {
+          "value": "330",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 330
+        },
+        "maxGpuThicknessMm": {
+          "value": "60",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 60
+        },
+        "maxGpuSlots": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
+        },
+        "maxCoolerHeightMm": {
+          "value": "155",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 155
+        },
+        "supportedFormFactors": {
+          "value": "MICRO_ATX,MINI_ITX",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        },
+        "driveBays": {
+          "value": "2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 2
+        }
+      },
+      "catalogueVersion": "2026.11",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "cooler-demo-160",
+      "category": "COOLER",
+      "manufacturer": "Thermalright",
+      "model": "PA120",
+      "partNumber": "PA120",
+      "priceCny": 300,
+      "attributes": {
+        "heightMm": {
+          "value": "160",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 160
+        },
+        "socketMounts": {
+          "value": "AM5,AM4,LGA1700",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "2026.11",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    },
+    {
+      "componentId": "cooler-demo-175",
+      "category": "COOLER",
+      "manufacturer": "Noctua",
+      "model": "NH-D15",
+      "partNumber": "NH-D15",
+      "priceCny": 320,
+      "attributes": {
+        "heightMm": {
+          "value": "175",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 175
+        },
+        "socketMounts": {
+          "value": "AM4,LGA1700",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
+        }
+      },
+      "catalogueVersion": "2026.11",
+      "priceDate": "2026-11-04",
+      "isDemo": true
+    }
+  ]
+}

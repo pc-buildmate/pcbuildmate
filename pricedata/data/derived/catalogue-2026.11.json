@@ -39,6 +39,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "2026.11",
@@ -80,6 +87,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "2026.11",
@@ -121,6 +135,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "NO",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "2026.11",
@@ -162,6 +183,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "2026.11",
@@ -203,6 +231,13 @@
           "sources": [],
           "conflict": false,
           "numeric": 1.0
+        },
+        "integratedGraphics": {
+          "value": "YES",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": null
         }
       },
       "catalogueVersion": "2026.11",
@@ -646,7 +681,7 @@
         },
         "biosGeneration": {
           "value": null,
-          "state": "REPORTED",
+          "state": "EMPTY",
           "sources": [],
           "conflict": false,
           "numeric": null

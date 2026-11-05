@@ -290,8 +290,8 @@ PYTHONPATH=pricedata/src python3 -m pricepipe.cli export \
 - [ ] GitHub Action 每周采集
 - [ ] App pin 快照（等 D4 需要时）
 
-> 生成物在 `pricedata/data/derived/`；App 现在仍用 `assets/catalogue/demo-v1.json`，
-> 不要在 D4 完成前切换，否则 demo 的 337/320 锚点会失去 case/cooler。
+> 生成物在 `pricedata/data/derived/`。App 已切到 `assets/catalogue/catalogue-app.json`
+> （active 26 + demo case/cooler 4 = 30 条）；`demo-v1.json` 保留给测试与原型。
 
 ## 11. 明确不做
 

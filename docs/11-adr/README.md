@@ -13,6 +13,7 @@
 | [0006](0006-three-state-evidence.md) | 三态证据模型 | 三种"责任"，最弱传播，缺字段不通过 | 需要连续置信度 |
 | [0007](0007-rule-def-in-contracts.md) | `RuleDef` 放 contracts | 数据解析、领域判定，两边都不认识对方实现 | 第 8 种 kind / formula 变表达式 |
 | [0008](0008-state-rejection-textkeys.md) | 状态机拒绝的 TextKey | INVALID_STATE / PREVIEW_NOT_READY 只增不改 | 文案系统改成 reason→key 自动映射 |
+| [0009](0009-no-display-output-textkey.md) | 无显示输出文案 | build-level guard，不塞进 15 条规则 | 需要显示器/接口兼容时 |
 
 ## 写 ADR 的格式
 
