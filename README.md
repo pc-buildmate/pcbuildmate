@@ -49,7 +49,8 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 要求：JDK 17+、Android SDK Platform 37、`minSdk 31`。
 CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmate-debug-apk` artifact。
-签名 release APK 仍需本地 keystore，见 [RELEASE-01](docs/tasks/RELEASE-01.md)。
+签名 release APK 仍需本地 keystore，见 [RELEASE-01](docs/tasks/RELEASE-01.md)；
+触发条件、artifact 下载和 release 计划见 [docs/15](docs/15-ci-and-artifacts.md)。
 
 ## 团队
 
