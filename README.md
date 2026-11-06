@@ -131,14 +131,17 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 node tools/check-docs.mjs
 node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
-node tools/check-matrix.mjs
 
 node tools/test-demo-engine.mjs
 node tools/test-demo-flow.mjs
 node tools/test-demo-ui.mjs
 
-./gradlew :data:testDebugUnitTest :domain:rules:test :domain:state:test \
-  :domain:replacement:test :domain:compare:test
+# 矩阵要先跑测试再生成，否则 check-matrix 只会打印期望值
+./gradlew :data:testDebugUnitTest :feature:testDebugUnitTest :domain:rules:test \
+  :domain:state:test :domain:replacement:test :domain:compare:test \
+  :domain:revision:test :domain:recommend:test
+node tools/gen-matrix.mjs
+node tools/check-matrix.mjs
 ```
 
 ## 已知边界
