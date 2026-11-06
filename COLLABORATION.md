@@ -146,6 +146,8 @@ AI 是**执行者**，不是所有者：
 - **开工前**和**提交 PR 前**各执行一次：`git fetch origin && git rebase origin/main`。
 - 开工前先看 **open PR**（`gh pr list --state open` 或 GitHub PR 列表）：
   同路径已有 PR 时先 review/协调，不要「我重写一版」。
+- **不要只看 BOARD 空位**：认领可能只写在未合并的分支里，main 的 BOARD 仍显示空闲；
+  一次真实撞车就是 PR 已开、BOARD 未回写，另一边 14 分钟后重写，最后冲突。
 - **一个 PR 就是临时锁**：先改 `BOARD` owner、写清允许路径，长任务尽早开 Draft PR；
   同一路径已有未合并 PR 时，先沟通，不要平行重写。
 - **不建仓库级 lock 文件**：它不是原子锁，作者忘了释放就永久 stale，
