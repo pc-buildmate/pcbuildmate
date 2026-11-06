@@ -95,8 +95,8 @@ verify(engine, times(1)).evaluate(any())
 fun `gpu length conflict 337 vs 320`() { ... }
 ```
 
-标签是**唯一的机器可读接口**。CI 从 JUnit XML 里抽出全部 `rule:*` / `case:*` / `inv:*` 标签，
-与期望矩阵比对，**缺一格即 fail**（不是"警告"）。
+标签是**唯一的机器可读接口**。生成器把 JUnit XML 的测试结果与 fixture/状态机定义对齐，
+产出 `matrix.json`；CI 再拿它与期望矩阵比对，**缺一格即 fail**（不是"警告"）。
 
 ### 7.5.3 矩阵检查器行为
 
@@ -105,12 +105,19 @@ fun `gpu length conflict 337 vs 320`() { ... }
 避免生成器和校验器各写一份规格导致漂移。
 
 ```bash
-node tools/check-matrix.mjs
-# 读取 build/test-results/**/*.xml
+./gradlew :domain:...:test :data:test :feature:test   # 先产生 JUnit XML
+node tools/gen-matrix.mjs                             # XML + fixtures → build/reports/matrix.json
+node tools/check-matrix.mjs                           # 读 matrix.json，与期望矩阵比对
 # 1) 期望：rules-v1.json 的 15 条 × 4 case；状态机 76 格；INV-01..18
-# 2) 实际：XML 里出现的 tag 组合（且必须 passed）
+# 2) 实际：matrix.json 里 status=passed 的格子（status 取自 JUnit XML）
 # 3) 差集非空 -> 退出码 1，并打印缺失清单
 ```
+
+**CI 在哪跑**：`.github/workflows/ci.yml` 的 `jvm` job，在跑完全部单测（含 `:data:test`、
+`:feature:test`）之后执行 `gen-matrix` + `check-matrix`。这两个模块的测试产物缺一不可：
+INV-02/10 的测试在 `feature`，INV-11/17 在 `data`，少跑一个模块就会缺格子、门禁变红。
+没有 `matrix.json` 时 `check-matrix` 只打印期望值（规格模式）并以 0 退出，因此它不再放在
+`docs` job 里跑——那里没有测试结果，通过与否说明不了任何事。
 
 **为什么不用行覆盖率**：行覆盖率 90% 的规则引擎，可能漏掉"来源冲突"整条分支，因为那一行被别的用例覆盖到了。
 矩阵覆盖看的是**语义维度**，行覆盖看的是**代码维度**——前者才是我们要的。

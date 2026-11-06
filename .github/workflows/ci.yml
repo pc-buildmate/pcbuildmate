@@ -28,7 +28,6 @@ jobs:
           node tools/check-docs.mjs
           node ci/check-boundaries.mjs
           node ci/check-keywords.mjs
-          node tools/check-matrix.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs
@@ -73,18 +72,30 @@ jobs:
   jvm:
     name: JVM tests
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install SDK 37
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platforms;android-37.0" "build-tools;37.0.0" "platform-tools"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Contracts + rule engine
+      - name: Contracts + rule engine + Android library units
         run: |
           set -o pipefail
-          ./gradlew :contracts:test :domain:rules:test :domain:revision:test :domain:recommend:test :domain:replacement:test :domain:state:test :domain:compare:test --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
+          ./gradlew :contracts:test :domain:rules:test :domain:revision:test :domain:recommend:test :domain:replacement:test :domain:state:test :domain:compare:test :data:testDebugUnitTest :feature:testDebugUnitTest --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
           status=$?
           if [ "$status" -ne 0 ]; then
             tail -40 /tmp/gradle.log
@@ -92,4 +103,8 @@ jobs:
             echo "::error title=gradle::$msg"
           fi
           exit "$status"
+      - name: Verification matrix (real test output)
+        run: |
+          node tools/gen-matrix.mjs
+          node tools/check-matrix.mjs
 
