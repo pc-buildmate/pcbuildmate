@@ -12,6 +12,7 @@ import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { FSM_GRID } from "./matrix-spec.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "build/reports/matrix.json");
@@ -87,20 +88,16 @@ const ruleEntries = [...ruleCells].sort().map((id) => ({
   source: "FixtureTest.all 60 rule fixtures match expected outcomes",
 })).filter((e) => e.status === "passed");
 
-const diagnosisStates = ["Idle", "Running", "Done", "Failed"];
-const diagnosisEvents = ["StartCheck", "CheckCompleted", "CheckFailed", "BuildEdited"];
-const replStates = ["Idle", "Candidates", "Previewing", "Rechecking", "Applied", "NoCandidate"];
-const replEvents = ["ConflictSelected", "CandidatesLoaded", "PreviewCandidate", "PreviewBuilt", "Apply", "Cancel", "RecheckCompleted", "RecheckRejected", "BuildEdited", "Dismiss"];
 const diagnosisTest = statusOf("pcbuildmate.domain.state.DiagnosisMachineTest", "diagnosis full matrix");
 const replacementTest = statusOf("pcbuildmate.domain.state.ReplacementMachineTest", "replacement full matrix");
 const fsmEntries = [];
-for (const s of diagnosisStates) for (const e of diagnosisEvents) {
-  const id = `fsm:diagnosis:${s}:${e}`;
-  if (diagnosisTest === "passed") fsmEntries.push({ id, status: "passed", tags: [id] });
-}
-for (const s of replStates) for (const e of replEvents) {
-  const id = `fsm:replacement:${s}:${e}`;
-  if (replacementTest === "passed") fsmEntries.push({ id, status: "passed", tags: [id] });
+for (const [machine, grid] of Object.entries(FSM_GRID)) {
+  const status = machine === "diagnosis" ? diagnosisTest : replacementTest;
+  if (status !== "passed") continue;
+  for (const state of grid.states) for (const event of grid.events) {
+    const id = `fsm:${machine}:${state}:${event}`;
+    fsmEntries.push({ id, status: "passed", tags: [id] });
+  }
 }
 
 // 不变量：每条必须指向真实 JUnit 测试或真实 CI 检查。
