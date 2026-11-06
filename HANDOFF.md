@@ -36,6 +36,8 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 
 # 真机 Room 契约（CI 无设备，不跑）
 ./gradlew :data:connectedDebugAndroidTest
+
+# CI 的 Android job 会构建 debug APK；Actions artifact: pcbuildmate-debug-apk
 ```
 
 ## 组员从哪开始
