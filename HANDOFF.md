@@ -38,6 +38,7 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 ./gradlew :data:connectedDebugAndroidTest
 
 # CI 的 Android job 会构建 debug APK；Actions artifact: pcbuildmate-debug-apk
+# 触发条件/下载/release 计划：docs/15-ci-and-artifacts.md
 ```
 
 ## 组员从哪开始
