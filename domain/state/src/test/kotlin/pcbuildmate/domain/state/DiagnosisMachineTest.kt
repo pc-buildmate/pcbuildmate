@@ -329,4 +329,31 @@ class DiagnosisMachineTest {
             assertEquals(null, result.rejection)
         }
     }
+    /**
+     * 矩阵门禁：docs/04 的 4×4 转移表里每一格都必须至少有一个 case。
+     * 只靠 "full matrix" 测试通过不能证明覆盖完整——删掉一个 case 它仍会绿。
+     */
+    @Test
+    fun `case list covers every documented state-event cell`() {
+        val states = listOf("Idle", "Running", "Done", "Failed")
+        val events = listOf("StartCheck", "CheckCompleted", "CheckFailed", "BuildEdited")
+        val covered = cases.map { it.from.cellName() to it.event.cellName() }.toSet()
+        val expected = states.flatMap { s -> events.map { e -> s to e } }.toSet()
+        assertEquals(expected, covered)
+    }
+
+    private fun DiagnosisState.cellName(): String = when (this) {
+        DiagnosisState.Idle -> "Idle"
+        is DiagnosisState.Running -> "Running"
+        is DiagnosisState.Done -> "Done"
+        is DiagnosisState.Failed -> "Failed"
+    }
+
+    private fun DiagnosisEvent.cellName(): String = when (this) {
+        DiagnosisEvent.StartCheck -> "StartCheck"
+        is DiagnosisEvent.CheckCompleted -> "CheckCompleted"
+        is DiagnosisEvent.CheckFailed -> "CheckFailed"
+        is DiagnosisEvent.BuildEdited -> "BuildEdited"
+    }
+
 }
