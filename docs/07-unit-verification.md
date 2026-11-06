@@ -100,6 +100,10 @@ fun `gpu length conflict 337 vs 320`() { ... }
 
 ### 7.5.3 矩阵检查器行为
 
+期望格子只写一份：`tools/matrix-spec.mjs`。`tools/gen-matrix.mjs` 和
+`tools/check-matrix.mjs` 都从它取 `CASES` / `FSM_GRID` / `expectedInvariants`，
+避免生成器和校验器各写一份规格导致漂移。
+
 ```bash
 node tools/check-matrix.mjs
 # 读取 build/test-results/**/*.xml

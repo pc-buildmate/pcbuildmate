@@ -1,6 +1,7 @@
 # QA 矩阵现状
 
 > 生成器：`node tools/gen-matrix.mjs`；检查：`node tools/check-matrix.mjs`
+> 期望定义：`tools/matrix-spec.mjs`（单一来源）
 > 数据来自真实 JUnit XML + `fixtures-rules-v1.json` + docs/07 的冻结列表，不手填数字。
 
 ## 当前结果（2026-11-05）
