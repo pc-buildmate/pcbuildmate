@@ -58,9 +58,15 @@ B) ... 影响 ...
 
 不要在没有回答的情况下「先按 A 写着」。
 
+## 3.1 同步规则
+
+- 开工前、开 PR 前、合并前各同步一次；**不要在一个已经落后的分支上连续加功能**。
+- 同一文件已有未合并 PR 时，先停下来协调；不要「我先把我的版本写完」。
+- 同步后必须重跑对应门禁；rebase 引起的冲突不要用 `-X ours/theirs` 整片吞掉。
+
 ## 4. 工作步骤
 
-1. `git fetch origin && git switch -c <type>/<module>-<slug> origin/main`
+1. `git fetch origin && git switch -c <type>/<module>-<slug> origin/main`；**开工前先 rebase 一次**。
 2. 读任务包与只读输入；用 5 行说明「打算改哪些文件、为什么」。
 3. 先写测试（能红），再写实现（转绿）。
 4. 跑门禁：
@@ -84,7 +90,7 @@ Refs #12
 AI: <model>, task D3-02
 ```
 
-7. 开 PR，填模板，贴命令输出与截图。
+7. 开 PR，填模板，贴命令输出与截图；**开 PR 前再 `git fetch origin && git rebase origin/main`**。
 8. 等 review；不要自己合并。
 
 ## 5. 代码约定（摘要）
