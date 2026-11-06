@@ -50,7 +50,8 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 | P2 | PRICEDATA-01 华硕/七彩虹 adapter、Wayback | 数据/脚本 |
 | P3 | D4 Preferences、Compare 功耗/余量、3 份比较 | 领域/UI |
 
-规则：先改 BOARD owner，再开分支；一个 PR 一个模块；CI 绿了再 squash merge。
+规则：先改 BOARD owner，再开分支；**开工前/开 PR 前各 `git fetch origin && git rebase origin/main`**；
+同一文件已有未合并 PR 先协调；一个 PR 一个模块；CI 绿了再 squash merge。
 
 ## 不要顺手改
 
