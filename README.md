@@ -124,6 +124,7 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 | 答辩口径 / 风险 | [docs/13](docs/13-risks.md) |
 | 提案 / 讲稿 / Q&A 原文 | [materials/](materials/README.md) |
 | 可点击的原型 | [site/](site/) |
+| 规约驱动 / spec-kit 取舍 | [docs/16](docs/16-spec-driven.md) |
 
 ## 自检
 
