@@ -23,9 +23,10 @@
 
 | 项 | 规则 |
 |---|---|
-| 尺寸来源 | 只画目录字段；缺失字段用常量并在 notes 明说（显卡高度按 120mm 估算） |
+| 尺寸来源 | 只画目录字段；缺失字段用规范常量并在 notes 明说（卡身宽度 120mm、主板下沿 80mm） |
+| 坐标 | **先列起止坐标再画**，见 [docs/18](18-3d-coordinates.md)；轴定义错了会整张图错 |
 | 外观 | 程序化纹理（PCB 绿、背板、风扇圈、散热鳍片），**不冒充**真实产品渲染 |
-| 机箱 | 只有"允许空间"盒子，不是机箱外壳；没有机箱条目时只显示比例并标注 |
+| 机箱 | 只有"允许空间"半透明容器，不是机箱外壳；没有机箱条目时只显示比例并标注 |
 | 冲突 | 红框 = 超出目录上限；没有上限数据时**不标红**，避免假结论 |
 | 性能 | 纯 Compose Canvas 软件投影，无 GL/SceneView 依赖，离线可跑 |
 
@@ -35,19 +36,19 @@
 |---|---|
 | `ui/.../preview/Scene3d.kt` | `Vec3` / `Box3` / `Scene3d`；`SceneBuilder.build(revision, catalogue)` |
 | `ui/.../preview/Projection3d.kt` | 旋转、透视投影、面法线、背面剔除 |
-| `ui/.../preview/Preview3D.kt` | Compose Canvas：地面网格、面排序、明暗、程序化纹理、拖动旋转、重置视角 |
-| `ui/src/test/.../Scene3dTest.kt` | 337/320 标红、300 不标红、无 GPU、散热超高、投影/旋转/可见面 |
+| `ui/.../preview/Preview3D.kt` | Compose Canvas：地面网格、限制面、面排序、明暗、程序化纹理、拖动旋转、重置视角 |
+| `ui/src/test/.../Scene3dTest.kt` | 轴方向（X/Y/Z）、337/320 标红、300 不标红、无 GPU、散热超高、投影/旋转/可见面 |
 
 入口：Workspace →「3D 间隙预览」（任意配置可用）。
 
 ## 17.4 画了哪些设备
 
-| 盒体 | 数据来源 | 是否可隐藏 |
-|---|---|---|
-| 机箱允许空间 | `maxGpuLengthMm` / `maxGpuThicknessMm` / `maxCoolerHeightMm` | ✅「隐藏机箱」，默认半透明轮廓 |
-| 显卡 | `lengthMm` / `thicknessMm`；高度 120mm 估算 | ❌ |
-| 散热器 | `heightMm`；底面 130×130 示意 | ❌ |
-| 主板 | `formFactor` → ATX 305×244 / mATX 244×244 / ITX 170×170 | ❌ |
+| 盒体 | 尺寸（X 深度 / Y 高度 / Z 宽度） | 数据来源 | 可隐藏 |
+|---|---|---|---|
+| 主板 | 244 × 305 × 6（ATX） | `formFactor` | ❌ |
+| 显卡 | `lengthMm` × `thicknessMm` × 120 | `lengthMm` / `thicknessMm`；卡宽 120 估算 | ❌ |
+| 散热器 | 130 × 130 × `heightMm` | `heightMm` | ❌ |
+| 机箱允许空间 | 限长+70 × 主板+35 × 侧板限高 | `maxGpuLengthMm` / `maxCoolerHeightMm`（估算外廓） | ✅ 默认半透明 |
 
 **没有画**：CPU、内存、电源、硬盘——契约里没有它们的尺寸字段；
 强行画只能编数字，违反"没有数据就不给数字"的原则。后续若要画，先给字段表加路径（走契约变更）。
@@ -55,17 +56,15 @@
 机箱默认是**半透明线框容器**，不参与深度排序，先于零件绘制，
 所以不会遮住显卡；顶栏可「隐藏机箱 / 显示机箱」。
 
-## 17.5 数据与场景
+## 17.5 场景与限制面
 
-```text
-机箱允许空间: X = maxGpuLengthMm, Y = maxCoolerHeightMm, Z = maxGpuThicknessMm
-显卡:         X = lengthMm,       Y = 120(估算),          Z = thicknessMm
-散热:         130 × heightMm × 130
-主板:         ATX 305×244 / mATX 244×244 / ITX 170×170（薄板）
-```
+完整坐标见 [docs/18](18-3d-coordinates.md)。要点：
 
-- 显卡从机箱前部开始放，长度超上限就"穿出"后部 → 红框；
-- 散热高度超过 `maxCoolerHeightMm` → 红框；
+- 立式机箱里主板 305mm 沿**竖直 Y**，244mm 沿**前后 X**；
+- 显卡长度沿 X、厚度沿 Y（2–3 槽 × 20.32mm）、卡身宽度沿 Z（全高 120mm）；
+- 显卡从背板 X=0 向前伸，上限是 `X = maxGpuLengthMm` 的**限制面**；
+- 散热高度沿 Z（主板表面到侧板），上限是 `Z = 6 + maxCoolerHeightMm` 的限制面；
+- 限制面用半透明平面 + 虚线边；超过时限长面变红、显卡盒体变红；
 - 无独显配置只有机箱/主板/散热，并提示"核显输出"。
 
 ## 17.6 交互
