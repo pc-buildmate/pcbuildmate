@@ -166,6 +166,7 @@ val isDiagnosisStale: Boolean
 | 总价与条目不符 | `BuildRevision.init` |
 | 数量 0 / 负价 | `BuildItem.init` |
 | 单件类目数量 > 1（CPU/主板/显卡/电源/机箱/散热） | `QuantityRules.isValid` + `:feature.setQuantity`（ADR-0010） |
+| 无独显但 CPU 无核显 | `DisplayOutputGuard`（ADR-0009）；显卡 0 件 = 不添加条目 |
 | `value != null` 却是 `EMPTY` | `FieldValue.init` |
 | `conflict = true` 但只有一个来源 | `FieldValue.init` |
 | revision id = 0 | `BuildRevision.init` |
