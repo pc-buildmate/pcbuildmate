@@ -56,6 +56,10 @@ fun Preview3DScreen(
     var yaw by rememberSaveable { mutableStateOf(0.72f) }
     var pitch by rememberSaveable { mutableStateOf(0.32f) }
     var zoom by rememberSaveable { mutableStateOf(1f) }
+    var showCase by rememberSaveable { mutableStateOf(true) }
+    val visibleScene = remember(scene, showCase) {
+        scene?.let { if (showCase) it else it.copy(boxes = it.boxes.filterNot { b -> b.style == BoxStyle.CASE }) }
+    }
 
     Scaffold(
         topBar = {
@@ -63,6 +67,9 @@ fun Preview3DScreen(
                 title = { Text("3D 间隙预览") },
                 navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
                 actions = {
+                    TextButton(onClick = { showCase = !showCase }) {
+                        Text(if (showCase) "隐藏机箱" else "显示机箱")
+                    }
                     TextButton(onClick = {
                         yaw = 0.72f
                         pitch = 0.32f
@@ -72,7 +79,7 @@ fun Preview3DScreen(
             )
         },
     ) { padding ->
-        if (scene == null) {
+        if (visibleScene == null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -105,10 +112,10 @@ fun Preview3DScreen(
                 val pose = ViewPose(
                     yaw = yaw,
                     pitch = pitch,
-                    distance = scene.maxExtentMm * 2.7f / zoom,
+                    distance = visibleScene.maxExtentMm * 2.7f / zoom,
                 )
-                drawGroundGrid(scene, pose)
-                drawScene(scene, pose)
+                drawGroundGrid(visibleScene, pose)
+                drawScene(visibleScene, pose)
             }
 
             Column(Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)) {
@@ -118,7 +125,7 @@ fun Preview3DScreen(
                         .horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    scene.labels.forEach { label ->
+                    visibleScene.labels.forEach { label ->
                         AssistChip(
                             onClick = {},
                             label = { Text(label.text, style = MaterialTheme.typography.labelSmall) },
@@ -126,7 +133,7 @@ fun Preview3DScreen(
                     }
                 }
                 Spacer(Modifier.height(6.dp))
-                scene.notes.forEach { note ->
+                visibleScene.notes.forEach { note ->
                     Text(
                         note,
                         style = MaterialTheme.typography.bodySmall,
@@ -148,14 +155,30 @@ private val lightDir = Vec3(0.35f, 0.75f, -0.55f)
 
 private fun DrawScope.drawScene(scene: Scene3d, pose: ViewPose) {
     val center = Vec3(scene.maxExtentMm / 2f, scene.maxExtentMm * 0.42f, 0f)
-    val faces = scene.boxes.flatMap { box ->
-        facesOf(box)
-            .filter { isVisible(it, pose, center) }
-            .map { face ->
-                val projected = face.corners.map { project(it, center, pose, size.width, size.height) }
-                Triple(box, face, projected)
-            }
-    }.sortedByDescending { (_, _, pts) -> pts.map { it.depth }.average() }
+    fun facesOfBoxes(boxes: List<Box3>): List<Triple<Box3, FaceCorners, List<P2>>> =
+        boxes.flatMap { box ->
+            facesOf(box)
+                .filter { isVisible(it, pose, center) }
+                .map { face ->
+                    val projected = face.corners.map { project(it, center, pose, size.width, size.height) }
+                    Triple(box, face, projected)
+                }
+        }
+
+    // 机箱是"允许空间"容器：先画半透明轮廓，避免遮住内部零件。
+    val ghostFaces = facesOfBoxes(scene.boxes.filter { it.ghost })
+    ghostFaces.forEach { (_, _, pts) ->
+        val path = Path().apply {
+            moveTo(pts[0].x, pts[0].y)
+            for (i in 1 until pts.size) lineTo(pts[i].x, pts[i].y)
+            close()
+        }
+        drawPath(path, Color(0x0FFFFFFF))
+        drawPath(path, Color(0x887AD1FF), style = Stroke(width = 1.6f))
+    }
+
+    val faces = facesOfBoxes(scene.boxes.filterNot { it.ghost })
+        .sortedByDescending { (_, _, pts) -> pts.map { it.depth }.average() }
 
     faces.forEach { (box, face, pts) ->
         val path = Path().apply {
