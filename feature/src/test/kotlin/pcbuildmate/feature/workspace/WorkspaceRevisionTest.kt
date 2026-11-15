@@ -83,6 +83,26 @@ class WorkspaceRevisionTest {
     }
 
     @Test
+    fun `gpu is single instance but may be absent`() {
+        val vm = WorkspaceViewModel(
+            catalogue = DemoCatalogue,
+            evaluator = EmptyEvaluator,
+            advisor = NoAdvisor,
+            recommender = NoRecommender,
+        )
+        vm.startDemo()
+        val before = vm.uiState.value.revision!!
+
+        vm.onIntent(WorkspaceIntent.SetQuantity("gpu-demo-337", 2))
+
+        assertEquals(before, vm.uiState.value.revision, "显卡不支持多卡")
+        assertEquals(
+            pcbuildmate.contracts.TextKey.QUANTITY_NOT_APPLICABLE,
+            vm.uiState.value.banner,
+        )
+    }
+
+    @Test
     fun `multi instance memory accepts quantity above one`() {
         val vm = WorkspaceViewModel(
             catalogue = DemoCatalogue,
