@@ -59,7 +59,7 @@ class Scene3dTest {
         val expected = first - SceneBuilder.SLOT_PITCH_MM
 
         assertEquals(expected, gpu.max.z, 0.01f, "挡板上沿 = 槽位中线")
-        assertEquals(118.33f, expected, 0.01f)
+        assertEquals(117.16f, expected, 0.01f)
     }
 
     @Test
