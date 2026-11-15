@@ -30,6 +30,16 @@ class Scene3dTest {
     }
 
     @Test
+    fun `case is a ghost container so it cannot hide parts`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+
+        val caseBox = scene.boxes.first { it.style == BoxStyle.CASE }
+        val gpuBox = scene.boxes.first { it.style == BoxStyle.GPU }
+        assertTrue(caseBox.ghost, "机箱必须半透明轮廓")
+        assertTrue(!gpuBox.ghost, "显卡必须实体绘制")
+    }
+
+    @Test
     fun `gpu that fits is not flagged`() {
         val scene = assertNotNull(
             SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()),

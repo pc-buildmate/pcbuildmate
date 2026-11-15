@@ -17,6 +17,8 @@ data class Box3(
     val size: Vec3,
     val style: BoxStyle,
     val conflict: Boolean = false,
+    /** 只画半透明轮廓（机箱允许空间），不遮挡内部零件。 */
+    val ghost: Boolean = false,
 )
 
 enum class Tone { NORMAL, WARN, MUTED }
@@ -76,6 +78,7 @@ object SceneBuilder {
             center = Vec3(depth / 2f, height / 2f, 0f),
             size = Vec3(depth, height, width),
             style = BoxStyle.CASE,
+            ghost = true,
         )
         val labels = mutableListOf<DimLabel>()
         if (caseLength != null) {
