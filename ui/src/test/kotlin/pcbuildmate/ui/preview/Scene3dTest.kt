@@ -71,10 +71,10 @@ class Scene3dTest {
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
 
         assertEquals(170f, board.size.z, 0.01f, "ITX 板高 170")
-        val slot1 = 170f - SceneBuilder.IO_HEIGHT_MM - SceneBuilder.FIRST_SLOT_FROM_IO_MM
-        assertEquals(3.65f, slot1, 0.01f)
-        assertEquals(slot1, gpu.max.z, 0.01f, "挡板上沿 = 槽位中线")
+        assertEquals(SceneBuilder.ITX_SLOT_FROM_BOTTOM_MM, gpu.max.z, 0.01f, "ITX 单槽 = 下缘 + 0.25\"")
+        assertEquals(6.35f, gpu.max.z, 0.01f)
         assertTrue(gpu.min.z < 0f, "3 槽卡向下到 Z 负数，不 clamp")
+        assertTrue(gpu.max.z < 170f - SceneBuilder.IO_HEIGHT_MM, "槽位在 I/O 下缘以下，不相交")
     }
 
     @Test
