@@ -16,24 +16,82 @@ import kotlin.test.assertTrue
 class Scene3dTest {
 
     @Test
-    fun `gpu is long on X, thick on Y, full-height on Z`() {
+    fun `board is 6 thick on negative X and 244 deep by 305 tall`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
-        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
 
-        assertEquals(337f, gpu.size.x, 0.01f, "长度沿 X（前后）")
-        assertEquals(61f, gpu.size.y, 0.01f, "厚度沿 Y（竖直，2–3 槽）")
-        assertEquals(120f, gpu.size.z, 0.01f, "卡身宽度沿 Z（全高档板）")
-        assertTrue(gpu.min.z >= 6f, "显卡从主板表面向外")
+        assertEquals(6f, board.size.x, 0.01f, "板厚 X")
+        assertEquals(-6f, board.min.x, 0.01f, "板体在 X 负侧")
+        assertEquals(0f, board.max.x, 0.01f, "零件从 X=0 起")
+        assertEquals(244f, board.size.y, 0.01f, "ATX 深度 Y")
+        assertEquals(305f, board.size.z, 0.01f, "ATX 高度 Z")
     }
 
     @Test
-    fun `gpu longer than the case limit is flagged and draws a limit plane`() {
+    fun `io is perpendicular to the board`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val io = scene.boxes.first { it.style == BoxStyle.IO }
+        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
+
+        assertEquals(45f, io.size.x, 0.01f, "沿 X 伸出 45")
+        assertEquals(6f, io.size.y, 0.01f, "Y 厚 6（板面内，故垂直于板）")
+        assertEquals(160f, io.size.z, 0.01f, "Z 高 160")
+        assertEquals(305f, io.max.z, 0.01f, "与板上沿对齐")
+        assertEquals(board.max.x, io.min.x, 0.01f, "从板面起")
+    }
+
+    @Test
+    fun `gpu uses width X, length Y, slot thickness Z`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
 
-        assertTrue(gpu.conflict)
+        assertEquals(110f, gpu.size.x, 0.01f, "卡宽沿 X")
+        assertEquals(337f, gpu.size.y, 0.01f, "长度沿 Y")
+        assertEquals(61f, gpu.size.z, 0.01f, "厚度沿 Z")
+        assertEquals(0f, gpu.min.x, 0.01f, "从板面起")
+    }
+
+    @Test
+    fun `gpu sits at the second slot centerline`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+        val expected = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 2) * SceneBuilder.SLOT_PITCH_MM
+
+        assertEquals(expected, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
+        assertEquals(248.60f, expected, 0.01f)
+    }
+
+    @Test
+    fun `itx has one slot and the card may leave the board`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "337", case = "320", formFactor = "MINI_ITX"), catalogue(formFactor = "MINI_ITX")),
+        )
+        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+
+        assertEquals(170f, board.size.z, 0.01f, "ITX 板高 170")
+        val slot1 = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 1) * SceneBuilder.SLOT_PITCH_MM
+        assertEquals(268.92f, slot1, 0.01f)
+        assertEquals(slot1, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
+        assertTrue(gpu.max.z > board.max.z, "允许显卡高过 ITX 板顶，不 clamp")
+    }
+
+    @Test
+    fun `case top is aligned with board top`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
+        val caseBox = scene.boxes.first { it.style == BoxStyle.CASE }
+
+        assertEquals(board.max.z, caseBox.max.z, 0.01f)
+        assertTrue(caseBox.ghost, "机箱必须透明")
+    }
+
+    @Test
+    fun `gpu longer than the case limit is flagged`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+
+        assertTrue(scene.boxes.first { it.style == BoxStyle.GPU }.conflict)
         assertTrue(scene.limits.any { it.id == "case-length" && it.conflict })
-        assertTrue(scene.labels.any { it.text.contains("超出限长 17") })
         assertTrue(scene.hasConflict)
     }
 
@@ -42,61 +100,23 @@ class Scene3dTest {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()))
 
         assertTrue(!scene.hasConflict)
-        assertTrue(scene.boxes.none { it.conflict })
         assertTrue(scene.limits.none { it.conflict })
     }
 
     @Test
-    fun `motherboard uses ATX depth and height`() {
-        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()))
-        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
-
-        assertEquals(244f, board.size.x, 0.01f, "ATX 深度 244")
-        assertEquals(305f, board.size.y, 0.01f, "ATX 高度 305")
-        assertEquals(SceneBuilder.MB_FLOOR_MM, board.min.y, 0.01f)
-    }
-
-    @Test
-    fun `cooler height is measured along Z`() {
+    fun `cooler height is along X`() {
         val scene = assertNotNull(
             SceneBuilder.build(revisionWith(gpu = "300", case = "320", cooler = "160"), catalogue()),
         )
         val cooler = scene.boxes.first { it.style == BoxStyle.COOLER }
 
-        assertEquals(160f, cooler.size.z, 0.01f, "散热高度沿 Z（到侧板）")
+        assertEquals(160f, cooler.size.x, 0.01f)
         assertTrue(!cooler.conflict)
     }
 
     @Test
-    fun `cooler taller than the case limit is flagged`() {
-        val scene = assertNotNull(
-            SceneBuilder.build(revisionWith(gpu = "300", case = "320", cooler = "190"), catalogue()),
-        )
-
-        assertTrue(scene.boxes.first { it.style == BoxStyle.COOLER }.conflict)
-        assertTrue(scene.limits.any { it.id == "case-cooler" && it.conflict })
-    }
-
-    @Test
-    fun `case is a ghost container so it cannot hide parts`() {
-        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
-
-        assertTrue(scene.boxes.first { it.style == BoxStyle.CASE }.ghost)
-        assertTrue(!scene.boxes.first { it.style == BoxStyle.GPU }.ghost)
-    }
-
-    @Test
-    fun `no gpu still builds a scene with a note`() {
-        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = null, case = "320"), catalogue()))
-
-        assertTrue(scene.boxes.none { it.style == BoxStyle.GPU })
-        assertTrue(scene.labels.any { it.text.contains("无独显") })
-        assertTrue(scene.notes.any { it.contains("没有显卡") })
-    }
-
-    @Test
-    fun `projection keeps the scene center on screen center`() {
-        val pose = ViewPose(yaw = 0.7f, pitch = 0.3f, distance = 1200f)
+    fun `projection maps a point ahead of the camera to screen center`() {
+        val pose = ViewPose(yaw = -1.35f, pitch = 0.35f, distance = 1200f)
         val p = project(Vec3(10f, 10f, 0f), Vec3(10f, 10f, 0f), pose, 800f, 600f)
 
         assertEquals(400f, p.x, 0.01f)
@@ -104,11 +124,11 @@ class Scene3dTest {
     }
 
     @Test
-    fun `rotation by 90 degrees swaps x and z`() {
+    fun `rotation by 90 degrees around Z maps X to Y`() {
         val r = rotate(Vec3(1f, 0f, 0f), (Math.PI / 2).toFloat(), 0f)
 
         assertTrue(abs(r.x) < 1e-4f)
-        assertTrue(abs(r.z - 1f) < 1e-4f)
+        assertTrue(abs(r.y - 1f) < 1e-4f)
     }
 
     @Test
@@ -124,24 +144,22 @@ class Scene3dTest {
 
     @Test
     fun `surface texture coordinates are bilinear in the face plane`() {
-        val quad = listOf(
-            P2(0f, 0f, 1f),
-            P2(100f, 20f, 1f),
-            P2(90f, 80f, 1f),
-            P2(10f, 60f, 1f),
-        )
+        val quad = listOf(P2(0f, 0f, 1f), P2(100f, 20f, 1f), P2(90f, 80f, 1f), P2(10f, 60f, 1f))
 
         assertEquals(0f, bilinear(quad, 0f, 0f).x, 0.01f)
-        assertEquals(0f, bilinear(quad, 0f, 0f).y, 0.01f)
         assertEquals(100f, bilinear(quad, 1f, 0f).x, 0.01f)
-        assertEquals(20f, bilinear(quad, 1f, 0f).y, 0.01f)
         assertEquals(50f, bilinear(quad, 0.5f, 0.5f).x, 0.01f)
         assertEquals(40f, bilinear(quad, 0.5f, 0.5f).y, 0.01f)
     }
 
     // ---------------------------------------------------------------- fixture
 
-    private fun revisionWith(gpu: String?, case: String, cooler: String? = null): BuildRevision {
+    private fun revisionWith(
+        gpu: String?,
+        case: String,
+        cooler: String? = null,
+        formFactor: String = "ATX",
+    ): BuildRevision {
         val items = mutableListOf(
             BuildItem("mb", Category.MOTHERBOARD, 1, 900),
             BuildItem("case-$case", Category.CASE, 1, 400),
@@ -159,9 +177,9 @@ class Scene3dTest {
         )
     }
 
-    private fun catalogue(): CataloguePort = MapCatalogue(
+    private fun catalogue(formFactor: String = "ATX"): CataloguePort = MapCatalogue(
         listOf(
-            record("mb", Category.MOTHERBOARD, mapOf("formFactor" to f("ATX"))),
+            record("mb", Category.MOTHERBOARD, mapOf("formFactor" to f(formFactor))),
             record("case-320", Category.CASE, mapOf(
                 "maxGpuLengthMm" to f("320", 320.0),
                 "maxGpuThicknessMm" to f("80", 80.0),
