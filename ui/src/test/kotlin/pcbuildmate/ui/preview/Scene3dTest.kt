@@ -33,9 +33,9 @@ class Scene3dTest {
         val io = scene.boxes.first { it.style == BoxStyle.IO }
         val board = scene.boxes.first { it.style == BoxStyle.BOARD }
 
-        assertEquals(45f, io.size.x, 0.01f, "沿 X 伸出 45")
+        assertEquals(160f, io.size.x, 0.01f, "沿 X 宽 160")
         assertEquals(6f, io.size.y, 0.01f, "Y 厚 6（板面内，故垂直于板）")
-        assertEquals(160f, io.size.z, 0.01f, "Z 高 160")
+        assertEquals(45f, io.size.z, 0.01f, "Z 高 45")
         assertEquals(305f, io.max.z, 0.01f, "与板上沿对齐")
         assertEquals(board.max.x, io.min.x, 0.01f, "从板面起")
     }
@@ -55,10 +55,10 @@ class Scene3dTest {
     fun `gpu sits at the second slot centerline`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
-        val expected = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 2) * SceneBuilder.SLOT_PITCH_MM
+        val expected = SceneBuilder.LAST_SLOT_Z_MM - SceneBuilder.SLOT_PITCH_MM
 
         assertEquals(expected, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
-        assertEquals(248.60f, expected, 0.01f)
+        assertEquals(126.68f, expected, 0.01f)
     }
 
     @Test
@@ -70,10 +70,19 @@ class Scene3dTest {
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
 
         assertEquals(170f, board.size.z, 0.01f, "ITX 板高 170")
-        val slot1 = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 1) * SceneBuilder.SLOT_PITCH_MM
-        assertEquals(268.92f, slot1, 0.01f)
-        assertEquals(slot1, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
-        assertTrue(gpu.max.z > board.max.z, "允许显卡高过 ITX 板顶，不 clamp")
+        val slot1 = SceneBuilder.LAST_SLOT_Z_MM
+        assertEquals(147f, slot1, 0.01f)
+        assertEquals(147f, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
+        assertTrue(gpu.max.z > board.max.z, "3 槽卡高出 170mm 板顶，不 clamp")
+    }
+
+    @Test
+    fun `gpu sits below the io bottom`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val io = scene.boxes.first { it.style == BoxStyle.IO }
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+
+        assertTrue(gpu.max.z < io.min.z, "显卡必须低于 I/O 下沿：gpu=${gpu.max.z}, io=${io.min.z}")
     }
 
     @Test
@@ -111,6 +120,7 @@ class Scene3dTest {
         val cooler = scene.boxes.first { it.style == BoxStyle.COOLER }
 
         assertEquals(160f, cooler.size.x, 0.01f)
+        assertTrue(cooler.min.z > 100f, "CPU 散热应在板上部，实际 ${cooler.min.z}")
         assertTrue(!cooler.conflict)
     }
 

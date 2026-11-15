@@ -67,9 +67,9 @@ object SceneBuilder {
     const val SLOT_PITCH_MM = 20.32f
     const val LAST_SLOT_Z_MM = 147f
     const val SLOT_GRID = 7
-    const val IO_WIDTH_MM = 45f      // 沿 X（板法线方向伸出）
+    const val IO_WIDTH_MM = 160f     // 沿 X（板面横向）
     const val IO_THICKNESS_MM = 6f   // 沿 Y
-    const val IO_HEIGHT_MM = 160f    // 沿 Z，从板上沿往下
+    const val IO_HEIGHT_MM = 45f     // 沿 Z（板面上沿往下 45）
     const val GPU_WIDTH_MM = 110f    // 沿 X
     const val GPU_SLOT_INDEX = 2
 
@@ -107,7 +107,7 @@ object SceneBuilder {
             style = BoxStyle.BOARD,
         )
 
-        // I/O：从板上沿往下 160，沿 X 伸出 45，Y 厚 6（垂直于主板）
+        // I/O：贴板上沿，沿 X 宽 160，垂直板面厚 6，沿 Z 高 45
         boxes += Box3(
             id = "io",
             label = "后置 I/O",
@@ -117,15 +117,16 @@ object SceneBuilder {
         )
         labels += DimLabel("I/O ${fmt(IO_WIDTH_MM)}×${fmt(IO_HEIGHT_MM)}", Tone.MUTED)
 
-        // 槽位网格：最后一个槽 147，向上 20.32；板型只取上面 N 个
-        fun slotZ(k: Int): Float = LAST_SLOT_Z_MM + (SLOT_GRID - k) * SLOT_PITCH_MM
+        // 槽位网格：最上面一槽 147，向下每槽 20.32；板型只取上面 N 个
+        fun slotZ(k: Int): Float = LAST_SLOT_Z_MM - (k - 1) * SLOT_PITCH_MM
         val usedSlots = (1..slotCount).map { slotZ(it) }
         labels += DimLabel(
-            "槽位 Z ${fmt(usedSlots.last())} → ${fmt(usedSlots.first())}（$slotCount 槽）",
+            "槽位 Z ${fmt(usedSlots.first())} → ${fmt(usedSlots.last())}（$slotCount 槽）",
             Tone.MUTED,
         )
+        notes += "槽位从最上面 Z=${fmt(slotZ(1))} 向下排；显卡必须低于 I/O 下沿 Z=${fmt(boardHeight - IO_HEIGHT_MM)}"
         if (slotCount < SLOT_GRID) {
-            notes += "该板型只有 $slotCount 个槽位；ITX 的单槽位于 Z=${fmt(slotZ(1))}，允许超出 170mm 板高"
+            notes += "该板型只有 $slotCount 个槽位；ITX 单槽位于 Z=${fmt(slotZ(1))}"
         }
 
         // 显卡
@@ -174,9 +175,10 @@ object SceneBuilder {
         val coolerHeight = cooler?.num("heightMm")
         if (coolerHeight != null) {
             val overHeight = coolerHeight > caseCoolerHeight
-            val z0 = boardHeight - 250f
+            // CPU 散热在板上部（I/O 下方、Y 向前），高度沿 X
+            val z0 = boardHeight - 140f
             val z1 = z0 + 130f
-            val y0 = 55f
+            val y0 = 50f
             boxes += Box3(
                 id = "cooler",
                 label = "散热 ${cooler.text("model")}",
