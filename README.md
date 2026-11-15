@@ -19,11 +19,15 @@
 |---|---|
 | ![工作区](docs/screenshots/workspace.png) | ![诊断](docs/screenshots/diagnostics.png) |
 
-| 比较 | 入口 |
+| 比较 | 3D 间隙预览 |
 |---|---|
-| ![比较](docs/screenshots/compare.png) | ![入口](docs/screenshots/entry.png) |
+| ![比较](docs/screenshots/compare.png) | ![3D](docs/screenshots/3d-preview.png) |
 
-- 4 屏：Entry → Workspace → Diagnostics → Compare
+| 入口 | |
+|---|---|
+| ![入口](docs/screenshots/entry.png) | |
+
+- 5 屏：Entry → Workspace → Diagnostics → Compare → 3D 间隙预览
 - 8 类零件、¥7,800 起始配置、¥8,000 预算
 - 15 条兼容规则、60 条 fixture、两张状态机 76 格
 - 替换建议先过滤 BLOCKER，再按价格/影响/ID 排序
@@ -126,6 +130,7 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 | 可点击的原型 | [site/](site/) |
 | 规约驱动 / spec-kit 取舍 | [docs/16](docs/16-spec-driven.md) |
 | 答辩演示脚本 / Q&A | [docs/defense/DEMO.md](docs/defense/DEMO.md) |
+| 3D 间隙预览（尺寸示意） | [docs/17](docs/17-3d-preview.md) |
 
 ## 自检
 

@@ -191,6 +191,7 @@ fun WorkspaceScreen(
     onIntent: (WorkspaceIntent) -> Unit,
     onCheck: () -> Unit,
     onCompare: () -> Unit,
+    onPreview3d: () -> Unit = {},
     onBack: () -> Unit,
 ) {
     val revision = state.revision
@@ -280,6 +281,10 @@ fun WorkspaceScreen(
                     Button(onClick = onCompare, modifier = Modifier.fillMaxWidth()) {
                         Text("比较已保存的 ${state.savedBuilds.size} 份配置")
                     }
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(onClick = onPreview3d, modifier = Modifier.fillMaxWidth()) {
+                    Text("3D 间隙预览")
                 }
                 Spacer(Modifier.height(24.dp))
             }
