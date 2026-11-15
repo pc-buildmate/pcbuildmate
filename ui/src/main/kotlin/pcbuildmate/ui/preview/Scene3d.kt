@@ -65,10 +65,8 @@ object SceneBuilder {
 
     const val BOARD_THICKNESS_MM = 6f
     const val SLOT_PITCH_MM = 20.32f
-    /** ATX/mATX 第一个槽：I/O 下缘 - 0.30 in = [7.52] mm（图纸标注，括号内为 mm）。 */
+    /** 第一个槽：I/O 下缘 - 0.30 in = [7.52] mm（图纸；括号内为 mm）。全板型统一。 */
     const val FIRST_SLOT_FROM_IO_MM = 7.52f
-    /** Mini-ITX 单槽：从板下缘往上 0.25 in = [6.35] mm。 */
-    const val ITX_SLOT_FROM_BOTTOM_MM = 6.35f
     const val IO_WIDTH_MM = 45f      // 沿 X（板法线方向伸出）
     const val IO_THICKNESS_MM = 6f   // 沿 Y
     const val IO_HEIGHT_MM = 160f    // 沿 Z，从板上沿往下
@@ -119,23 +117,15 @@ object SceneBuilder {
         )
         labels += DimLabel("I/O ${fmt(IO_WIDTH_MM)}×${fmt(IO_HEIGHT_MM)}", Tone.MUTED)
 
-        // Mini-ITX 单槽从下缘往上 0.25"；ATX/mATX 从 I/O 下缘往下 0.25"
-        val firstSlotZ = if (slotCount == 1) {
-            ITX_SLOT_FROM_BOTTOM_MM
-        } else {
-            (boardHeight - IO_HEIGHT_MM) - FIRST_SLOT_FROM_IO_MM
-        }
+        // 全板型统一：第一个槽 = I/O 下缘 - 0.30 in = [7.52] mm
+        val firstSlotZ = (boardHeight - IO_HEIGHT_MM) - FIRST_SLOT_FROM_IO_MM
         fun slotZ(k: Int): Float = firstSlotZ - (k - 1) * SLOT_PITCH_MM
         val usedSlots = (1..slotCount).map { slotZ(it) }
         labels += DimLabel(
             "槽位 Z ${fmt(usedSlots.first())} → ${fmt(usedSlots.last())}（$slotCount 槽）",
             Tone.MUTED,
         )
-        notes += if (slotCount == 1) {
-            "Mini-ITX 单槽 = 下缘 + 0.25\" = ${fmt(firstSlotZ)}；I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)}，不相交"
-        } else {
-            "第一个槽 = I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)} - 7.52 = ${fmt(firstSlotZ)}（0.30 in）；向下每槽 20.32"
-        }
+        notes += "第一个槽 = I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)} - 7.52 = ${fmt(firstSlotZ)}（0.30 in）；向下每槽 20.32"
         if (slotCount == 1) {
             notes += "Mini-ITX 单槽在 Z=${fmt(firstSlotZ)}；3 槽卡会到 Z=${fmt(firstSlotZ - gpuThicknessForHint(gpu))}，允许为负"
         }
