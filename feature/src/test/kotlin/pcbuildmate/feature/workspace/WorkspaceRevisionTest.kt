@@ -33,7 +33,7 @@ class WorkspaceRevisionTest {
         assertEquals(1L, base.id)
         assertTrue(!vm.uiState.value.canUndo)
 
-        vm.onIntent(WorkspaceIntent.SetQuantity("gpu-demo-337", 2))
+        vm.onIntent(WorkspaceIntent.SetQuantity("mem-demo-ddr5-32", 2))
         val edited = vm.uiState.value.revision!!
         assertTrue(edited.id > base.id, "INV-02: 编辑后 revision id 必须递增")
         assertTrue(vm.uiState.value.canUndo)
@@ -60,6 +60,45 @@ class WorkspaceRevisionTest {
         vm.onIntent(WorkspaceIntent.Undo)
 
         assertEquals(before, vm.uiState.value.revision)
+    }
+
+    @Test
+    fun `single instance categories reject quantity above one`() {
+        val vm = WorkspaceViewModel(
+            catalogue = DemoCatalogue,
+            evaluator = EmptyEvaluator,
+            advisor = NoAdvisor,
+            recommender = NoRecommender,
+        )
+        vm.startDemo()
+        val before = vm.uiState.value.revision!!
+
+        vm.onIntent(WorkspaceIntent.SetQuantity("cpu-demo-7600x", 2))
+
+        assertEquals(before, vm.uiState.value.revision, "CPU 不允许 2 件")
+        assertEquals(
+            pcbuildmate.contracts.TextKey.QUANTITY_NOT_APPLICABLE,
+            vm.uiState.value.banner,
+        )
+    }
+
+    @Test
+    fun `multi instance memory accepts quantity above one`() {
+        val vm = WorkspaceViewModel(
+            catalogue = DemoCatalogue,
+            evaluator = EmptyEvaluator,
+            advisor = NoAdvisor,
+            recommender = NoRecommender,
+        )
+        vm.startDemo()
+        val before = vm.uiState.value.revision!!
+
+        vm.onIntent(WorkspaceIntent.SetQuantity("mem-demo-ddr5-32", 2))
+
+        val after = vm.uiState.value.revision!!
+        assertTrue(after.id > before.id, "内存多件必须产生新 revision")
+        assertEquals(before.totalCny + 500, after.totalCny)
+        assertEquals(null, vm.uiState.value.banner)
     }
 
     private object DemoCatalogue : CataloguePort {

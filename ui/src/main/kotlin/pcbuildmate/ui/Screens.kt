@@ -47,6 +47,7 @@ import pcbuildmate.contracts.Category
 import pcbuildmate.contracts.Diagnosis
 import pcbuildmate.contracts.DiagnosisState
 import pcbuildmate.contracts.OverallStatus
+import pcbuildmate.contracts.QuantityRules
 import pcbuildmate.contracts.ReplacementState
 import pcbuildmate.contracts.RiskLevel
 import pcbuildmate.contracts.RuleOutcome
@@ -622,6 +623,7 @@ private fun ItemRow(
     onMinus: () -> Unit,
     onPlus: () -> Unit,
 ) {
+    val editable = QuantityRules.allowsQuantityAboveOne(item.category)
     Card {
         Row(
             modifier = Modifier
@@ -633,9 +635,17 @@ private fun ItemRow(
                 Text(categoryLabels[item.category] ?: item.category.name, style = MaterialTheme.typography.labelSmall)
                 Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
-            TextButton(onClick = onMinus, enabled = item.quantity > 1) { Text("−") }
-            Text("${item.quantity}", fontWeight = FontWeight.Bold)
-            TextButton(onClick = onPlus) { Text("+") }
+            if (editable) {
+                TextButton(onClick = onMinus, enabled = item.quantity > 1) { Text("−") }
+                Text("${item.quantity}", fontWeight = FontWeight.Bold)
+                TextButton(onClick = onPlus) { Text("+") }
+            } else {
+                Text(
+                    "×1",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Spacer(Modifier.size(8.dp))
             Text(money(item.unitPriceCny * item.quantity), fontWeight = FontWeight.Bold)
         }
@@ -820,6 +830,7 @@ private fun SectionTitle(text: String) {
 
 private fun bannerText(key: TextKey): String = when (key) {
     TextKey.NO_DISPLAY_OUTPUT -> "没有显示输出：请加一张独显，或换一颗带核显的 CPU"
+    TextKey.QUANTITY_NOT_APPLICABLE -> "这一类零件固定 1 件；多件会让价格翻倍但兼容结论不变，因此不支持修改数量"
     TextKey.QUANTITY_INVALID -> "数量必须至少为 1"
     TextKey.DIAGNOSTICS_REQUIRED -> "先载入或生成一份配置"
     TextKey.APPLY_REVISION_STALE -> "配置已过期，请重新检查"
