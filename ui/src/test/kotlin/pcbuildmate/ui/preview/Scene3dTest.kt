@@ -16,55 +16,82 @@ import kotlin.test.assertTrue
 class Scene3dTest {
 
     @Test
-    fun `gpu longer than the case is flagged`() {
-        val scene = assertNotNull(
-            SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()),
-        )
-        val gpuBox = scene.boxes.first { it.style == BoxStyle.GPU }
+    fun `gpu is long on X, thick on Y, full-height on Z`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
 
-        assertTrue(gpuBox.conflict, "337 > 320 必须标红")
-        assertEquals(337f, gpuBox.size.x)
+        assertEquals(337f, gpu.size.x, 0.01f, "长度沿 X（前后）")
+        assertEquals(61f, gpu.size.y, 0.01f, "厚度沿 Y（竖直，2–3 槽）")
+        assertEquals(120f, gpu.size.z, 0.01f, "卡身宽度沿 Z（全高档板）")
+        assertTrue(gpu.min.z >= 6f, "显卡从主板表面向外")
+    }
+
+    @Test
+    fun `gpu longer than the case limit is flagged and draws a limit plane`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+
+        assertTrue(gpu.conflict)
+        assertTrue(scene.limits.any { it.id == "case-length" && it.conflict })
+        assertTrue(scene.labels.any { it.text.contains("超出限长 17") })
         assertTrue(scene.hasConflict)
-        assertTrue(scene.labels.any { it.text.contains("337") })
-        assertTrue(scene.labels.any { it.text.contains("320") })
+    }
+
+    @Test
+    fun `gpu that fits is not flagged`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()))
+
+        assertTrue(!scene.hasConflict)
+        assertTrue(scene.boxes.none { it.conflict })
+        assertTrue(scene.limits.none { it.conflict })
+    }
+
+    @Test
+    fun `motherboard uses ATX depth and height`() {
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()))
+        val board = scene.boxes.first { it.style == BoxStyle.BOARD }
+
+        assertEquals(244f, board.size.x, 0.01f, "ATX 深度 244")
+        assertEquals(305f, board.size.y, 0.01f, "ATX 高度 305")
+        assertEquals(SceneBuilder.MB_FLOOR_MM, board.min.y, 0.01f)
+    }
+
+    @Test
+    fun `cooler height is measured along Z`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "300", case = "320", cooler = "160"), catalogue()),
+        )
+        val cooler = scene.boxes.first { it.style == BoxStyle.COOLER }
+
+        assertEquals(160f, cooler.size.z, 0.01f, "散热高度沿 Z（到侧板）")
+        assertTrue(!cooler.conflict)
+    }
+
+    @Test
+    fun `cooler taller than the case limit is flagged`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "300", case = "320", cooler = "190"), catalogue()),
+        )
+
+        assertTrue(scene.boxes.first { it.style == BoxStyle.COOLER }.conflict)
+        assertTrue(scene.limits.any { it.id == "case-cooler" && it.conflict })
     }
 
     @Test
     fun `case is a ghost container so it cannot hide parts`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
 
-        val caseBox = scene.boxes.first { it.style == BoxStyle.CASE }
-        val gpuBox = scene.boxes.first { it.style == BoxStyle.GPU }
-        assertTrue(caseBox.ghost, "机箱必须半透明轮廓")
-        assertTrue(!gpuBox.ghost, "显卡必须实体绘制")
-    }
-
-    @Test
-    fun `gpu that fits is not flagged`() {
-        val scene = assertNotNull(
-            SceneBuilder.build(revisionWith(gpu = "300", case = "320"), catalogue()),
-        )
-
-        assertTrue(!scene.hasConflict)
-        assertTrue(scene.boxes.none { it.conflict })
+        assertTrue(scene.boxes.first { it.style == BoxStyle.CASE }.ghost)
+        assertTrue(!scene.boxes.first { it.style == BoxStyle.GPU }.ghost)
     }
 
     @Test
     fun `no gpu still builds a scene with a note`() {
-        val scene = assertNotNull(
-            SceneBuilder.build(revisionWith(gpu = null, case = "320"), catalogue()),
-        )
+        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = null, case = "320"), catalogue()))
 
         assertTrue(scene.boxes.none { it.style == BoxStyle.GPU })
         assertTrue(scene.labels.any { it.text.contains("无独显") })
         assertTrue(scene.notes.any { it.contains("没有显卡") })
-    }
-
-    @Test
-    fun `cooler taller than the case limit is flagged`() {
-        val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "300", case = "320", cooler = "190"), catalogue()))
-
-        assertTrue(scene.boxes.first { it.style == BoxStyle.COOLER }.conflict)
     }
 
     @Test
@@ -85,14 +112,14 @@ class Scene3dTest {
     }
 
     @Test
-    fun `each box exposes six faces and about half are visible`() {
-        val box = Box3("b", "b", Vec3(50f, 50f, 50f), Vec3(100f, 100f, 100f), BoxStyle.CASE)
+    fun `each box exposes six faces and a convex box shows at most three`() {
+        val box = Box3("b", "b", Vec3(0f, 0f, 0f), Vec3(100f, 100f, 100f), BoxStyle.CASE)
         val pose = ViewPose()
         val faces = facesOf(box)
 
         assertEquals(6, faces.size)
         val visible = faces.count { isVisible(it, pose, Vec3(50f, 50f, 50f)) }
-        assertTrue(visible in 1..3, "凸盒体最多看到 3 个面，实际 $visible")
+        assertTrue(visible in 1..3, "实际 $visible")
     }
 
     // ---------------------------------------------------------------- fixture
@@ -131,6 +158,7 @@ class Scene3dTest {
                 "lengthMm" to f("300", 300.0),
                 "thicknessMm" to f("50", 50.0),
             )),
+            record("cooler-160", Category.COOLER, mapOf("heightMm" to f("160", 160.0))),
             record("cooler-190", Category.COOLER, mapOf("heightMm" to f("190", 190.0))),
         ),
     )

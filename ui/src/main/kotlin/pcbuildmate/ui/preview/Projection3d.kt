@@ -46,12 +46,12 @@ fun project(point: Vec3, sceneCenter: Vec3, pose: ViewPose, width: Float, height
 
 /** 盒体 6 个面；法线在模型空间，交给 [isVisible] 旋转换算。 */
 fun facesOf(box: Box3): List<FaceCorners> {
-    val x0 = box.center.x - box.size.x / 2f
-    val x1 = box.center.x + box.size.x / 2f
-    val y0 = box.center.y - box.size.y / 2f
-    val y1 = box.center.y + box.size.y / 2f
-    val z0 = box.center.z - box.size.z / 2f
-    val z1 = box.center.z + box.size.z / 2f
+    val x0 = box.min.x
+    val x1 = box.max.x
+    val y0 = box.min.y
+    val y1 = box.max.y
+    val z0 = box.min.z
+    val z1 = box.max.z
     fun p(x: Float, y: Float, z: Float) = Vec3(x, y, z)
     return listOf(
         FaceCorners(Face.TOP, Vec3(0f, 1f, 0f), listOf(p(x0, y1, z0), p(x1, y1, z0), p(x1, y1, z1), p(x0, y1, z1))),

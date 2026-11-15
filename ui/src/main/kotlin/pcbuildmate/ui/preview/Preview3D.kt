@@ -37,13 +37,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import pcbuildmate.contracts.BuildRevision
 import pcbuildmate.contracts.CataloguePort
+import kotlin.math.cos
 import kotlin.math.min
+import kotlin.math.sin
 
 /**
- * 3D 间隙预览：用轴对齐盒体 + 程序化纹理表达尺寸/间隙，不做产品外观。
+ * 3D 间隙预览：轴对齐盒体 + 程序化纹理，表达尺寸与间隙，不做产品外观。
  *
- * 数据：只有目录字段才画真实尺寸；缺失字段用常量并标注（见 SceneBuilder.notes）。
- * 交互：拖动旋转、重置视角；红框表示超出机箱上限。
+ * 坐标系见 docs/18-3d-coordinates.md；机箱是半透明 ghost，可隐藏。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,12 +54,15 @@ fun Preview3DScreen(
     onBack: () -> Unit,
 ) {
     val scene = remember(revision, catalogue) { SceneBuilder.build(revision, catalogue) }
-    var yaw by rememberSaveable { mutableStateOf(0.72f) }
-    var pitch by rememberSaveable { mutableStateOf(0.32f) }
+    var yaw by rememberSaveable { mutableStateOf(2.15f) }
+    var pitch by rememberSaveable { mutableStateOf(0.38f) }
     var zoom by rememberSaveable { mutableStateOf(1f) }
     var showCase by rememberSaveable { mutableStateOf(true) }
     val visibleScene = remember(scene, showCase) {
-        scene?.let { if (showCase) it else it.copy(boxes = it.boxes.filterNot { b -> b.style == BoxStyle.CASE }) }
+        scene?.let {
+            if (showCase) it
+            else it.copy(boxes = it.boxes.filterNot { b -> b.style == BoxStyle.CASE })
+        }
     }
 
     Scaffold(
@@ -71,8 +75,8 @@ fun Preview3DScreen(
                         Text(if (showCase) "隐藏机箱" else "显示机箱")
                     }
                     TextButton(onClick = {
-                        yaw = 0.72f
-                        pitch = 0.32f
+                        yaw = 2.15f
+                        pitch = 0.38f
                         zoom = 1f
                     }) { Text("重置视角") }
                 },
@@ -112,7 +116,7 @@ fun Preview3DScreen(
                 val pose = ViewPose(
                     yaw = yaw,
                     pitch = pitch,
-                    distance = visibleScene.maxExtentMm * 2.7f / zoom,
+                    distance = visibleScene.radius * 3.1f / zoom,
                 )
                 drawGroundGrid(visibleScene, pose)
                 drawScene(visibleScene, pose)
@@ -154,46 +158,71 @@ fun Preview3DScreen(
 private val lightDir = Vec3(0.35f, 0.75f, -0.55f)
 
 private fun DrawScope.drawScene(scene: Scene3d, pose: ViewPose) {
-    val center = Vec3(scene.maxExtentMm / 2f, scene.maxExtentMm * 0.42f, 0f)
-    fun facesOfBoxes(boxes: List<Box3>): List<Triple<Box3, FaceCorners, List<P2>>> =
-        boxes.flatMap { box ->
-            facesOf(box)
-                .filter { isVisible(it, pose, center) }
-                .map { face ->
-                    val projected = face.corners.map { project(it, center, pose, size.width, size.height) }
-                    Triple(box, face, projected)
-                }
-        }
+    fun projectAll(points: List<Vec3>): List<P2> =
+        points.map { project(it, scene.center, pose, size.width, size.height) }
 
-    // 机箱是"允许空间"容器：先画半透明轮廓，避免遮住内部零件。
-    val ghostFaces = facesOfBoxes(scene.boxes.filter { it.ghost })
-    ghostFaces.forEach { (_, _, pts) ->
-        val path = Path().apply {
-            moveTo(pts[0].x, pts[0].y)
-            for (i in 1 until pts.size) lineTo(pts[i].x, pts[i].y)
-            close()
-        }
-        drawPath(path, Color(0x0FFFFFFF))
-        drawPath(path, Color(0x887AD1FF), style = Stroke(width = 1.6f))
+    fun pathOf(pts: List<P2>): Path = Path().apply {
+        moveTo(pts[0].x, pts[0].y)
+        for (i in 1 until pts.size) lineTo(pts[i].x, pts[i].y)
+        close()
     }
 
-    val faces = facesOfBoxes(scene.boxes.filterNot { it.ghost })
-        .sortedByDescending { (_, _, pts) -> pts.map { it.depth }.average() }
+    // 1) 机箱 ghost：先画、不参与排序，避免遮住零件
+    scene.boxes.filter { it.ghost }.forEach { box ->
+        facesOf(box).filter { isVisible(it, pose, scene.center) }.forEach { face ->
+            val path = pathOf(projectAll(face.corners))
+            drawPath(path, Color(0x12FFFFFF))
+            drawPath(path, Color(0x887AD1FF), style = Stroke(width = 1.6f))
+        }
+    }
+
+    // 2) 限制面：机箱限长 / 侧板限高
+    scene.limits.forEach { limit ->
+        val pts = projectAll(limit.corners)
+        val color = if (limit.conflict) Color(0xFFFF5252) else Color(0xFF7AD1FF)
+        drawPath(pathOf(pts), color.copy(alpha = 0.10f))
+        for (i in pts.indices) {
+            dashedLine(pts[i], pts[(i + 1) % pts.size], color.copy(alpha = 0.8f))
+        }
+    }
+
+    // 3) 实体零件：远到近
+    val faces = scene.boxes.filterNot { it.ghost }.flatMap { box ->
+        facesOf(box)
+            .filter { isVisible(it, pose, scene.center) }
+            .map { face ->
+                val projected = projectAll(face.corners)
+                Triple(box, face, projected)
+            }
+    }.sortedByDescending { (_, _, pts) -> pts.map { it.depth }.average() }
 
     faces.forEach { (box, face, pts) ->
-        val path = Path().apply {
-            moveTo(pts[0].x, pts[0].y)
-            for (i in 1 until pts.size) lineTo(pts[i].x, pts[i].y)
-            close()
-        }
+        val path = pathOf(pts)
         val shade = shadeOf(face, pose)
-        val base = baseColor(box, face, shade)
-        drawPath(path, base)
-        clipPath(path) { textures(box, face, pts, shade) }
+        drawPath(path, baseColor(box, face, shade))
+        clipPath(path) { textures(box, face, pts) }
         drawPath(
             path,
             if (box.conflict) Color(0xFFFF5252) else Color(0x66000000),
             style = Stroke(width = if (box.conflict) 3f else 1.4f),
+        )
+    }
+}
+
+private fun DrawScope.dashedLine(a: P2, b: P2, color: Color) {
+    val dx = b.x - a.x
+    val dy = b.y - a.y
+    val len = kotlin.math.sqrt(dx * dx + dy * dy)
+    if (len < 1f) return
+    val segments = (len / 8f).toInt().coerceAtLeast(1)
+    for (i in 0 until segments step 2) {
+        val t0 = i.toFloat() / segments
+        val t1 = ((i + 1).toFloat() / segments).coerceAtMost(1f)
+        drawLine(
+            color,
+            Offset(a.x + dx * t0, a.y + dy * t0),
+            Offset(a.x + dx * t1, a.y + dy * t1),
+            strokeWidth = 1.4f,
         )
     }
 }
@@ -208,7 +237,11 @@ private fun baseColor(box: Box3, face: FaceCorners, shade: Float): Color {
     val base = when (box.style) {
         BoxStyle.CASE -> Color(0xFF39414D)
         BoxStyle.BOARD -> Color(0xFF20342A)
-        BoxStyle.GPU -> if (face.face == Face.TOP) Color(0xFF4A505A) else Color(0xFF1C4A32)
+        BoxStyle.GPU -> when (face.face) {
+            Face.TOP -> Color(0xFF4A505A)
+            Face.BOTTOM -> Color(0xFF23262B)
+            else -> Color(0xFF1C4A32)
+        }
         BoxStyle.COOLER -> Color(0xFF9AA3AE)
     }
     val tint = if (box.conflict) Color(0xFFB23A3A) else base
@@ -222,7 +255,7 @@ private fun lerp(from: Color, to: Color, t: Float): Color = Color(
     alpha = from.alpha + (to.alpha - from.alpha) * t,
 )
 
-private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>, shade: Float) {
+private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>) {
     val xs = pts.map { it.x }
     val ys = pts.map { it.y }
     val left = xs.min()
@@ -236,22 +269,7 @@ private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>, shad
     val ink = Color(0x33FFFFFF)
     val strong = Color(0x55FFFFFF)
     when (box.style) {
-        BoxStyle.CASE -> {
-            if (face.face == Face.TOP || face.face == Face.BOTTOM) {
-                val step = h / 8f
-                var y = top
-                while (y < bottom) {
-                    drawLine(ink, Offset(left, y), Offset(right, y), strokeWidth = 1f)
-                    y += step
-                }
-            }
-            val vStep = w / 10f
-            var x = left
-            while (x < right) {
-                drawLine(ink, Offset(x, top), Offset(x, bottom), strokeWidth = 1f)
-                x += vStep
-            }
-        }
+        BoxStyle.CASE -> Unit // ghost 单独绘制
 
         BoxStyle.BOARD -> {
             repeat(5) { i ->
@@ -260,28 +278,39 @@ private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>, shad
             }
         }
 
-        BoxStyle.GPU -> {
-            if (face.face == Face.TOP) {
+        BoxStyle.GPU -> when (face.face) {
+            Face.TOP -> {
                 repeat(7) { i ->
                     val x = left + w * (i + 1) / 8f
                     drawLine(strong, Offset(x, top + h * 0.12f), Offset(x, bottom - h * 0.12f), strokeWidth = 2f)
                 }
-            } else {
+            }
+
+            Face.BOTTOM -> {
                 val r = min(w, h) * 0.22f
                 val cy = top + h * 0.5f
                 listOf(0.3f, 0.7f).forEach { fx ->
                     val cx = left + w * fx
-                    drawCircle(Color(0xCC1A1D21), radius = r, center = Offset(cx, cy))
+                    drawCircle(Color(0xCC131518), radius = r, center = Offset(cx, cy))
                     drawCircle(Color(0x55FFFFFF), radius = r * 0.82f, center = Offset(cx, cy), style = Stroke(1.6f))
                     repeat(7) { blade ->
                         val a = blade * (6.2832f / 7f)
                         drawLine(
                             Color(0x66FFFFFF),
                             Offset(cx, cy),
-                            Offset(cx + ((r * 0.78f) * kotlin.math.cos(a)), cy + ((r * 0.78f) * kotlin.math.sin(a))),
+                            Offset(cx + r * 0.78f * cos(a), cy + r * 0.78f * sin(a)),
                             strokeWidth = 1.4f,
                         )
                     }
+                }
+            }
+
+            else -> {
+                val step = w / 9f
+                var x = left
+                while (x < right) {
+                    drawLine(ink, Offset(x, top + h * 0.15f), Offset(x, bottom - h * 0.15f), strokeWidth = 1f)
+                    x += step
                 }
             }
         }
@@ -295,31 +324,27 @@ private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>, shad
             }
         }
     }
-    // 顶部高光，让盒体不像纯色贴片
-    drawLine(
-        Color(0x22FFFFFF),
-        Offset(left, top),
-        Offset(right, top),
-        strokeWidth = 2f,
-    )
+    drawLine(Color(0x22FFFFFF), Offset(left, top), Offset(right, top), strokeWidth = 2f)
 }
 
 private fun DrawScope.drawGroundGrid(scene: Scene3d, pose: ViewPose) {
-    val center = Vec3(scene.maxExtentMm / 2f, scene.maxExtentMm * 0.42f, 0f)
-    val span = scene.maxExtentMm * 1.4f
+    val span = scene.radius * 1.6f
     val step = span / 8f
     val color = Color(0x1A7AD1FF)
-    var x = -span / 2f
-    while (x <= span) {
-        val a = project(Vec3(scene.maxExtentMm / 2f + x, 0f, -span / 2f), center, pose, size.width, size.height)
-        val b = project(Vec3(scene.maxExtentMm / 2f + x, 0f, span / 2f), center, pose, size.width, size.height)
+    val y = 0f
+    val x0 = scene.center.x - span / 2f
+    val z0 = scene.center.z - span / 2f
+    var x = x0
+    while (x <= x0 + span) {
+        val a = project(Vec3(x, y, z0), scene.center, pose, size.width, size.height)
+        val b = project(Vec3(x, y, z0 + span), scene.center, pose, size.width, size.height)
         drawLine(color, Offset(a.x, a.y), Offset(b.x, b.y), strokeWidth = 1f)
         x += step
     }
-    var z = -span / 2f
-    while (z <= span) {
-        val a = project(Vec3(scene.maxExtentMm / 2f - span / 2f, 0f, z), center, pose, size.width, size.height)
-        val b = project(Vec3(scene.maxExtentMm / 2f + span / 2f, 0f, z), center, pose, size.width, size.height)
+    var z = z0
+    while (z <= z0 + span) {
+        val a = project(Vec3(x0, y, z), scene.center, pose, size.width, size.height)
+        val b = project(Vec3(x0 + span, y, z), scene.center, pose, size.width, size.height)
         drawLine(color, Offset(a.x, a.y), Offset(b.x, b.y), strokeWidth = 1f)
         z += step
     }
