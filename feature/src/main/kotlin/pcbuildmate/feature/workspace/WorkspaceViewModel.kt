@@ -16,6 +16,7 @@ import pcbuildmate.contracts.DiagnosisState
 import pcbuildmate.contracts.Effect
 import pcbuildmate.contracts.OverallStatus
 import pcbuildmate.contracts.Preferences
+import pcbuildmate.contracts.QuantityRules
 import pcbuildmate.contracts.BudgetRecommenderPort
 import pcbuildmate.contracts.BuildStorePort
 import pcbuildmate.contracts.RecommendationRequest
@@ -478,6 +479,18 @@ class WorkspaceViewModel(
             return
         }
         val rev = revision ?: return
+        val item = rev.items.firstOrNull { it.componentId == componentId } ?: return
+        if (!QuantityRules.isValid(item.category, quantity)) {
+            // 单件类目（CPU/主板/显卡/电源/机箱/散热）不允许多件：规则只按单件评估，
+            // 多件会翻倍总价却保持同一功耗/兼容结论，必须拒绝而不是只警告。
+            lastRejection = Rejection(
+                RejectionReason.QUANTITY_INVALID,
+                TextKey.QUANTITY_NOT_APPLICABLE,
+            )
+            lastBanner = TextKey.QUANTITY_NOT_APPLICABLE
+            publish()
+            return
+        }
         revisionHistory.addLast(rev)
         val items = rev.items.map {
             if (it.componentId == componentId) it.copy(quantity = quantity) else it

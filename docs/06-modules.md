@@ -115,6 +115,7 @@ val state: StateFlow<WorkspaceUiState>
 不变量：
 
 - 每次 Add/Remove/Replace/SetQuantity/Undo 产生新 revision，`totalCny` 同步（INV-01/02/10）；
+- 单件类目（CPU/主板/显卡/电源/机箱/散热）数量恒为 1；`SetQuantity > 1` 被拒绝且不产生新 revision（ADR-0010）；
 - 编辑后 `diagnosisState == Idle` 且 `currentDiagnosis == null`，**不自动** StartCheck；
 - 只有经 `Rechecking` 才能 `Applied`（INV-07）；
 - 被拒绝的意图不改变 state，只写 `rejection`。

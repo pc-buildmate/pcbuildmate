@@ -31,6 +31,7 @@ enum class TextKey(val key: String) {
     INVALID_STATE("invalid_state"),
     PREVIEW_NOT_READY("preview_not_ready"),
     NO_DISPLAY_OUTPUT("no_display_output"),
+    QUANTITY_NOT_APPLICABLE("quantity_not_applicable"),
 }
 
 /** 拒绝原因。枚举冻结；新增走契约变更。 */
