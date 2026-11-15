@@ -54,8 +54,8 @@ fun Preview3DScreen(
     onBack: () -> Unit,
 ) {
     val scene = remember(revision, catalogue) { SceneBuilder.build(revision, catalogue) }
-    var yaw by rememberSaveable { mutableStateOf(2.15f) }
-    var pitch by rememberSaveable { mutableStateOf(0.38f) }
+    var yaw by rememberSaveable { mutableStateOf(-1.35f) }
+    var pitch by rememberSaveable { mutableStateOf(0.35f) }
     var zoom by rememberSaveable { mutableStateOf(1f) }
     var showCase by rememberSaveable { mutableStateOf(true) }
     val visibleScene = remember(scene, showCase) {
@@ -75,8 +75,8 @@ fun Preview3DScreen(
                         Text(if (showCase) "隐藏机箱" else "显示机箱")
                     }
                     TextButton(onClick = {
-                        yaw = 2.15f
-                        pitch = 0.38f
+                        yaw = -1.35f
+                        pitch = 0.35f
                         zoom = 1f
                     }) { Text("重置视角") }
                 },
@@ -243,6 +243,7 @@ private fun baseColor(box: Box3, face: FaceCorners, shade: Float): Color {
             else -> Color(0xFF1C4A32)
         }
         BoxStyle.COOLER -> Color(0xFF9AA3AE)
+        BoxStyle.IO -> Color(0xFF5A616B)
     }
     val tint = if (box.conflict) Color(0xFFB23A3A) else base
     return lerp(Color.Black, tint, shade.coerceIn(0.55f, 1f))
@@ -299,10 +300,16 @@ private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>) {
         }
 
         BoxStyle.COOLER -> {
-            // 鳍片：沿面内一个方向等距
             repeat(9) { i ->
                 val v = (i + 1) / 10f
                 line(0.06f, v, 0.94f, v, Color(0x77202428), 1.8f)
+            }
+        }
+
+        BoxStyle.IO -> {
+            repeat(6) { i ->
+                val u = (i + 1) / 7f
+                line(u, 0.1f, u, 0.9f, Color(0x55000000), 1.6f)
             }
         }
     }
@@ -325,21 +332,21 @@ private fun DrawScope.drawGroundGrid(scene: Scene3d, pose: ViewPose) {
     val span = scene.radius * 1.6f
     val step = span / 8f
     val color = Color(0x1A7AD1FF)
-    val y = 0f
-    val x0 = scene.center.x - span / 2f
-    val z0 = scene.center.z - span / 2f
+    val c = scene.center
+    val x0 = c.x - span / 2f
+    val y0 = c.y - span / 2f
     var x = x0
     while (x <= x0 + span) {
-        val a = project(Vec3(x, y, z0), scene.center, pose, size.width, size.height)
-        val b = project(Vec3(x, y, z0 + span), scene.center, pose, size.width, size.height)
+        val a = project(Vec3(x, y0, 0f), c, pose, size.width, size.height)
+        val b = project(Vec3(x, y0 + span, 0f), c, pose, size.width, size.height)
         drawLine(color, Offset(a.x, a.y), Offset(b.x, b.y), strokeWidth = 1f)
         x += step
     }
-    var z = z0
-    while (z <= z0 + span) {
-        val a = project(Vec3(x0, y, z), scene.center, pose, size.width, size.height)
-        val b = project(Vec3(x0 + span, y, z), scene.center, pose, size.width, size.height)
+    var y = y0
+    while (y <= y0 + span) {
+        val a = project(Vec3(x0, y, 0f), c, pose, size.width, size.height)
+        val b = project(Vec3(x0 + span, y, 0f), c, pose, size.width, size.height)
         drawLine(color, Offset(a.x, a.y), Offset(b.x, b.y), strokeWidth = 1f)
-        z += step
+        y += step
     }
 }

@@ -6,17 +6,18 @@ import pcbuildmate.contracts.CatalogueRecord
 import pcbuildmate.contracts.Category
 
 /**
- * 3D 场景最小模型。坐标系见 docs/18-3d-coordinates.md：
+ * 3D 场景最小模型（右手系，Z 向上）：
  *
- *   X = 0 机箱背板内侧，+ 向前（深度）
- *   Y = 0 机箱底部内壁，+ 向上
- *   Z = 0 主板表面，+ 向左侧板
+ *   X = 主板法线（0 = 板面，+ 指向机箱内/显卡宽度方向）
+ *   Y = 前后深度（0 = 后置 I/O 面，+ 向前/显卡长度方向）
+ *   Z = 高度（0 = 主板下沿，+ 向上/PCIe 槽位排列方向）
  *
- * 盒体用 min/max 毫米坐标表达；先列坐标再画图，避免轴搞反。
+ * 主板厚度放在 X 负方向：板体 X -6..0，零件从 X=0 往外长。
+ * 机箱与主板上沿对齐（caseTop = boardTop）。
  */
 data class Vec3(val x: Float, val y: Float, val z: Float)
 
-enum class BoxStyle { GPU, CASE, COOLER, BOARD }
+enum class BoxStyle { GPU, CASE, COOLER, BOARD, IO }
 
 data class Box3(
     val id: String,
@@ -33,7 +34,6 @@ data class Box3(
         get() = Vec3(max.x - min.x, max.y - min.y, max.z - min.z)
 }
 
-/** 半透明限制面（例如机箱限长 320mm 所在的平面）。 */
 data class LimitPlane(
     val id: String,
     val label: String,
@@ -63,14 +63,15 @@ data class Scene3d(
 
 object SceneBuilder {
 
-    // ---- 规范常量（docs/18 §18.2）------------------------------------
-    const val SLOT_PITCH_MM = 20.32f
-    const val BRACKET_HEIGHT_MM = 120f
-    const val IO_HEIGHT_MM = 44.45f
-    const val MB_FLOOR_MM = 80f
-    const val GPU_SLOT_INDEX = 2
     const val BOARD_THICKNESS_MM = 6f
-    const val GPU_WIDTH_MM = 120f
+    const val SLOT_PITCH_MM = 20.32f
+    const val LAST_SLOT_Z_MM = 147f
+    const val SLOT_GRID = 7
+    const val IO_WIDTH_MM = 45f      // 沿 X（板法线方向伸出）
+    const val IO_THICKNESS_MM = 6f   // 沿 Y
+    const val IO_HEIGHT_MM = 160f    // 沿 Z，从板上沿往下
+    const val GPU_WIDTH_MM = 110f    // 沿 X
+    const val GPU_SLOT_INDEX = 2
 
     fun build(revision: BuildRevision?, catalogue: CataloguePort): Scene3d? {
         val items = revision?.items ?: return null
@@ -84,118 +85,133 @@ object SceneBuilder {
         val cooler = record(Category.COOLER)
         val board = record(Category.MOTHERBOARD)
 
-        val (boardDepth, boardHeight) = boardDims(board?.text("formFactor"))
-        val mbTop = MB_FLOOR_MM + boardHeight
+        val formFactor = board?.text("formFactor") ?: "MICRO_ATX"
+        val boardHeight = boardHeight(formFactor)
+        val boardDepth = boardDepth(formFactor)
+        val slotCount = slotCount(formFactor)
         val caseLength = case?.num("maxGpuLengthMm")
         val caseCoolerHeight = case?.num("maxCoolerHeightMm") ?: 160f
+        val caseTop = boardHeight
 
         val boxes = mutableListOf<Box3>()
         val limits = mutableListOf<LimitPlane>()
         val labels = mutableListOf<DimLabel>()
         val notes = mutableListOf<String>()
 
-        // 主板：X 深度、Y 高度、Z 厚度
+        // 主板：X -6..0，Y 0..depth，Z 0..height
         boxes += Box3(
             id = "board",
-            label = "主板 ${board?.text("formFactor") ?: "?"}",
-            min = Vec3(0f, MB_FLOOR_MM, 0f),
-            max = Vec3(boardDepth, mbTop, BOARD_THICKNESS_MM),
+            label = "主板 $formFactor",
+            min = Vec3(-BOARD_THICKNESS_MM, 0f, 0f),
+            max = Vec3(0f, boardDepth, boardHeight),
             style = BoxStyle.BOARD,
         )
 
-        // 机箱允许空间（估算，ghost 容器）
-        val caseDepth = maxOf(caseLength ?: 320f, 300f) + 70f
-        val caseTop = mbTop + 35f
-        val caseWidth = BOARD_THICKNESS_MM + caseCoolerHeight
+        // I/O：从板上沿往下 160，沿 X 伸出 45，Y 厚 6（垂直于主板）
         boxes += Box3(
-            id = "case",
-            label = "机箱允许空间",
-            min = Vec3(-15f, 0f, -10f),
-            max = Vec3(caseDepth, caseTop, caseWidth),
-            style = BoxStyle.CASE,
-            ghost = true,
+            id = "io",
+            label = "后置 I/O",
+            min = Vec3(0f, 0f, boardHeight - IO_HEIGHT_MM),
+            max = Vec3(IO_WIDTH_MM, IO_THICKNESS_MM, boardHeight),
+            style = BoxStyle.IO,
         )
+        labels += DimLabel("I/O ${fmt(IO_WIDTH_MM)}×${fmt(IO_HEIGHT_MM)}", Tone.MUTED)
 
-        // 显卡：长度 X，厚度 Y（2–3 个槽位），卡身宽度 Z
+        // 槽位网格：最后一个槽 147，向上 20.32；板型只取上面 N 个
+        fun slotZ(k: Int): Float = LAST_SLOT_Z_MM + (SLOT_GRID - k) * SLOT_PITCH_MM
+        val usedSlots = (1..slotCount).map { slotZ(it) }
+        labels += DimLabel(
+            "槽位 Z ${fmt(usedSlots.last())} → ${fmt(usedSlots.first())}（$slotCount 槽）",
+            Tone.MUTED,
+        )
+        if (slotCount < SLOT_GRID) {
+            notes += "该板型只有 $slotCount 个槽位；ITX 的单槽位于 Z=${fmt(slotZ(1))}，允许超出 170mm 板高"
+        }
+
+        // 显卡
         val gpuLength = gpu?.num("lengthMm")
         val gpuThickness = gpu?.num("thicknessMm") ?: 50f
+        val slotIndex = GPU_SLOT_INDEX.coerceAtMost(slotCount)
         if (gpuLength != null) {
-            val bracketTop = mbTop - IO_HEIGHT_MM - (GPU_SLOT_INDEX - 1) * SLOT_PITCH_MM
-            val gpuMinY = bracketTop - gpuThickness
+            val centerZ = slotZ(slotIndex)
             val overLength = caseLength != null && gpuLength > caseLength
             boxes += Box3(
                 id = "gpu",
                 label = "显卡 ${gpu.text("model")}",
-                min = Vec3(0f, gpuMinY, BOARD_THICKNESS_MM),
-                max = Vec3(gpuLength, bracketTop, BOARD_THICKNESS_MM + GPU_WIDTH_MM),
+                min = Vec3(0f, 0f, centerZ - gpuThickness / 2f),
+                max = Vec3(GPU_WIDTH_MM, gpuLength, centerZ + gpuThickness / 2f),
                 style = BoxStyle.GPU,
                 conflict = overLength,
             )
-            labels += DimLabel("显卡长 ${fmt(gpuLength)} mm", if (overLength) Tone.WARN else Tone.NORMAL)
-            labels += DimLabel("厚 ${fmt(gpuThickness)} mm（${fmt(gpuThickness / SLOT_PITCH_MM, 1)} 槽）", Tone.NORMAL)
-            notes += "显卡卡身宽度按 ${fmt(GPU_WIDTH_MM)} mm 估算（目录无该字段）；位置取第 $GPU_SLOT_INDEX 个 PCIe 槽位"
-            if (overLength) {
-                labels += DimLabel("超出限长 ${fmt(gpuLength - caseLength!!)} mm", Tone.WARN)
-            }
+            labels += DimLabel("长 ${fmt(gpuLength)} mm", if (overLength) Tone.WARN else Tone.NORMAL)
+            labels += DimLabel("厚 ${fmt(gpuThickness)} / ${fmt(gpuThickness / SLOT_PITCH_MM, 1)} 槽", Tone.NORMAL)
+            notes += "显卡第 $slotIndex 槽（中线 Z=${fmt(centerZ)}），宽 ${fmt(GPU_WIDTH_MM)}，长度沿 Y"
+            if (overLength) labels += DimLabel("超出限长 ${fmt(gpuLength - caseLength!!)} mm", Tone.WARN)
         } else {
             labels += DimLabel("无独显 · 核显输出", Tone.MUTED)
-            notes += "当前配置没有显卡条目：3D 图只显示主板与散热"
+            notes += "当前配置没有显卡条目"
         }
 
-        // 机箱限长平面：X = maxGpuLengthMm
+        // 机箱限长面
         if (caseLength != null) {
             labels += DimLabel("机箱限长 ${fmt(caseLength)} mm", if (gpuLength != null && gpuLength > caseLength) Tone.WARN else Tone.NORMAL)
-            val y0 = if (gpuLength != null) mbTop - IO_HEIGHT_MM - 4 * SLOT_PITCH_MM else mbTop - IO_HEIGHT_MM
             limits += LimitPlane(
                 id = "case-length",
                 label = "机箱限长 ${fmt(caseLength)} mm",
                 corners = listOf(
-                    Vec3(caseLength, y0, BOARD_THICKNESS_MM),
-                    Vec3(caseLength, mbTop - IO_HEIGHT_MM, BOARD_THICKNESS_MM),
-                    Vec3(caseLength, mbTop - IO_HEIGHT_MM, caseWidth),
-                    Vec3(caseLength, y0, caseWidth),
+                    Vec3(0f, caseLength, slotZ(slotIndex) - 2 * SLOT_PITCH_MM),
+                    Vec3(GPU_WIDTH_MM, caseLength, slotZ(slotIndex) - 2 * SLOT_PITCH_MM),
+                    Vec3(GPU_WIDTH_MM, caseLength, slotZ(slotIndex) + 2 * SLOT_PITCH_MM),
+                    Vec3(0f, caseLength, slotZ(slotIndex) + 2 * SLOT_PITCH_MM),
                 ),
                 conflict = gpuLength != null && gpuLength > caseLength,
             )
         } else {
             labels += DimLabel("未选择机箱 · 不判限长", Tone.MUTED)
-            notes += "配置里没有机箱条目：只显示主板/显卡/散热，不判断限长"
         }
 
-        // 散热器：X/Y 为底面，高度沿 Z（从主板表面到侧板）
+        // 散热：高度沿 X，底面在板面上方 CPU 区域
         val coolerHeight = cooler?.num("heightMm")
         if (coolerHeight != null) {
             val overHeight = coolerHeight > caseCoolerHeight
-            val cx = boardDepth * 0.45f
-            val cy = mbTop - 90f
+            val z0 = boardHeight - 250f
+            val z1 = z0 + 130f
+            val y0 = 55f
             boxes += Box3(
                 id = "cooler",
                 label = "散热 ${cooler.text("model")}",
-                min = Vec3(cx - 65f, cy - 65f, BOARD_THICKNESS_MM),
-                max = Vec3(cx + 65f, cy + 65f, BOARD_THICKNESS_MM + coolerHeight),
+                min = Vec3(0f, y0, z0),
+                max = Vec3(coolerHeight, y0 + 130f, z1),
                 style = BoxStyle.COOLER,
                 conflict = overHeight,
             )
-            labels += DimLabel(
-                "散热高 ${fmt(coolerHeight)} / 限高 ${fmt(caseCoolerHeight)} mm",
-                if (overHeight) Tone.WARN else Tone.NORMAL,
-            )
-            // 散热限高平面：Z = 6 + maxCoolerHeightMm
-            val zLimit = BOARD_THICKNESS_MM + caseCoolerHeight
+            labels += DimLabel("高 ${fmt(coolerHeight)} / 限高 ${fmt(caseCoolerHeight)}", if (overHeight) Tone.WARN else Tone.NORMAL)
             limits += LimitPlane(
                 id = "case-cooler",
-                label = "侧板限高 ${fmt(caseCoolerHeight)} mm",
+                label = "侧板限高 ${fmt(caseCoolerHeight)}",
                 corners = listOf(
-                    Vec3(cx - 65f, cy - 65f, zLimit),
-                    Vec3(cx + 65f, cy - 65f, zLimit),
-                    Vec3(cx + 65f, cy + 65f, zLimit),
-                    Vec3(cx - 65f, cy + 65f, zLimit),
+                    Vec3(caseCoolerHeight, y0, z0),
+                    Vec3(caseCoolerHeight, y0 + 130f, z0),
+                    Vec3(caseCoolerHeight, y0 + 130f, z1),
+                    Vec3(caseCoolerHeight, y0, z1),
                 ),
                 conflict = overHeight,
             )
         }
 
-        notes += "盒体只表达尺寸与间隙，不表达外观；红框 = 超出机箱上限"
+        // 机箱允许空间：透明 ghost，上沿与主板上沿对齐
+        val caseWidth = maxOf(GPU_WIDTH_MM, coolerHeight ?: 160f, IO_WIDTH_MM) + 20f
+        val caseDepth = maxOf(caseLength ?: 320f, 300f) + 70f
+        boxes += Box3(
+            id = "case",
+            label = "机箱允许空间",
+            min = Vec3(-10f, -20f, 0f),
+            max = Vec3(caseWidth, caseDepth, caseTop),
+            style = BoxStyle.CASE,
+            ghost = true,
+        )
+
+        notes += "盒体只表达尺寸与间隙；X=法线，Y=深度，Z=高度（docs/18）"
 
         val all = boxes
         return Scene3d(
@@ -209,13 +225,28 @@ object SceneBuilder {
         )
     }
 
-    /** 板型 → (X 深度, Y 高度)，见 docs/18 §18.3。 */
-    private fun boardDims(formFactor: String?): Pair<Float, Float> = when (formFactor?.uppercase()) {
-        "ATX" -> 244f to 305f
-        "MICRO_ATX" -> 244f to 244f
-        "MINI_ITX" -> 170f to 170f
-        "EATX" -> 305f to 330f
-        else -> 244f to 244f
+    private fun boardHeight(formFactor: String): Float = when (formFactor.uppercase()) {
+        "ATX" -> 305f
+        "MICRO_ATX" -> 244f
+        "MINI_ITX" -> 170f
+        "EATX" -> 330f
+        else -> 244f
+    }
+
+    private fun boardDepth(formFactor: String): Float = when (formFactor.uppercase()) {
+        "ATX" -> 244f
+        "MICRO_ATX" -> 244f
+        "MINI_ITX" -> 170f
+        "EATX" -> 305f
+        else -> 244f
+    }
+
+    private fun slotCount(formFactor: String): Int = when (formFactor.uppercase()) {
+        "ATX" -> 7
+        "MICRO_ATX" -> 4
+        "MINI_ITX" -> 1
+        "EATX" -> 7
+        else -> 4
     }
 
     private fun CatalogueRecord.num(path: String): Float? =
