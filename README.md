@@ -125,6 +125,7 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 | 提案 / 讲稿 / Q&A 原文 | [materials/](materials/README.md) |
 | 可点击的原型 | [site/](site/) |
 | 规约驱动 / spec-kit 取舍 | [docs/16](docs/16-spec-driven.md) |
+| 答辩演示脚本 / Q&A | [docs/defense/DEMO.md](docs/defense/DEMO.md) |
 
 ## 自检
 
