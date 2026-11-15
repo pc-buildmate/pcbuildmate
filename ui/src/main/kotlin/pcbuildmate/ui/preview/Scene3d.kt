@@ -186,8 +186,9 @@ object SceneBuilder {
             boxes += Box3(
                 id = "cooler",
                 label = "散热 ${cooler.text("model")}",
-                min = Vec3(0f, y0, z0),
-                max = Vec3(coolerHeight, y0 + 130f, z1),
+                // 底面离板面 1mm，避免与主板 X=0 面共面导致排序穿模
+                min = Vec3(1f, y0, z0),
+                max = Vec3(1f + coolerHeight, y0 + 130f, z1),
                 style = BoxStyle.COOLER,
                 conflict = overHeight,
             )
