@@ -54,3 +54,8 @@ artifacts/
 
 # gh log cache
 .gh-cache/
+
+.signing/
+keystore.properties
+*.jks
+*.keystore

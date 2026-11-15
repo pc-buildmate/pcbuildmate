@@ -28,9 +28,9 @@
 |---|---|---|---|---|---|
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | paused | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 | QA-01 | 矩阵 + 12 条关键变异 | done | @MoeField | [QA-01](QA-01.md) |
-| POLISH-01 | 文案资源 / 可访问性 / 截图 | doing | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
-| DEFENSE-01 | 讲稿 / 演示脚本 / Q&A | backlog | 开放 | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
-| RELEASE-01 | 签名 APK / Release | backlog | @MoeField | QA | [RELEASE-01](RELEASE-01.md) |
+| POLISH-01 | 文案资源 / 可访问性 / 截图 | **doing** | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
+| DEFENSE-01 | 讲稿 / 演示脚本 / Q&A / PPT | **doing** | @MoeField | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
+| RELEASE-01 | 签名 APK / GitHub Release | **doing** | @MoeField | QA | [RELEASE-01](RELEASE-01.md) |
 
 ## 认领规则
 
@@ -40,10 +40,9 @@
 4. AI 生成的代码也要人来跑一次验收命令、看一眼截图。
 5. 不强制按顺序，也不强制每人只做一个；没人做的由 @MoeField 兜底，但不要沉默地等。
 
-## 本周目标（2026-11-04 起）
+## 本周目标（2026-11-15 起）
 
-1. **D4 推荐**：Entry 能输入预算/用途，生成 8 类起始配置；
-2. **DEMO 目录**：已到 32 条；继续补到 8 类 × 4（另开 DEMO-02）；
-3. **QA 矩阵**：`check-matrix` 读真实测试结果，不再只打印规格；
-4. **DATA 持久化**：杀进程后 A/B 还在；
-5. 上述完成后，更新演示脚本与截图。
+1. **RELEASE-01**：本地 `1.0.0-defense` signed APK 已出，补 GitHub Release + checksum；
+2. **DEFENSE-01**：9 步脚本、15 分钟讲稿、Q&A、PPT；
+3. **POLISH-01**：文案/空态/截图，不改业务语义；
+4. **11/28 功能冻结**，之后只修 bug / 文档。

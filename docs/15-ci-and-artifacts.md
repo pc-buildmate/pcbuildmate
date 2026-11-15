@@ -44,7 +44,15 @@ build-tools;37.0.0
 platform-tools
 ```
 
-## 15.4 Release 计划（RELEASE-01）
+## 15.4 本地签名 APK（已完成）
+
+- `versionName=1.0.0-defense`
+- 本地 `.signing/pcbuildmate-defense.jks`，`keystore.properties` 已在 `.gitignore`
+- `./gradlew :app:assembleRelease` → `app/build/outputs/apk/release/app-release.apk`
+- `apksigner verify`：v2 通过
+- 答辩副本：`artifacts/PC-Buildmate-1.0.0-defense.apk`
+
+## 15.5 Release 计划（RELEASE-01）
 
 需要四个 GitHub Secrets：
 
@@ -68,7 +76,7 @@ on:
 - 没有 secrets 时只构建 debug，不假装“已发布”；
 - tag 由 Captain 打，不跟普通 PR 混。
 
-## 15.5 为什么不用 tag-only
+## 15.6 为什么不用 tag-only
 
 | 方案 | 问题 |
 |---|---|
@@ -76,7 +84,7 @@ on:
 | 每个 PR 都签 release | 每个 PR 都接触 keystore，风险高 |
 | **PR/main debug + tag release（推荐）** | 早发现问题，签名只在发布时碰 |
 
-## 15.6 常见失败
+## 15.7 常见失败
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
