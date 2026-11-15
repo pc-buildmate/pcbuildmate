@@ -122,6 +122,23 @@ class Scene3dTest {
         assertTrue(visible in 1..3, "实际 $visible")
     }
 
+    @Test
+    fun `surface texture coordinates are bilinear in the face plane`() {
+        val quad = listOf(
+            P2(0f, 0f, 1f),
+            P2(100f, 20f, 1f),
+            P2(90f, 80f, 1f),
+            P2(10f, 60f, 1f),
+        )
+
+        assertEquals(0f, bilinear(quad, 0f, 0f).x, 0.01f)
+        assertEquals(0f, bilinear(quad, 0f, 0f).y, 0.01f)
+        assertEquals(100f, bilinear(quad, 1f, 0f).x, 0.01f)
+        assertEquals(20f, bilinear(quad, 1f, 0f).y, 0.01f)
+        assertEquals(50f, bilinear(quad, 0.5f, 0.5f).x, 0.01f)
+        assertEquals(40f, bilinear(quad, 0.5f, 0.5f).y, 0.01f)
+    }
+
     // ---------------------------------------------------------------- fixture
 
     private fun revisionWith(gpu: String?, case: String, cooler: String? = null): BuildRevision {
