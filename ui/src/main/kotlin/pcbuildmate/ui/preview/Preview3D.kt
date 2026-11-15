@@ -256,75 +256,69 @@ private fun lerp(from: Color, to: Color, t: Float): Color = Color(
 )
 
 private fun DrawScope.textures(box: Box3, face: FaceCorners, pts: List<P2>) {
-    val xs = pts.map { it.x }
-    val ys = pts.map { it.y }
-    val left = xs.min()
-    val right = xs.max()
-    val top = ys.min()
-    val bottom = ys.max()
-    val w = right - left
-    val h = bottom - top
-    if (w < 6f || h < 6f) return
+    // 纹理必须贴在面所在平面上：用双线性插值把 (u,v) 映射到投影后的四边形，
+    // 这样转动时线条跟着面走，而不是固定在屏幕坐标轴方向。
+    fun p(u: Float, v: Float): Offset = bilinear(pts, u, v)
+    fun line(u0: Float, v0: Float, u1: Float, v1: Float, color: Color, width: Float) {
+        drawLine(color, p(u0, v0), p(u1, v1), strokeWidth = width)
+    }
 
-    val ink = Color(0x33FFFFFF)
-    val strong = Color(0x55FFFFFF)
+    val faint = Color(0x22FFFFFF)
+    val ink = Color(0x3AFFFFFF)
     when (box.style) {
         BoxStyle.CASE -> Unit // ghost 单独绘制
 
         BoxStyle.BOARD -> {
-            repeat(5) { i ->
-                val y = top + h * (i + 1) / 6f
-                drawLine(Color(0x66D4AF37), Offset(left + w * 0.08f, y), Offset(right - w * 0.08f, y), strokeWidth = 2.2f)
+            // 横向：PCIe/内存槽示意；纵向：板面走线
+            repeat(6) { i ->
+                val v = (i + 1) / 7f
+                line(0.06f, v, 0.94f, v, Color(0x66D4AF37), 2.4f)
+            }
+            repeat(4) { i ->
+                val u = (i + 1) / 5f
+                line(u, 0.08f, u, 0.92f, faint, 1.4f)
             }
         }
 
         BoxStyle.GPU -> when (face.face) {
-            Face.TOP -> {
-                repeat(7) { i ->
-                    val x = left + w * (i + 1) / 8f
-                    drawLine(strong, Offset(x, top + h * 0.12f), Offset(x, bottom - h * 0.12f), strokeWidth = 2f)
-                }
+            // 背板：纵向鳍片（沿长度方向）
+            Face.TOP -> repeat(7) { i ->
+                val v = (i + 1) / 8f
+                line(0.08f, v, 0.92f, v, Color(0x55FFFFFF), 2f)
             }
-
-            Face.BOTTOM -> {
-                val r = min(w, h) * 0.22f
-                val cy = top + h * 0.5f
-                listOf(0.3f, 0.7f).forEach { fx ->
-                    val cx = left + w * fx
-                    drawCircle(Color(0xCC131518), radius = r, center = Offset(cx, cy))
-                    drawCircle(Color(0x55FFFFFF), radius = r * 0.82f, center = Offset(cx, cy), style = Stroke(1.6f))
-                    repeat(7) { blade ->
-                        val a = blade * (6.2832f / 7f)
-                        drawLine(
-                            Color(0x66FFFFFF),
-                            Offset(cx, cy),
-                            Offset(cx + r * 0.78f * cos(a), cy + r * 0.78f * sin(a)),
-                            strokeWidth = 1.4f,
-                        )
-                    }
-                }
+            // 底面朝下，只留淡淡的走线，不做风扇贴图
+            Face.BOTTOM -> repeat(5) { i ->
+                val u = (i + 1) / 6f
+                line(u, 0.1f, u, 0.9f, faint, 1.2f)
             }
-
-            else -> {
-                val step = w / 9f
-                var x = left
-                while (x < right) {
-                    drawLine(ink, Offset(x, top + h * 0.15f), Offset(x, bottom - h * 0.15f), strokeWidth = 1f)
-                    x += step
-                }
+            // 侧面：PCB 走线
+            else -> repeat(6) { i ->
+                val v = (i + 1) / 7f
+                line(0.05f, v, 0.95f, v, faint, 1.2f)
             }
         }
 
         BoxStyle.COOLER -> {
-            val step = h / 14f
-            var y = top
-            while (y < bottom) {
-                drawLine(Color(0x77202428), Offset(left + w * 0.05f, y), Offset(right - w * 0.05f, y), strokeWidth = 1.6f)
-                y += step
+            // 鳍片：沿面内一个方向等距
+            repeat(9) { i ->
+                val v = (i + 1) / 10f
+                line(0.06f, v, 0.94f, v, Color(0x77202428), 1.8f)
             }
         }
     }
-    drawLine(Color(0x22FFFFFF), Offset(left, top), Offset(right, top), strokeWidth = 2f)
+    // 面边缘高光，帮助辨认轮廓
+    drawLine(Color(0x22FFFFFF), p(0f, 0f), p(1f, 0f), strokeWidth = 2f)
+}
+
+/** 四边形 (p0,p1,p2,p3) 的双线性插值；用于把纹理钉在面所在平面上。 */
+internal fun bilinear(pts: List<P2>, u: Float, v: Float): Offset {
+    val p0 = pts[0]
+    val p1 = pts[1]
+    val p2 = pts[2]
+    val p3 = pts[3]
+    val x = (1 - u) * (1 - v) * p0.x + u * (1 - v) * p1.x + u * v * p2.x + (1 - u) * v * p3.x
+    val y = (1 - u) * (1 - v) * p0.y + u * (1 - v) * p1.y + u * v * p2.y + (1 - u) * v * p3.y
+    return Offset(x, y)
 }
 
 private fun DrawScope.drawGroundGrid(scene: Scene3d, pose: ViewPose) {
