@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -18,7 +20,7 @@ android {
         minSdk = 31
         targetSdk = 37
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0-defense"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,9 +30,27 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        create("release") {
+            val propsFile = rootProject.file("keystore.properties")
+            if (propsFile.exists()) {
+                val props = Properties().apply { propsFile.inputStream().use { load(it) } }
+                storeFile = rootProject.file(props.getProperty("storeFile"))
+                storePassword = props.getProperty("storePassword")
+                keyAlias = props.getProperty("keyAlias")
+                keyPassword = props.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = if (rootProject.file("keystore.properties").exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                null
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 # RELEASE-01 · 签名 APK 与发布
 
-> 状态：**backlog**｜认领：开放（先改 BOARD）｜预估：半天｜依赖：D4/D6/QA
+> 状态：**doing**（本地 signed APK 已完成，GitHub Release 待发）｜认领：@MoeField｜预估：半天｜依赖：D4/D6/QA
 
 ## 目标
 
@@ -28,6 +28,17 @@
 - 不用 debug 签名当答辩包（除非明确接受）；
 - 不发布范围外功能。
 
-## 第一步
+## 已完成（2026-11-15）
 
-先定 `versionName`（建议 `1.0.0-defense`）并生成 keystore，再跑一次 release 构建。
+- `versionName=1.0.0-defense`，`versionCode=1`；
+- 本地 keystore `.signing/pcbuildmate-defense.jks`（不进仓库）；
+- `:app:assembleRelease` 通过，v2 签名验证通过；
+- 真机安装成功，冷启动正常；
+- 产物：`artifacts/PC-Buildmate-1.0.0-defense.apk`
+- SHA-256：`15ef72e62cea6e0b389d7241eeb86a3d199f627073ae2d3154a6e83f46b218b1`
+
+## 还差
+
+- 上传 GitHub Release（等 11/28 冻结后再打 tag）；
+- CI tag release 需要四个 secrets；
+- 另一台 Android 12+ 真机复验。
