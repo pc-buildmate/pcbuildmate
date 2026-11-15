@@ -37,6 +37,7 @@ import pcbuildmate.feature.workspace.WorkspaceViewModel
 import pcbuildmate.ui.CompareScreen
 import pcbuildmate.ui.DiagnosticsScreen
 import pcbuildmate.ui.EntryScreen
+import pcbuildmate.ui.preview.Preview3DScreen
 import pcbuildmate.ui.WorkspaceScreen
 import pcbuildmate.ui.theme.PcBuildmateTheme
 
@@ -128,6 +129,7 @@ private fun PcBuildmateRoot(
                 screen = Screen.Diagnostics.name
             },
             onCompare = { screen = Screen.Compare.name },
+            onPreview3d = { screen = Screen.Preview3D.name },
             onBack = {
                 entryError = null
                 screen = Screen.Entry.name
@@ -138,6 +140,12 @@ private fun PcBuildmateRoot(
             state = state,
             labels = labels,
             onIntent = viewModel::onIntent,
+            onBack = { screen = Screen.Workspace.name },
+        )
+
+        Screen.Preview3D -> Preview3DScreen(
+            revision = state.revision,
+            catalogue = catalogue,
             onBack = { screen = Screen.Workspace.name },
         )
 
@@ -157,7 +165,7 @@ private fun PcBuildmateRoot(
     }
 }
 
-private enum class Screen { Entry, Workspace, Diagnostics, Compare }
+private enum class Screen { Entry, Workspace, Diagnostics, Compare, Preview3D }
 
 private class WorkspaceViewModelFactory(
     private val catalogue: CataloguePort,

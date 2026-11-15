@@ -21,6 +21,7 @@
 | INT-01 | App 目录快照合并（30 条） | done | @MoeField | [INT-01](INT-01.md) |
 | DATA-02 | Room 持久化 A/B | done | @MoeField | [DATA-02](DATA-02.md) |
 | D4-01 | 预算推荐（6 类，权重可见，iGPU 过滤） | done | @MoeField | [D4-01](D4-01.md) |
+| VIZ-01 | 3D 间隙预览（盒体 + 程序化纹理） | done | @MoeField | [docs/17](../17-3d-preview.md) |
 
 ## 待做（按优先级）
 

@@ -1,0 +1,79 @@
+package pcbuildmate.ui.preview
+
+import kotlin.math.cos
+import kotlin.math.sin
+
+/** 相机：yaw 绕 Y、pitch 绕 X，distance 为焦距前的距离（毫米）。 */
+data class ViewPose(
+    val yaw: Float = 0.7f,
+    val pitch: Float = 0.35f,
+    val distance: Float = 1000f,
+    val focal: Float = 1.15f,
+)
+
+data class P2(val x: Float, val y: Float, val depth: Float)
+
+enum class Face { TOP, BOTTOM, LEFT, RIGHT, FRONT, BACK }
+
+data class FaceCorners(val face: Face, val normal: Vec3, val corners: List<Vec3>)
+
+fun rotate(v: Vec3, yaw: Float, pitch: Float): Vec3 {
+    val cy = cos(yaw)
+    val sy = sin(yaw)
+    val cp = cos(pitch)
+    val sp = sin(pitch)
+    val x1 = v.x * cy - v.z * sy
+    val z1 = v.x * sy + v.z * cy
+    val y2 = v.y * cp - z1 * sp
+    val z2 = v.y * sp + z1 * cp
+    return Vec3(x1, y2, z2)
+}
+
+fun project(point: Vec3, sceneCenter: Vec3, pose: ViewPose, width: Float, height: Float): P2 {
+    val v = rotate(
+        Vec3(point.x - sceneCenter.x, point.y - sceneCenter.y, point.z - sceneCenter.z),
+        pose.yaw,
+        pose.pitch,
+    )
+    val depth = v.z + pose.distance
+    val f = pose.focal * height
+    return P2(
+        x = width / 2f + v.x * f / depth,
+        y = height / 2f - v.y * f / depth,
+        depth = depth,
+    )
+}
+
+/** 盒体 6 个面；法线在模型空间，交给 [isVisible] 旋转换算。 */
+fun facesOf(box: Box3): List<FaceCorners> {
+    val x0 = box.center.x - box.size.x / 2f
+    val x1 = box.center.x + box.size.x / 2f
+    val y0 = box.center.y - box.size.y / 2f
+    val y1 = box.center.y + box.size.y / 2f
+    val z0 = box.center.z - box.size.z / 2f
+    val z1 = box.center.z + box.size.z / 2f
+    fun p(x: Float, y: Float, z: Float) = Vec3(x, y, z)
+    return listOf(
+        FaceCorners(Face.TOP, Vec3(0f, 1f, 0f), listOf(p(x0, y1, z0), p(x1, y1, z0), p(x1, y1, z1), p(x0, y1, z1))),
+        FaceCorners(Face.BOTTOM, Vec3(0f, -1f, 0f), listOf(p(x0, y0, z1), p(x1, y0, z1), p(x1, y0, z0), p(x0, y0, z0))),
+        FaceCorners(Face.LEFT, Vec3(-1f, 0f, 0f), listOf(p(x0, y0, z0), p(x0, y1, z0), p(x0, y1, z1), p(x0, y0, z1))),
+        FaceCorners(Face.RIGHT, Vec3(1f, 0f, 0f), listOf(p(x1, y0, z1), p(x1, y1, z1), p(x1, y1, z0), p(x1, y0, z0))),
+        FaceCorners(Face.FRONT, Vec3(0f, 0f, -1f), listOf(p(x0, y0, z0), p(x1, y0, z0), p(x1, y1, z0), p(x0, y1, z0))),
+        FaceCorners(Face.BACK, Vec3(0f, 0f, 1f), listOf(p(x1, y0, z1), p(x0, y0, z1), p(x0, y1, z1), p(x1, y1, z1))),
+    )
+}
+
+/** 背面剔除：相机在 (0,0,-distance)，面朝相机则法线与视线反向。 */
+fun isVisible(face: FaceCorners, pose: ViewPose, sceneCenter: Vec3): Boolean {
+    val centroid = Vec3(
+        face.corners.map { it.x }.average().toFloat(),
+        face.corners.map { it.y }.average().toFloat(),
+        face.corners.map { it.z }.average().toFloat(),
+    )
+    val rel = Vec3(centroid.x - sceneCenter.x, centroid.y - sceneCenter.y, centroid.z - sceneCenter.z)
+    val n = rotate(face.normal, pose.yaw, pose.pitch)
+    val c = rotate(rel, pose.yaw, pose.pitch)
+    val toViewer = Vec3(c.x, c.y, c.z + pose.distance)
+    val dot = n.x * toViewer.x + n.y * toViewer.y + n.z * toViewer.z
+    return dot < 0f
+}
