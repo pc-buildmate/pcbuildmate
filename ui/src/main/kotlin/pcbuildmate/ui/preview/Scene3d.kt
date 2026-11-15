@@ -65,8 +65,8 @@ object SceneBuilder {
 
     const val BOARD_THICKNESS_MM = 6f
     const val SLOT_PITCH_MM = 20.32f
-    const val LAST_SLOT_Z_MM = 147f
-    const val SLOT_GRID = 7
+    /** 第一个 PCIe 槽中心 = I/O 下缘 - 6.35mm（0.25"），Mini-ITX 槽位贴近板底。 */
+    const val FIRST_SLOT_FROM_IO_MM = 6.35f
     const val IO_WIDTH_MM = 45f      // 沿 X（板法线方向伸出）
     const val IO_THICKNESS_MM = 6f   // 沿 Y
     const val IO_HEIGHT_MM = 160f    // 沿 Z，从板上沿往下
@@ -117,29 +117,34 @@ object SceneBuilder {
         )
         labels += DimLabel("I/O ${fmt(IO_WIDTH_MM)}×${fmt(IO_HEIGHT_MM)}", Tone.MUTED)
 
-        // 槽位网格：最后一个槽 147，向上 20.32；板型只取上面 N 个
-        fun slotZ(k: Int): Float = LAST_SLOT_Z_MM + (SLOT_GRID - k) * SLOT_PITCH_MM
+        // 第一个槽 = I/O 下缘 - 6.35（0.25"），向下每槽 20.32
+        val firstSlotZ = (boardHeight - IO_HEIGHT_MM) - FIRST_SLOT_FROM_IO_MM
+        fun slotZ(k: Int): Float = firstSlotZ - (k - 1) * SLOT_PITCH_MM
         val usedSlots = (1..slotCount).map { slotZ(it) }
         labels += DimLabel(
-            "槽位 Z ${fmt(usedSlots.last())} → ${fmt(usedSlots.first())}（$slotCount 槽）",
+            "槽位 Z ${fmt(usedSlots.first())} → ${fmt(usedSlots.last())}（$slotCount 槽）",
             Tone.MUTED,
         )
-        if (slotCount < SLOT_GRID) {
-            notes += "该板型只有 $slotCount 个槽位；ITX 的单槽位于 Z=${fmt(slotZ(1))}，允许超出 170mm 板高"
+        notes += "第一个槽 = I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)} - 6.35 = ${fmt(firstSlotZ)}；向下每槽 20.32"
+        if (slotCount == 1) {
+            notes += "Mini-ITX 单槽在 Z=${fmt(firstSlotZ)}；3 槽卡会到 Z=${fmt(firstSlotZ - gpuThicknessForHint(gpu))}，允许为负"
         }
 
         // 显卡
         val gpuLength = gpu?.num("lengthMm")
         val gpuThickness = gpu?.num("thicknessMm") ?: 50f
         val slotIndex = GPU_SLOT_INDEX.coerceAtMost(slotCount)
+        val centerZ = slotZ(slotIndex)
         if (gpuLength != null) {
-            val centerZ = slotZ(slotIndex)
             val overLength = caseLength != null && gpuLength > caseLength
+            // 挡板上沿 = 槽位中线；卡身向下占 thickness
+            val gpuTop = centerZ
+            val gpuBottom = centerZ - gpuThickness
             boxes += Box3(
                 id = "gpu",
                 label = "显卡 ${gpu.text("model")}",
-                min = Vec3(0f, 0f, centerZ - gpuThickness / 2f),
-                max = Vec3(GPU_WIDTH_MM, gpuLength, centerZ + gpuThickness / 2f),
+                min = Vec3(0f, 0f, gpuBottom),
+                max = Vec3(GPU_WIDTH_MM, gpuLength, gpuTop),
                 style = BoxStyle.GPU,
                 conflict = overLength,
             )
@@ -159,10 +164,10 @@ object SceneBuilder {
                 id = "case-length",
                 label = "机箱限长 ${fmt(caseLength)} mm",
                 corners = listOf(
-                    Vec3(0f, caseLength, slotZ(slotIndex) - 2 * SLOT_PITCH_MM),
-                    Vec3(GPU_WIDTH_MM, caseLength, slotZ(slotIndex) - 2 * SLOT_PITCH_MM),
-                    Vec3(GPU_WIDTH_MM, caseLength, slotZ(slotIndex) + 2 * SLOT_PITCH_MM),
-                    Vec3(0f, caseLength, slotZ(slotIndex) + 2 * SLOT_PITCH_MM),
+                    Vec3(0f, caseLength, centerZ - gpuThickness),
+                    Vec3(GPU_WIDTH_MM, caseLength, centerZ - gpuThickness),
+                    Vec3(GPU_WIDTH_MM, caseLength, centerZ),
+                    Vec3(0f, caseLength, centerZ),
                 ),
                 conflict = gpuLength != null && gpuLength > caseLength,
             )
@@ -174,9 +179,10 @@ object SceneBuilder {
         val coolerHeight = cooler?.num("heightMm")
         if (coolerHeight != null) {
             val overHeight = coolerHeight > caseCoolerHeight
-            val z0 = boardHeight - 250f
+            // CPU 散热在板上部（I/O 下方、Y 向前）
+            val z0 = boardHeight - 140f
             val z1 = z0 + 130f
-            val y0 = 55f
+            val y0 = 50f
             boxes += Box3(
                 id = "cooler",
                 label = "散热 ${cooler.text("model")}",
@@ -224,6 +230,9 @@ object SceneBuilder {
             hasConflict = all.any { it.conflict } || limits.any { it.conflict },
         )
     }
+
+    private fun gpuThicknessForHint(gpu: CatalogueRecord?): Float =
+        gpu?.num("thicknessMm") ?: 50f
 
     private fun boardHeight(formFactor: String): Float = when (formFactor.uppercase()) {
         "ATX" -> 305f

@@ -55,10 +55,11 @@ class Scene3dTest {
     fun `gpu sits at the second slot centerline`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
-        val expected = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 2) * SceneBuilder.SLOT_PITCH_MM
+        val first = 305f - SceneBuilder.IO_HEIGHT_MM - SceneBuilder.FIRST_SLOT_FROM_IO_MM
+        val expected = first - SceneBuilder.SLOT_PITCH_MM
 
-        assertEquals(expected, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
-        assertEquals(248.60f, expected, 0.01f)
+        assertEquals(expected, gpu.max.z, 0.01f, "挡板上沿 = 槽位中线")
+        assertEquals(118.33f, expected, 0.01f)
     }
 
     @Test
@@ -70,10 +71,10 @@ class Scene3dTest {
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
 
         assertEquals(170f, board.size.z, 0.01f, "ITX 板高 170")
-        val slot1 = SceneBuilder.LAST_SLOT_Z_MM + (SceneBuilder.SLOT_GRID - 1) * SceneBuilder.SLOT_PITCH_MM
-        assertEquals(268.92f, slot1, 0.01f)
-        assertEquals(slot1, (gpu.min.z + gpu.max.z) / 2f, 0.01f)
-        assertTrue(gpu.max.z > board.max.z, "允许显卡高过 ITX 板顶，不 clamp")
+        val slot1 = 170f - SceneBuilder.IO_HEIGHT_MM - SceneBuilder.FIRST_SLOT_FROM_IO_MM
+        assertEquals(3.65f, slot1, 0.01f)
+        assertEquals(slot1, gpu.max.z, 0.01f, "挡板上沿 = 槽位中线")
+        assertTrue(gpu.min.z < 0f, "3 槽卡向下到 Z 负数，不 clamp")
     }
 
     @Test
