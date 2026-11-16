@@ -1,0 +1,92 @@
+# 21 · 设备侧证据（Room / 真机 9 步 / Release 校验）
+
+> 任务：QA-03、TEST-01、RELEASE 校验（见 `docs/tasks/QA-03.md`）
+> 演示脚本：[defense/DEMO.md](defense/DEMO.md)　CI：[`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
+> APK：`io.github.pcbuildmate`，`versionName = 1.0.0-defense`，`versionCode = 1`，`minSdk = 31`
+
+这份文档只记录**可复现的证据**：谁在什么设备上、跑了什么命令、结果如何。
+没有跑过的格子留空，不预填"应该通过"。
+
+---
+
+## 21.1 Room 持久化契约（8 个用例）
+
+测试类：`data/src/androidTest/kotlin/pcbuildmate/data/store/RoomStoreContractTest.kt`
+（`BuildStorePortContract` + `DraftStorePortContract` 的 Room 实现）
+
+| 时间 | 环境 | 命令 | 结果 | 记录人 |
+|---|---|---|---|---|
+| 2026-11-16 | 本机 AVD `Pixel_9`（API 37，google_apis_playstore，x86_64） | `./gradlew :data:connectedDebugAndroidTest` | **8 / 8 通过，0 失败 0 跳过**（2m38s） | @yys1yys2yys |
+| 2026-11-16 | GitHub Actions `room` job（API 33，x86_64） | 同上 | ⬜ 待记录（见 PR #70） | @yys1yys2yys |
+
+结论：Room 的 `BuildStorePort` / `DraftStorePort` 在两个独立实现环境（本地模拟器 + CI 模拟器）上都通过同一份契约。
+
+跑法（本地）：
+
+```bash
+export JAVA_HOME="C:/androidd/jbr"        # 本机 Gradle 启动器需要 JDK 25（AS 自带 JBR）
+emulator -avd Pixel_9 -no-window -no-audio -gpu swiftshader_indirect &
+adb wait-for-device
+./gradlew :data:connectedDebugAndroidTest
+```
+
+> 模拟器占内存/CPU，**开之前先跟机主确认时间窗**；跑完 `adb emu kill`。
+
+---
+
+## 21.2 真机 9 步演示（Aura A1）
+
+设备：**Aura A1**（真机，型号/系统版本待首次记录时填写）
+脚本：[defense/DEMO.md](defense/DEMO.md) §2；每步记录"开始/结束时间、结果、偏差、截图"。
+
+### Run 1
+
+| 项 | 记录 |
+|---|---|
+| 日期/时间 | ⬜ |
+| 系统版本 / 构建号 | ⬜ |
+| 安装方式 | `adb install -r artifacts/PC-Buildmate-1.0.0-defense.apk`（⬜ 待阮立坤产出） |
+| 演示前 | 清数据、飞行模式、亮度固定（⬜ 执行人签字：杨壹硕） |
+| 结果 | ⬜ 9/9 通过 / 失败在第 N 步 |
+
+逐步记录：
+
+| # | 步骤 | 期望锚点 | 实际 | 截图 |
+|---|---|---|---|---|
+| 1 | Entry：8000 / 游戏 → 生成配置 | 6 类、≈7869、权重可见 | ⬜ | ⬜ |
+| 2 | Workspace | ¥7,800，剩 ¥200，337 vs 320 同屏 | ⬜ | ⬜ |
+| 3 | 保存 A | 保存成功 | ⬜ | ⬜ |
+| 4 | 检查 | 存在冲突、52 分、GPU 长度 BLOCKER、BIOS 未验证 | ⬜ | ⬜ |
+| 5 | 候选 | rank1 = 300mm、+¥100 | ⬜ | ⬜ |
+| 6 | 预览 | ¥7,900，不改 revision | ⬜ | ⬜ |
+| 7 | 应用 + 重检 | 已应用并重检、¥7,900、BIOS 仍未验证 | ⬜ | ⬜ |
+| 8 | 保存 B + 比较 | A 7800 / B 7900、差异高亮 | ⬜ | ⬜ |
+| 8.5 | 3D 间隙预览（可选） | 337 盒体穿出 320 空间、红框 | ⬜ | ⬜ |
+| 9 | 回 Entry | "继续上次配置 · 已保存 2 份" | ⬜ | ⬜ |
+
+### Run 2 / Run 3
+
+同上表格，各复制一份。三次之间：杀进程重开一次，确认持久化与"重新检查"语义一致。
+
+---
+
+## 21.3 Release 校验（与阮立坤的发布包对账）
+
+| 检查 | 命令 | 期望 | 结果 |
+|---|---|---|---|
+| APK 存在且签名 | `apksigner verify --print-certs <apk>` | 签名有效、证书非 debug | ⬜ |
+| sha256 | `sha256sum <apk>`（Windows: `certutil -hashfile <apk> SHA256`） | 与 Release 页面一致 | ⬜ |
+| 权限 | `aapt dump permissions <apk>` 或 `apkanalyzer manifest permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ⬜ |
+| ABI | `unzip -l <apk> \| grep lib/` | 含 `arm64-v8a`（并确认是否另有 x86_64） | ⬜ |
+| 安装 | `adb install -r <apk>` | Success | ⬜ |
+| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⬜ |
+
+---
+
+## 21.4 失败与 issue
+
+| 时间 | 现象 | issue | 状态 |
+|---|---|---|---|
+| ⬜ | ⬜ | ⬜ | ⬜ |
+
+规则：失败必须开 issue，标题 `[QA-03] ...`，不要只在群里说。
