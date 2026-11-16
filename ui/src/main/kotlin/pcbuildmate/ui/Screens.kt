@@ -35,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -114,20 +115,20 @@ fun EntryScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("PC Buildmate", style = MaterialTheme.typography.headlineLarge)
+        Text(stringResource(R.string.home_title), style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(8.dp))
         Text(
-            "预算 → 配置 → 检查 → 替换 → 比较",
+            stringResource(R.string.home_subtitle),
             style = MaterialTheme.typography.bodyLarge,
         )
         Spacer(Modifier.height(20.dp))
-        AssistChip(onClick = {}, label = { Text("参考价 · 离线可用") })
+        AssistChip(onClick = {}, label = { Text(stringResource(R.string.entry_reference_badge)) })
         Spacer(Modifier.height(18.dp))
 
         OutlinedTextField(
             value = budgetText,
             onValueChange = { budgetText = it.filter { c -> c.isDigit() }.take(7) },
-            label = { Text("预算（CNY）") },
+            label = { Text(stringResource(R.string.entry_budget_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
@@ -153,7 +154,7 @@ fun EntryScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = budget > 0,
         ) {
-            Text("生成配置")
+            Text(stringResource(R.string.entry_generate))
         }
         if (error != null) {
             Spacer(Modifier.height(8.dp))
@@ -162,7 +163,7 @@ fun EntryScreen(
 
         Spacer(Modifier.height(18.dp))
         OutlinedButton(onClick = onStartDemo, modifier = Modifier.fillMaxWidth()) {
-            Text("载入演示配置 · ¥7,800")
+            Text(stringResource(R.string.entry_load_demo))
         }
         if (savedBuilds.isNotEmpty()) {
             Spacer(Modifier.height(10.dp))
@@ -170,12 +171,12 @@ fun EntryScreen(
                 onClick = { onOpenSaved(savedBuilds.first().buildId) },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("继续上次配置 · 已保存 ${savedBuilds.size} 份")
+                Text(stringResource(R.string.entry_continue_saved, savedBuilds.size))
             }
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            "演示配置固定 8 类零件，用于答辩锚点；生成配置按 6 类推荐。",
+            stringResource(R.string.entry_demo_note),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         )
@@ -198,14 +199,14 @@ fun WorkspaceScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("配置工作区") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
+                title = { Text(stringResource(R.string.workspace_title)) },
+                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.common_back)) } },
                 actions = { DemoBadge() },
             )
         },
     ) { padding ->
         if (revision == null) {
-            EmptyState("还没有配置，先载入演示配置")
+            EmptyState(stringResource(R.string.workspace_empty))
             return@Scaffold
         }
 
@@ -225,12 +226,12 @@ fun WorkspaceScreen(
             }
             if (state.isDiagnosisStale) {
                 item {
-                    Banner("配置已修改，请重新检查兼容性")
+                    Banner(stringResource(R.string.workspace_stale_banner))
                 }
             }
             item {
                 Text(
-                    "配置清单",
+                    stringResource(R.string.workspace_items_title),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
@@ -258,7 +259,7 @@ fun WorkspaceScreen(
                         )
                         Spacer(Modifier.size(8.dp))
                     }
-                    Text("检查兼容性")
+                    Text(stringResource(R.string.action_check))
                 }
                 if (state.canUndo) {
                     Spacer(Modifier.height(8.dp))
@@ -266,7 +267,7 @@ fun WorkspaceScreen(
                         onClick = { onIntent(WorkspaceIntent.Undo) },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("撤销上一步")
+                        Text(stringResource(R.string.action_undo))
                     }
                 }
                 Spacer(Modifier.height(8.dp))
@@ -274,17 +275,17 @@ fun WorkspaceScreen(
                     onClick = { onIntent(WorkspaceIntent.SaveBuild) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(if (state.isSaved) "已保存（再次点击会更新诊断）" else "保存当前配置")
+                    Text(if (state.isSaved) stringResource(R.string.action_saved) else stringResource(R.string.action_save))
                 }
                 if (state.savedBuilds.size >= 2) {
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = onCompare, modifier = Modifier.fillMaxWidth()) {
-                        Text("比较已保存的 ${state.savedBuilds.size} 份配置")
+                        Text(stringResource(R.string.action_compare_saved, state.savedBuilds.size))
                     }
                 }
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(onClick = onPreview3d, modifier = Modifier.fillMaxWidth()) {
-                    Text("3D 间隙预览")
+                    Text(stringResource(R.string.action_preview_3d))
                 }
                 Spacer(Modifier.height(24.dp))
             }
@@ -303,8 +304,8 @@ fun DiagnosticsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("诊断与替换") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
+                title = { Text(stringResource(R.string.diagnostics_title)) },
+                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.common_back)) } },
                 actions = { DemoBadge() },
             )
         },
@@ -320,8 +321,8 @@ fun DiagnosticsScreen(
                 item { Banner(bannerText(key)) }
             }
             when (val d = state.diagnosisState) {
-                is DiagnosisState.Running -> item { LoadingCard("正在检查兼容性…") }
-                is DiagnosisState.Failed -> item { ErrorCard("检查失败：${d.reason}") }
+                is DiagnosisState.Running -> item { LoadingCard(stringResource(R.string.loading_checking)) }
+                is DiagnosisState.Failed -> item { ErrorCard(stringResource(R.string.error_check_failed, d.reason)) }
                 else -> Unit
             }
 
@@ -330,7 +331,7 @@ fun DiagnosticsScreen(
                 item { DiagnosisSummary(diagnosis) }
                 val conflicts = diagnosis.outcomes.filterIsInstance<RuleOutcome.Conflict>()
                 if (conflicts.isNotEmpty()) {
-                    item { SectionTitle("冲突") }
+                    item { SectionTitle(stringResource(R.string.section_conflicts)) }
                     items(conflicts, key = { it.conflictId }) { conflict ->
                         ConflictCard(
                             conflict = conflict,
@@ -344,7 +345,7 @@ fun DiagnosticsScreen(
 
                 val unverified = diagnosis.outcomes.filterIsInstance<RuleOutcome.Unverified>()
                 if (unverified.isNotEmpty()) {
-                    item { SectionTitle("未验证") }
+                    item { SectionTitle(stringResource(R.string.section_unverified)) }
                     items(unverified, key = { it.ruleId + (it.missingField?.fieldPath ?: "") }) { u ->
                         UnverifiedCard(u)
                     }
@@ -355,7 +356,7 @@ fun DiagnosticsScreen(
                 is ReplacementState.Candidates -> {
                     val result = state.suggestions
                     if (result != null && result.candidates.isNotEmpty()) {
-                        item { SectionTitle("替换候选 · 先过硬约束再排序") }
+                        item { SectionTitle(stringResource(R.string.section_candidates)) }
                         items(result.candidates, key = { it.componentId }) { candidate ->
                             CandidateCard(
                                 candidate = candidate,
@@ -379,7 +380,7 @@ fun DiagnosticsScreen(
                         OutlinedButton(
                             onClick = { onIntent(WorkspaceIntent.DismissNoCandidate) },
                             modifier = Modifier.fillMaxWidth(),
-                        ) { Text("关闭") }
+                        ) { Text(stringResource(R.string.common_close)) }
                     }
                 }
 
@@ -394,20 +395,20 @@ fun DiagnosticsScreen(
                     }
                 }
 
-                is ReplacementState.Rechecking -> item { LoadingCard("正在全量重检…") }
+                is ReplacementState.Rechecking -> item { LoadingCard(stringResource(R.string.loading_rechecking)) }
 
                 is ReplacementState.Applied -> {
                     item {
                         Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFE7F6E9))) {
                             Column(Modifier.padding(16.dp)) {
-                                Text("已应用并重检", fontWeight = FontWeight.Bold)
-                                Text("总价已更新；修一个冲突 ≠ 全部兼容，未验证项仍然保留。")
+                                Text(stringResource(R.string.applied_title), fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.applied_note))
                             }
                         }
                     }
                     item {
                         OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-                            Text("返回配置")
+                            Text(stringResource(R.string.action_back_to_workspace))
                         }
                     }
                 }
@@ -429,8 +430,8 @@ fun CompareScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("构建比较") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
+                title = { Text(stringResource(R.string.compare_title)) },
+                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.common_back)) } },
                 actions = { DemoBadge() },
             )
         },
@@ -444,14 +445,14 @@ fun CompareScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("至少保存两份配置才能比较")
+                    Text(stringResource(R.string.compare_need_two))
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "先检查并保存第一份，替换后再保存第二份。",
+                        stringResource(R.string.compare_need_two_hint),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(Modifier.height(12.dp))
-                    OutlinedButton(onClick = onBack) { Text("返回") }
+                    OutlinedButton(onClick = onBack) { Text(stringResource(R.string.common_back)) }
                 }
             }
             return@Scaffold
@@ -465,7 +466,7 @@ fun CompareScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             if (TextKey.COMPARE_DIAGNOSTICS_STALE in result.warnings) {
-                item { Banner("有配置的诊断已过期；该列只显示“请重新检查”，不展示旧结论。") }
+                item { Banner(stringResource(R.string.compare_stale_banner)) }
             }
 
             item {
@@ -474,7 +475,7 @@ fun CompareScreen(
                         Card(modifier = Modifier.weight(1f)) {
                             Column(Modifier.padding(10.dp)) {
                                 Text(
-                                    if (index == 0) "配置 A" else "配置 B",
+                                    if (index == 0) stringResource(R.string.compare_config_a) else stringResource(R.string.compare_config_b),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                                 Text(
@@ -483,12 +484,12 @@ fun CompareScreen(
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Text(
-                                    "revision #${rev.id}",
+                                    stringResource(R.string.compare_revision, rev.id),
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                                 val diag = result.diagnoses.getOrNull(index)
                                 Text(
-                                    diag?.let { statusLabel(it.overall.name) } ?: "请重新检查",
+                                    diag?.let { statusLabel(it.overall.name) } ?: stringResource(R.string.compare_status_recheck),
                                     color = if (diag == null) {
                                         Color(0xFF9A6700)
                                     } else {
@@ -502,7 +503,7 @@ fun CompareScreen(
                 }
             }
 
-            item { SectionTitle("差异") }
+            item { SectionTitle(stringResource(R.string.section_diff)) }
             items(result.deltas, key = { it.field }) { delta ->
                 DeltaRow(delta, labels)
             }
@@ -514,8 +515,8 @@ fun CompareScreen(
 @Composable
 private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String, String>) {
     val fieldLabel = when (delta.field) {
-        "totalCny" -> "总价"
-        "status" -> "兼容状态"
+        "totalCny" -> stringResource(R.string.compare_total)
+        "status" -> stringResource(R.string.compare_status)
         else -> categoryLabelByName(delta.field)
     }
     Card(
@@ -566,14 +567,14 @@ private fun categoryLabelByName(name: String): String =
 
 @Composable
 private fun DemoBadge() {
-    AssistChip(onClick = {}, label = { Text("演示数据") })
+    AssistChip(onClick = {}, label = { Text(stringResource(R.string.demo_badge)) })
 }
 
 @Composable
 private fun WeightCard(weights: Map<Category, Double>) {
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
         Column(Modifier.padding(12.dp)) {
-            Text("推荐权重（可见、可解释）", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.weights_title), style = MaterialTheme.typography.labelLarge)
             Spacer(Modifier.height(4.dp))
             Text(
                 weights.entries
@@ -594,17 +595,17 @@ private fun BudgetCard(revision: BuildRevision, state: WorkspaceUiState) {
     Card {
         Column(Modifier.padding(16.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("预算", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.budget_label), style = MaterialTheme.typography.labelLarge)
                 Text(money(budget), fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(4.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("已用", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.spent_label), style = MaterialTheme.typography.labelLarge)
                 Text(money(revision.totalCny), fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(4.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("剩余", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.remaining_label), style = MaterialTheme.typography.labelLarge)
                 Text(
                     money(remaining),
                     fontWeight = FontWeight.Bold,
@@ -613,7 +614,7 @@ private fun BudgetCard(revision: BuildRevision, state: WorkspaceUiState) {
             }
             HorizontalDivider(Modifier.padding(vertical = 10.dp))
             Text(
-                "价格快照 ${revision.priceDate} · ${revision.catalogueVersion}",
+                stringResource(R.string.price_snapshot, revision.priceDate, revision.catalogueVersion),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             )
@@ -646,7 +647,7 @@ private fun ItemRow(
                 TextButton(onClick = onPlus) { Text("+") }
             } else {
                 Text(
-                    "×1",
+                    stringResource(R.string.quantity_fixed),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -713,7 +714,7 @@ private fun ConflictCard(
             )
             Spacer(Modifier.height(8.dp))
             Button(onClick = onSelect, modifier = Modifier.fillMaxWidth()) {
-                Text("看看能换成什么")
+                Text(stringResource(R.string.action_find_replacement))
             }
         }
     }
@@ -767,7 +768,7 @@ private fun CandidateCard(candidate: Candidate, label: String, onPreview: () -> 
             }
             Spacer(Modifier.height(8.dp))
             OutlinedButton(onClick = onPreview, modifier = Modifier.fillMaxWidth()) {
-                Text("预览")
+                Text(stringResource(R.string.action_preview))
             }
         }
     }
@@ -781,17 +782,17 @@ private fun PreviewCard(
 ) {
     Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFEAF1FF))) {
         Column(Modifier.padding(16.dp)) {
-            Text("替换预览", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.preview_title), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(4.dp))
-            Text("新总价 ${preview?.let { money(it.totalCny) } ?: "—"}")
+            Text(stringResource(R.string.preview_total, preview?.let { money(it.totalCny) } ?: "—"))
             Text(
-                "应用前会做一次全量重检；旧诊断不会覆盖新配置。",
+                stringResource(R.string.preview_note),
                 style = MaterialTheme.typography.bodySmall,
             )
             Spacer(Modifier.height(10.dp))
-            Button(onClick = onApply, modifier = Modifier.fillMaxWidth()) { Text("应用并全量重检") }
+            Button(onClick = onApply, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_apply)) }
             Spacer(Modifier.height(6.dp))
-            OutlinedButton(onClick = onCancel, modifier = Modifier.fillMaxWidth()) { Text("取消") }
+            OutlinedButton(onClick = onCancel, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_cancel)) }
         }
     }
 }

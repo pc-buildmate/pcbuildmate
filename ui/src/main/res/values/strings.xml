@@ -1,7 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Entry -->
     <string name="home_title">PC Buildmate</string>
     <string name="home_subtitle">预算 → 配置 → 检查 → 替换 → 比较</string>
     <string name="home_demo_badge">演示数据 · 离线可用</string>
     <string name="home_start">开始配置</string>
+    <string name="entry_reference_badge">参考价 · 离线可用</string>
+    <string name="entry_budget_label">预算（CNY）</string>
+    <string name="entry_generate">生成配置</string>
+    <string name="entry_load_demo">载入演示配置 · ¥7,800</string>
+    <string name="entry_continue_saved">继续上次配置 · 已保存 %1$d 份</string>
+    <string name="entry_demo_note">演示配置固定 8 类零件，用于答辩锚点；生成配置按 6 类推荐。</string>
+
+    <!-- 通用 -->
+    <string name="common_back">返回</string>
+    <string name="common_close">关闭</string>
+    <string name="demo_badge">演示数据</string>
+
+    <!-- Workspace -->
+    <string name="workspace_title">配置工作区</string>
+    <string name="workspace_empty">还没有配置，先载入演示配置</string>
+    <string name="workspace_items_title">配置清单</string>
+    <string name="workspace_stale_banner">配置已修改，请重新检查兼容性</string>
+    <string name="action_check">检查兼容性</string>
+    <string name="action_undo">撤销上一步</string>
+    <string name="action_save">保存当前配置</string>
+    <string name="action_saved">已保存（再次点击会更新诊断）</string>
+    <string name="action_compare_saved">比较已保存的 %1$d 份配置</string>
+    <string name="action_preview_3d">3D 间隙预览</string>
+    <string name="weights_title">推荐权重（可见、可解释）</string>
+    <string name="budget_label">预算</string>
+    <string name="spent_label">已用</string>
+    <string name="remaining_label">剩余</string>
+    <string name="price_snapshot">价格快照 %1$s · %2$s</string>
+    <string name="quantity_fixed">×1</string>
+
+    <!-- Diagnostics -->
+    <string name="diagnostics_title">诊断与替换</string>
+    <string name="section_conflicts">冲突</string>
+    <string name="section_unverified">未验证</string>
+    <string name="section_candidates">替换候选 · 先过硬约束再排序</string>
+    <string name="action_find_replacement">看看能换成什么</string>
+    <string name="action_preview">预览</string>
+    <string name="preview_title">替换预览</string>
+    <string name="preview_total">新总价 %1$s</string>
+    <string name="preview_note">应用前会做一次全量重检；旧诊断不会覆盖新配置。</string>
+    <string name="action_apply">应用并全量重检</string>
+    <string name="action_cancel">取消</string>
+    <string name="loading_checking">正在检查兼容性…</string>
+    <string name="loading_rechecking">正在全量重检…</string>
+    <string name="error_check_failed">检查失败：%1$s</string>
+    <string name="applied_title">已应用并重检</string>
+    <string name="applied_note">总价已更新；修一个冲突 ≠ 全部兼容，未验证项仍然保留。</string>
+    <string name="action_back_to_workspace">返回配置</string>
+
+    <!-- Compare -->
+    <string name="compare_title">构建比较</string>
+    <string name="compare_need_two">至少保存两份配置才能比较</string>
+    <string name="compare_need_two_hint">先检查并保存第一份，替换后再保存第二份。</string>
+    <string name="compare_stale_banner">有配置的诊断已过期；该列只显示“请重新检查”，不展示旧结论。</string>
+    <string name="compare_revision">revision #%1$d</string>
+    <string name="compare_config_a">配置 A</string>
+    <string name="compare_config_b">配置 B</string>
+    <string name="compare_status_recheck">请重新检查</string>
+    <string name="section_diff">差异</string>
+    <string name="compare_total">总价</string>
+    <string name="compare_status">兼容状态</string>
+
+    <!-- Banner（状态提示） -->
+    <string name="banner_no_display_output">没有显示输出：请加一张独显，或换一颗带核显的 CPU</string>
+    <string name="banner_quantity_not_applicable">这一类零件固定 1 件；多件会让价格翻倍但兼容结论不变，因此不支持修改数量</string>
+    <string name="banner_quantity_invalid">数量必须至少为 1</string>
+    <string name="banner_diagnostics_required">先载入或生成一份配置</string>
+    <string name="banner_apply_revision_stale">配置已过期，请重新检查</string>
+    <string name="banner_candidate_not_found">候选已失效，请重新加载</string>
+    <string name="banner_conflict_selected_none">请选择一条冲突</string>
+
+    <!-- 3D 预览 -->
+    <string name="preview3d_title">3D 间隙预览</string>
+    <string name="preview3d_hide_case">隐藏机箱</string>
+    <string name="preview3d_show_case">显示机箱</string>
+    <string name="preview3d_reset">重置视角</string>
+    <string name="preview3d_empty">还没有配置，先载入演示配置或生成一份配置。</string>
+    <string name="preview3d_hint">拖动旋转 · 盒体为尺寸示意，非外观模型</string>
 </resources>
