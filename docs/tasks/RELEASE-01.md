@@ -37,6 +37,14 @@
 - 产物：`artifacts/PC-Buildmate-1.0.0-defense.apk`
 - SHA-256：`15ef72e62cea6e0b389d7241eeb86a3d199f627073ae2d3154a6e83f46b218b1`
 
+## 2026-11-16 进展
+
+- release ABI 收紧为 **arm64-v8a**（`app/build.gradle.kts` 的 `release.ndk.abiFilters`）；
+- 重新构建并验证：v2 签名、无 `INTERNET`、arm64 only；
+- 校验和：`artifacts/PC-Buildmate-1.0.0-defense.apk.sha256`；
+- GitHub Release 以 **draft** 形式创建，等 11/28 冻结后替换最终包再 publish；
+- release notes：`docs/defense/RELEASE_NOTES.md`。
+
 ## 还差
 
 - 上传 GitHub Release（等 11/28 冻结后再打 tag）；

@@ -51,6 +51,10 @@ android {
             } else {
                 null
             }
+            // 答辩包只发 arm64；x86/x86_64 只用于本地模拟器 debug。
+            ndk {
+                abiFilters += "arm64-v8a"
+            }
         }
     }
 
