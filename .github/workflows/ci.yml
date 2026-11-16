@@ -29,6 +29,7 @@ jobs:
           node ci/check-boundaries.mjs
           node ci/check-keywords.mjs
           node ci/check-test-tasks.mjs
+          node tools/test-matrix-tools.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs
