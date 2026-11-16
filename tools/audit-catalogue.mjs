@@ -324,19 +324,47 @@ for (const record of missingSources) {
   add("SOURCE_MISSING", record.componentId, "SOURCES.md", "目录有记录但来源表两段都未提及", { scope: "source" });
 }
 
-// ------------------------------------------------------------ E 证据统计
+// ------------------------------------------------------------ E 证据覆盖率
 const stateCount = {};
 const emptyFields = [];
+const coverage = new Map();
 let fieldTotal = 0;
 let fieldsWithSources = 0;
 for (const record of records) {
+  const bucket = coverage.get(record.category) ?? { records: 0, fields: 0, sourced: 0 };
+  bucket.records++;
   for (const [path, attr] of Object.entries(attrOf(record))) {
     fieldTotal++;
     stateCount[attr?.state] = (stateCount[attr?.state] ?? 0) + 1;
-    if (Array.isArray(attr?.sources) && attr.sources.length > 0) fieldsWithSources++;
+    bucket.fields++;
+    if (Array.isArray(attr?.sources) && attr.sources.length > 0) {
+      fieldsWithSources++;
+      bucket.sourced++;
+    }
     if (attr?.state === "EMPTY") emptyFields.push(`${record.componentId}.${path}`);
   }
+  coverage.set(record.category, bucket);
 }
+const recordsWithSource = records.filter(
+  (record) => sourcedIds.has(record.componentId) || legacyIds.has(record.componentId),
+).length;
+const recordsWithUrl = records.filter((record) => sourcedIds.has(record.componentId)).length;
+
+// ------------------------------------------------------------ F 冻结表反向覆盖
+// docs/03 §3.3 声明了每类允许的字段路径。某条路径如果没有任何记录使用，
+// 说明目录没采集它（覆盖缺口），不是数据错误：只报告，不计为异常。
+const unusedPaths = [];
+for (const category of CATEGORIES) {
+  const declared = Object.keys(FIELDS[category] ?? {});
+  const used = new Set(
+    records.filter((record) => record.category === category)
+      .flatMap((record) => Object.keys(attrOf(record))),
+  );
+  for (const path of declared) {
+    if (!used.has(path)) unusedPaths.push({ category, path });
+  }
+}
+const pct = (part, whole) => (whole === 0 ? "—" : `${Math.round((part / whole) * 100)}%`);
 
 // ------------------------------------------------------------ 输出报告
 const STRICT = process.argv.includes("--strict");
@@ -431,6 +459,10 @@ lines.push("|---|---:|");
 lines.push(`| 字段总数 | ${fieldTotal} |`);
 for (const state of STATES) lines.push(`| \`${state}\` | ${stateCount[state] ?? 0} |`);
 lines.push(`| 字段级 \`sources\` 非空 | ${fieldsWithSources} |`);
+lines.push(`| 字段级来源覆盖率 | ${pct(fieldsWithSources, fieldTotal)} |`);
+lines.push(`| 记录级在 \`SOURCES.md\` 有出处 | ${recordsWithSource} / ${records.length} |`);
+lines.push(`| 　其中本轮采集带 URL | ${recordsWithUrl} / ${records.length} |`);
+lines.push(`| 　其中仅早期 demo 列举（无逐条 URL） | ${recordsWithSource - recordsWithUrl} / ${records.length} |`);
 lines.push("");
 lines.push(`\`EMPTY\` 是合法三态：规则读到即返回 \`UNVERIFIED\`，不视为缺数据 bug。本次共 `
   + `${emptyFields.length} 个：${emptyFields.map((item) => `\`${item}\``).join("、") || "无"}。`, "");
@@ -439,6 +471,29 @@ lines.push(`**要点**：${fieldTotal} 个字段的 \`sources\` 全部为空数�
   + "（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），"
   + "记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。"
   + "答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。", "");
+
+lines.push("### 20.5.1 分门类覆盖率", "");
+lines.push("| 类别 | 记录 | 字段 | 字段级有来源 | 覆盖率 |");
+lines.push("|---|---:|---:|---:|---:|");
+for (const category of CATEGORIES) {
+  const bucket = coverage.get(category) ?? { records: 0, fields: 0, sourced: 0 };
+  lines.push(`| ${category} | ${bucket.records} | ${bucket.fields} | ${bucket.sourced} | `
+    + `${pct(bucket.sourced, bucket.fields)} |`);
+}
+lines.push(`| **合计** | **${records.length}** | **${fieldTotal}** | **${fieldsWithSources}** | `
+  + `**${pct(fieldsWithSources, fieldTotal)}** |`, "");
+
+lines.push("### 20.5.2 冻结表反向覆盖（声明了、但没有任何记录使用的字段）", "");
+if (unusedPaths.length === 0) {
+  lines.push("`docs/03` §3.3 声明的每一条字段路径都至少被一条记录使用。", "");
+} else {
+  lines.push(`${unusedPaths.length} 条字段路径尚未被任何记录使用。这是**采集覆盖缺口**，`
+    + "不是数据错误：冻结表允许它，目录没采它。补数或删路径都需要走 ADR，本审计不代为选择。", "");
+  lines.push("| 类别 | 未使用的字段路径 |");
+  lines.push("|---|---|");
+  for (const item of unusedPaths) lines.push(`| ${item.category} | \`${item.path}\` |`);
+  lines.push("");
+}
 
 lines.push("## 20.6 来源表交叉（只读，不改）", "");
 lines.push("`assets/catalogue/SOURCES.md` 里有两段口径不同的内容：一段是 2026-11-04 的本轮采集表格"
@@ -486,6 +541,9 @@ if (WRITE) writeFileSync(resolvePath(REPORT), report, "utf8");
 console.log(`[audit] ${CATALOGUE}：${records.length} 条记录 / ${fieldTotal} 个字段 / 版本 ${version}`);
 console.log(`[audit] 证据分布：${STATES.map((state) => `${state}=${stateCount[state] ?? 0}`).join(" ")}`
   + `；字段级 sources 非空 ${fieldsWithSources}/${fieldTotal}`);
+console.log(`[audit] 证据覆盖：字段级 ${fieldsWithSources}/${fieldTotal}（${pct(fieldsWithSources, fieldTotal)}）；`
+  + `记录级有出处 ${recordsWithSource}/${records.length}（本轮带 URL ${recordsWithUrl}）；`
+  + `未使用字段路径 ${unusedPaths.length} 条`);
 console.log(`[audit] 来源表：表格 ${sourcedRows.length} 行（匹配 ${matchedSources.length} / 陈旧 ${staleSources.length}）`
   + `，早期 demo ${legacyIds.size} 条，目录缺来源 ${missingSources.length} 条`);
 console.log(`[audit] 异常 ${anomalies.length} 条（待修 ${unexplained.length}${STRICT ? "，--strict" : ""}）`);
