@@ -119,6 +119,12 @@ INV-02/10 的测试在 `feature`，INV-11/17 在 `data`，少跑一个模块就�
 没有 `matrix.json` 时 `check-matrix` 只打印期望值（规格模式）并以 0 退出，因此它不再放在
 `docs` job 里跑——那里没有测试结果，通过与否说明不了任何事。
 
+**变异怎么跑**：`node tools/run-mutations.mjs` 逐条改源码 → 跑目标测试 → 还原源码，产物是
+`build/reports/key-mutations.json`；再用 `node tools/check-matrix.mjs --mutations` 校验 12 条是否
+全部 `KILLED`。CI 里由 `mutations` job 执行（`needs: jvm`，测试先过再谈变异）。两个平台坑已固化在脚本里：
+补丁串按 LF 比较（Windows 检出是 CRLF），Gradle 启动失败（`ENOENT`/`EINVAL`）记 `BROKEN` 而不是
+`KILLED`——否则"没跑起来"会被误读成"变异被杀"。
+
 **为什么不用行覆盖率**：行覆盖率 90% 的规则引擎，可能漏掉"来源冲突"整条分支，因为那一行被别的用例覆盖到了。
 矩阵覆盖看的是**语义维度**，行覆盖看的是**代码维度**——前者才是我们要的。
 
@@ -280,7 +286,7 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 |---|---|---|
 | 1 | 单模块测试全绿 | `./gradlew :module:test` |
 | 2 | 规则/状态机/不变量矩阵无空格 | `node tools/check-matrix.mjs` |
-| 3 | 关键 mutation 全杀死 | `node tools/check-matrix.mjs --mutations` |
+| 3 | 关键 mutation 全杀死 | `node tools/run-mutations.mjs` → `node tools/check-matrix.mjs --mutations` |
 | 4 | 边界/关键词检查通过 | `node ci/check-boundaries.mjs && node ci/check-keywords.mjs` |
 | 4b | 有测试的模块都在 CI 任务列表里 | `node ci/check-test-tasks.mjs` |
 | 5 | 公开 API 未变（或已走契约流程） | `./gradlew :contracts:apiCheck` |

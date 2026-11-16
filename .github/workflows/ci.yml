@@ -109,3 +109,38 @@ jobs:
           node tools/gen-matrix.mjs
           node tools/check-matrix.mjs
 
+
+  mutations:
+    name: Key mutations (MUT-01..12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: jvm
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install SDK 37
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platforms;android-37.0" "build-tools;37.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Apply mutations, run target tests, restore sources
+        run: node tools/run-mutations.mjs
+      - name: Require 12/12 KILLED
+        run: node tools/check-matrix.mjs --mutations
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: key-mutations
+          path: build/reports/key-mutations.json
+          if-no-files-found: warn
