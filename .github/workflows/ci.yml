@@ -142,16 +142,29 @@ jobs:
       - name: Boot the emulator
         run: |
           ADB="$ANDROID_HOME/platform-tools/adb"
-          "$ANDROID_HOME/emulator/emulator" -avd ci -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
-          "$ADB" wait-for-device
-          for i in $(seq 1 120); do
-            if "$ADB" shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
+          EMU_LOG="$RUNNER_TEMP/emulator.log"
+          "$ANDROID_HOME/emulator/emulator" -accel-check || true
+          "$ANDROID_HOME/emulator/emulator" -avd ci -no-window -no-audio -no-boot-anim             -no-snapshot -gpu swiftshader_indirect >"$EMU_LOG" 2>&1 &
+          EMU_PID=$!
+          if ! timeout 180 "$ADB" wait-for-device; then
+            echo "::error title=emulator::adb 在 3 分钟内没看到设备"
+            tail -40 "$EMU_LOG"
+            exit 1
+          fi
+          for i in $(seq 1 96); do
+            if "$ADB" shell getprop sys.boot_completed 2>/dev/null | grep -q 1; then
               echo "emulator booted after $((i * 5))s"
               exit 0
             fi
+            if ! kill -0 "$EMU_PID" 2>/dev/null; then
+              echo "::error title=emulator::模拟器进程已退出"
+              tail -40 "$EMU_LOG"
+              exit 1
+            fi
             sleep 5
           done
-          echo "::error title=emulator::未在 10 分钟内启动完成"
+          echo "::error title=emulator::8 分钟内未完成启动"
+          tail -40 "$EMU_LOG"
           exit 1
       - name: Room store contracts on device
         run: ./gradlew :data:connectedDebugAndroidTest --no-daemon --console=plain --stacktrace
