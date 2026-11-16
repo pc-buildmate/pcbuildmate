@@ -85,10 +85,32 @@
 | `REPORTED` | 77 |
 | `EMPTY` | 1 |
 | 字段级 `sources` 非空 | 0 |
+| 字段级来源覆盖率 | 0% |
+| 记录级在 `SOURCES.md` 有出处 | 30 / 30 |
+| 　其中本轮采集带 URL | 14 / 30 |
+| 　其中仅早期 demo 列举（无逐条 URL） | 16 / 30 |
 
 `EMPTY` 是合法三态：规则读到即返回 `UNVERIFIED`，不视为缺数据 bug。本次共 1 个：`mb-demo-b650.biosGeneration`。
 
 **要点**：158 个字段的 `sources` 全部为空数组——字段级证据目前没有落地 URL；`VERIFIED / REPORTED` 的差别来自 `pricedata` 导出时整条记录的 `confidence`（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。
+
+### 20.5.1 分门类覆盖率
+
+| 类别 | 记录 | 字段 | 字段级有来源 | 覆盖率 |
+|---|---:|---:|---:|---:|
+| CPU | 5 | 25 | 0 | 0% |
+| MOTHERBOARD | 6 | 60 | 0 | 0% |
+| MEMORY | 3 | 12 | 0 | 0% |
+| GPU | 6 | 36 | 0 | 0% |
+| PSU | 3 | 6 | 0 | 0% |
+| CASE | 2 | 12 | 0 | 0% |
+| COOLER | 2 | 4 | 0 | 0% |
+| STORAGE | 3 | 3 | 0 | 0% |
+| **合计** | **30** | **158** | **0** | **0%** |
+
+### 20.5.2 冻结表反向覆盖（声明了、但没有任何记录使用的字段）
+
+`docs/03` §3.3 声明的每一条字段路径都至少被一条记录使用。
 
 ## 20.6 来源表交叉（只读，不改）
 
