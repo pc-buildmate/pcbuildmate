@@ -4,6 +4,8 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,6 +45,42 @@ class WorkspaceScreenSemanticsTest {
         render(state(revisionId = 2, diagnosisRevisionId = 2))
 
         compose.onAllNodesWithText("配置已修改，请重新检查兼容性").assertCountEquals(0)
+    }
+
+    @Test
+    fun `undo is hidden when there is nothing to undo`() {
+        render(state(revisionId = 2, diagnosisRevisionId = 2))
+
+        compose.onAllNodesWithText("撤销上一步").assertCountEquals(0)
+    }
+
+    @Test
+    fun `undo is offered when the state allows it`() {
+        render(state(revisionId = 2, diagnosisRevisionId = 2).copy(canUndo = true))
+
+        compose.onNodeWithText("撤销上一步").assertExists()
+    }
+
+    @Test
+    fun `the 3d clearance entry is reachable`() {
+        var previewed = false
+        compose.setContent {
+            WorkspaceScreen(
+                state = state(revisionId = 2, diagnosisRevisionId = 2),
+                labels = emptyMap(),
+                weights = emptyMap(),
+                onIntent = {},
+                onCheck = {},
+                onCompare = {},
+                onPreview3d = { previewed = true },
+                onBack = {},
+            )
+        }
+
+        compose.onNodeWithText("3D 间隙预览").performClick()
+        compose.waitForIdle()
+
+        assertTrue("点 3D 入口应回调 onPreview3d", previewed)
     }
 
     private fun render(state: WorkspaceUiState) {
