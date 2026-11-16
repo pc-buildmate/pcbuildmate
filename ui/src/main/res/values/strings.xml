@@ -82,5 +82,8 @@
     <string name="preview3d_show_case">显示机箱</string>
     <string name="preview3d_reset">重置视角</string>
     <string name="preview3d_empty">还没有配置，先载入演示配置或生成一份配置。</string>
+    <string name="preview3d_view_board">板面</string>
+    <string name="preview3d_view_top">俯视</string>
+    <string name="preview3d_view_rear">背视</string>
     <string name="preview3d_hint">拖动旋转 · 盒体为尺寸示意，非外观模型</string>
 </resources>

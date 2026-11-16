@@ -131,6 +131,38 @@ fun Preview3DScreen(
                         .horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
+                    AssistChip(
+                        onClick = {
+                            yaw = -1.5708f
+                            pitch = 0f
+                            zoom = 1f
+                        },
+                        label = { Text(stringResource(R.string.preview3d_view_board), style = MaterialTheme.typography.labelSmall) },
+                    )
+                    AssistChip(
+                        onClick = {
+                            yaw = 0f
+                            pitch = 1.5708f
+                            zoom = 1f
+                        },
+                        label = { Text(stringResource(R.string.preview3d_view_top), style = MaterialTheme.typography.labelSmall) },
+                    )
+                    AssistChip(
+                        onClick = {
+                            yaw = 0f
+                            pitch = 0f
+                            zoom = 1f
+                        },
+                        label = { Text(stringResource(R.string.preview3d_view_rear), style = MaterialTheme.typography.labelSmall) },
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
                     visibleScene.labels.forEach { label ->
                         AssistChip(
                             onClick = {},
