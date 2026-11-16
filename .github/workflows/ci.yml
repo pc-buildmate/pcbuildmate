@@ -132,14 +132,26 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: gradle/actions/setup-gradle@v4
       - name: Install SDK, emulator image and create the AVD
+        env:
+          ANDROID_AVD_HOME: ${{ runner.home }}/.android/avd
         run: |
           SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
           AVDMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name avdmanager -type f | head -1)
           test -n "$SDKMANAGER" && test -n "$AVDMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" --install "platforms;android-37.0" "build-tools;37.0.0" "platform-tools" "emulator" "system-images;android-33;google_apis;x86_64"
-          echo "no" | "$AVDMANAGER" create avd -n ci -k "system-images;android-33;google_apis;x86_64" --device pixel_5 --force
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo "no" | "$AVDMANAGER" create avd -n ci -k "system-images;android-33;google_apis;x86_64" --abi x86_64 --device "pixel_5" --force || true
+          if [ ! -f "$ANDROID_AVD_HOME/ci.ini" ]; then
+            echo "no" | "$AVDMANAGER" create avd -n ci -k "system-images;android-33;google_apis;x86_64" --abi x86_64 --force || true
+          fi
+          echo "--- AVD home ---"
+          ls -la "$ANDROID_AVD_HOME" || true
+          "$AVDMANAGER" list avd || true
+          test -f "$ANDROID_AVD_HOME/ci.ini"
       - name: Boot the emulator
+        env:
+          ANDROID_AVD_HOME: ${{ runner.home }}/.android/avd
         run: |
           ADB="$ANDROID_HOME/platform-tools/adb"
           EMU_LOG="$RUNNER_TEMP/emulator.log"
