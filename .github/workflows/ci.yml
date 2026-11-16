@@ -155,6 +155,20 @@ jobs:
           exit 1
       - name: Room store contracts on device
         run: ./gradlew :data:connectedDebugAndroidTest --no-daemon --console=plain --stacktrace
+      - name: Smoke-install the APK and start the app
+        run: |
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          ./gradlew :app:assembleDebug --no-daemon --console=plain
+          "$ADB" install -r app/build/outputs/apk/debug/app-debug.apk
+          "$ADB" shell monkey -p io.github.pcbuildmate -c android.intent.category.LAUNCHER 1 >/dev/null
+          sleep 8
+          PID=$("$ADB" shell pidof io.github.pcbuildmate)
+          echo "app pid: $PID"
+          if [ -z "$PID" ]; then
+            "$ADB" logcat -d -t 200
+            echo "::error title=launch::应用启动后进程不存在（崩溃？）"
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
