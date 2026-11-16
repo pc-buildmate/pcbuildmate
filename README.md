@@ -148,7 +148,7 @@ node tools/test-demo-ui.mjs
 ./gradlew :data:testDebugUnitTest :feature:testDebugUnitTest :domain:rules:test \
   :domain:state:test :domain:replacement:test :domain:compare:test \
   :domain:revision:test :domain:recommend:test \
-  :ui:testDebugUnitTest :app:testDebugUnitTest
+  :ui:testDebugUnitTest :app:testDebugUnitTest :test-oracle:test
 node tools/gen-matrix.mjs
 node tools/check-matrix.mjs
 ```
