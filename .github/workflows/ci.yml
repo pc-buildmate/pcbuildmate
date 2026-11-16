@@ -132,9 +132,8 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: gradle/actions/setup-gradle@v4
       - name: Install SDK, emulator image and create the AVD
-        env:
-          ANDROID_AVD_HOME: ${{ runner.home }}/.android/avd
         run: |
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
           SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
           AVDMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name avdmanager -type f | head -1)
           test -n "$SDKMANAGER" && test -n "$AVDMANAGER"
@@ -150,9 +149,8 @@ jobs:
           "$AVDMANAGER" list avd || true
           test -f "$ANDROID_AVD_HOME/ci.ini"
       - name: Boot the emulator
-        env:
-          ANDROID_AVD_HOME: ${{ runner.home }}/.android/avd
         run: |
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
           ADB="$ANDROID_HOME/platform-tools/adb"
           EMU_LOG="$RUNNER_TEMP/emulator.log"
           "$ANDROID_HOME/emulator/emulator" -accel-check || true
