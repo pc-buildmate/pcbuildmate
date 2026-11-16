@@ -20,6 +20,8 @@
 | D2-03 | 无显示输出 Guard | done | @MoeField | [D2-03](D2-03.md) |
 | INT-01 | App 目录快照合并（30 条） | done | @MoeField | [INT-01](INT-01.md) |
 | DATA-02 | Room 持久化 A/B | done | @MoeField | [DATA-02](DATA-02.md) |
+| DATA-03 | 目录一致性审计（脚本 + 30 条报告） | done | @LIU132578 | [DATA-03](DATA-03.md) · [docs/20](../20-catalogue-audit.md) |
+| DATA-04 | 目录/Revision 契约测试 + 拒绝分支 | done | @LIU132578 | [DATA-04](DATA-04.md) |
 | D4-01 | 预算推荐（6 类，权重可见，iGPU 过滤） | done | @MoeField | [D4-01](D4-01.md) |
 | VIZ-01 | 3D 间隙预览（盒体 + 程序化纹理） | done | @MoeField | [docs/17](../17-3d-preview.md) |
 
