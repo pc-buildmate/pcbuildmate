@@ -29,6 +29,7 @@
 |---|---|---|---|---|---|
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | paused | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 | QA-01 | 矩阵 + 12 条关键变异 | done | @MoeField | [QA-01](QA-01.md) |
+| QA-02 | `:test-oracle` 参考模型 + 交叉校验（规则 / 两张状态机） | done | @yys1yys2yys | issue #55 |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | **doing** | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
 | DEFENSE-01 | 讲稿 / 演示脚本 / Q&A / PPT | **doing** | @MoeField | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
 | RELEASE-01 | 签名 APK / GitHub Release | **doing** | @MoeField | QA | [RELEASE-01](RELEASE-01.md) |
