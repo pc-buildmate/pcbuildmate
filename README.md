@@ -124,6 +124,7 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 | 两张状态机 76 格 | [docs/04](docs/04-state-machines.md) |
 | 模块边界 / 依赖矩阵 | [docs/05](docs/05-module-independence.md) |
 | 单元验证 / 矩阵 / 变异 | [docs/07](docs/07-unit-verification.md) |
+| 测试证据链（每道门证明什么） | [docs/19](docs/19-test-evidence.md) |
 | 范围外清单 | [docs/09](docs/09-ci-and-scope.md) |
 | 答辩口径 / 风险 | [docs/13](docs/13-risks.md) |
 | 提案 / 讲稿 / Q&A 原文 | [materials/](materials/README.md) |
