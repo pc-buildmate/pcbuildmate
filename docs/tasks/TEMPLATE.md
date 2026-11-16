@@ -12,7 +12,7 @@
 | 任务 ID | `D3-02` |
 | 模块 | D3 规则引擎 |
 | Owner | 待填 |
-| Reviewer | Captain |
+| Reviewer | @MoeField |
 | 依赖 | `D1-01` 已合并 |
 | 预计 | 1.5 天 |
 | 截止 | 2026-11-15 |

@@ -62,7 +62,7 @@ plan card 分享用应用内 JSON + 系统分享 Intent，**不需要** `INTERNE
 
 ```
 # 文件路径 | 关键词 | 理由 | 批准人 | 日期
-app/src/test/.../FpsRegressionTest.kt | FPS | 反例测试：断言范围外字段不会出现在 UI | 组长 | 2026-10-20
+app/src/test/.../FpsRegressionTest.kt | FPS | 反例测试：断言范围外字段不会出现在 UI | @MoeField | 2026-10-20
 ```
 
 规则：

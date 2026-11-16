@@ -1,6 +1,6 @@
-# HANDOFF · 2026-11-16
+# HANDOFF · 2026-11-17
 
-> 状态：组长暂停一周（≈11-23 回来）；QA 线由 @yys1yys2yys 继续推进，其余任务仍挂在 BOARD。
+> 状态：@MoeField 暂时代理 lead（合并 / 发布 / CI）；QA 线由 @yys1yys2yys 推进，其余任务挂在 BOARD。
 > 以 `main` 最新提交为准，不看本文件里的哈希。
 
 ## 现在能跑什么

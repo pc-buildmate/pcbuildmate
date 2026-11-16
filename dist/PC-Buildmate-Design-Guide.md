@@ -31,100 +31,177 @@
 
 ---
 
-# PC Buildmate — 设计指南（LLM 可执行契约集）
+# PC Buildmate
 
-> 版本 `v1.0`  ·  目录版本 `static-v1`  ·  规则版本 `rules-v1`  ·  文档状态见 `docs/VERSION`
+> EE5415 小组作业 · Android 12+ · 中文界面 · **完全离线**
 >
-> 本仓库不是产品说明书，而是**一组可执行契约 + 自动验收协议 + 变更控制规则**。
-> 人类读它来对齐，LLM 读它来实现；两边都不能靠「理解精神」自由发挥。
+> 一个装机决策工具：输入预算和用途，得到一份**带价格、检查过、可比较**的配置单。
+> 每条结论都带证据：字段有 `VERIFIED / REPORTED / EMPTY`，检查结果继承最弱证据，缺字段只能返回“未验证”。
+
+**这不是概念稿了。** 真机上已经能跑完整链路：
+
+```
+载入 ¥7,800 配置 → 检查（1 BLOCKER + 1 MAJOR + BIOS 未验证）
+→ 换 300mm 显卡（+¥100）→ 预览 ¥7,900 → 全量重检 → 应用
+→ BIOS 仍然“未验证” → 保存 A/B → 并排比较
+```
+
+## 现在能跑什么
+
+| 工作区 | 诊断 |
+|---|---|
+| ![工作区](docs/screenshots/workspace.png) | ![诊断](docs/screenshots/diagnostics.png) |
+
+| 比较 | 3D 间隙预览 |
+|---|---|
+| ![比较](docs/screenshots/compare.png) | ![3D](docs/screenshots/3d-preview.png) |
+
+| 入口 | |
+|---|---|
+| ![入口](docs/screenshots/entry.png) | |
+
+- 5 屏：Entry → Workspace → Diagnostics → Compare → 3D 间隙预览
+- 8 类零件、¥7,800 起始配置、¥8,000 预算
+- 15 条兼容规则、60 条 fixture、两张状态机 76 格
+- 替换建议先过滤 BLOCKER，再按价格/影响/ID 排序
+- 保存 A/B 后并排比较；过期诊断不显示旧结论
+- Aura A1（Android 16 / arm64）真机验证通过
+
+## 5 分钟跑起来
+
+```bash
+git clone git@github.com:pc-buildmate/pcbuildmate.git
+cd pcbuildmate
+```
+
+用 Android Studio 打开，等 Gradle sync；或者命令行：
+
+```bash
+# local.properties 指向你的 SDK（Android Studio 会自动生成）
+echo "sdk.dir=/path/to/Android/Sdk" > local.properties
+
+./gradlew :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+要求：JDK 17+、Android SDK Platform 37、`minSdk 31`。
+CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmate-debug-apk` artifact。
+本地 `1.0.0-defense` signed APK 已构建，见 [RELEASE-01](docs/tasks/RELEASE-01.md)；
+触发条件、artifact 下载和 release 计划见 [docs/15](docs/15-ci-and-artifacts.md)。
+
+## 团队
+
+| GitHub | 现在 |
+|---|---|
+| [@MoeField](https://github.com/MoeField) | 暂时代理 lead（合并 / 发布 / CI）；架构 / 集成 / UI；核心与 QA 已收口 |
+| [@LIU132578](https://github.com/LIU132578) | 已加入；任务自由认领 |
+| [@yys1yys2yys](https://github.com/yys1yys2yys) | 已加入；任务自由认领 |
+| 待加入 | 随时加，直接认领 [BOARD](docs/tasks/BOARD.md) |
+
+> 我们没有正式设过负责人角色；**@MoeField 只是暂时代理 lead**（合并、发布、CI 排障）。
+>
+> **这个阶段不锁分工**：看到想做的，就在 [BOARD](docs/tasks/BOARD.md) 把 owner 改成自己，
+> 开 `feat/<id>-<slug>` 分支，按 [COLLABORATION.md](COLLABORATION.md) 走 PR。
+> 不要求按优先级做，也不要求每人只做一个模块；两人想做同一块就拆模块或拆 PR，别抢同一个文件。
+
+## 模块地图
+
+| Gradle 模块 | 负责什么 | 状态 | 先读 |
+|---|---|---|---|
+| `:contracts` | 类型、端口、不变量 | 冻结 | [docs/02](docs/02-contracts.md) |
+| `:contracts-test` | 端口契约测试基类 | 冻结 | [docs/07](docs/07-unit-verification.md) |
+| `:data` | 目录解析、seed 校验、Room 存储 | 完成 | [D1-01](docs/tasks/D1-01.md) · [DATA-02](docs/tasks/DATA-02.md) |
+| `:domain:rules` | 15 条兼容规则 + PSU 公式 | 完成 | [D3-01](docs/tasks/D3-01.md) |
+| `:domain:replacement` | 替换候选过滤/排序 | 完成 | [D5-01](docs/tasks/D5-01.md) |
+| `:domain:state` | 诊断/替换状态机 | 完成 | [D2-01](docs/tasks/D2-01.md) |
+| `:domain:compare` | A/B 比较 | 完成 | [D6-01](docs/tasks/D6-01.md) |
+| `:domain:recommend` | 预算推荐 | 完成 | [D4-01](docs/tasks/D4-01.md) |
+| `:domain:revision` | revision 构造 + 无显示输出 guard | 完成 | [D2-03](docs/tasks/D2-03.md) |
+| `:feature` | ViewModel / MVI 编排 | 核心完成 | [docs/06](docs/06-modules.md) |
+| `:ui` | Compose 四屏 | 可用；待打磨 | [POLISH-01](docs/tasks/POLISH-01.md) |
+| `:app` | Activity / 手动导航 / 装配 | 完成 | [docs/05](docs/05-module-independence.md) |
+| `:testing` | Fake / Stub | 待补 | [docs/07](docs/07-unit-verification.md) |
+| `:test-oracle` | 独立参考模型 | 待补 | [QA-01](docs/tasks/QA-01.md) |
+
+> 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：App 使用 30 条合并快照（26 active + 4 demo anchors），2026-11-04 参考价，不承诺实时/库存。
+> 价格数据管道（2020+，半自动，App 只读快照）见 [pricedata/README.md](pricedata/README.md)。
+> 长期只采 CPU / 主板 / 内存 / 硬盘 / 电源 / 显卡；机箱、散热、无线网卡只保留 App demo，不采历史价。
+
+## 这一周做什么
+
+核心 + QA 已收口，**暂停一周等组员提交**。从 [HANDOFF.md](HANDOFF.md) 开始：
+
+1. **答辩材料**：讲稿 / 9 步演示 / Q&A / PPT（DEFENSE-01）
+2. **签名 APK**：`v1.0-defense`（RELEASE-01）
+3. **UI 收口**：文案、可访问性、截图（POLISH-01）
+4. **数据管道**：华硕/七彩虹 adapter、Wayback（PRICEDATA-01，P2）
+5. 组员按 [BOARD](docs/tasks/BOARD.md) 自由认领；没人做的 @MoeField 兜底。
+
+每个任务都有一页小文档，放在 [docs/tasks/](docs/tasks/)。
+开工前只读：任务包 + 本模块卡（06）+ 相关契约（02/`contracts/`）+ 相关规则/状态机。
+
+## 协作三条
+
+1. **所有改动走 PR**，CI 绿了再 squash merge；不要直接推 `main`。
+2. **一个任务一个模块**；不顺手改 `contracts/`、fixture 期望值、别人模块。
+3. **AI 写、人验收**：PR 里贴命令输出；UI 变更贴截图；APK 变更有人真机装过。
+
+细则见 [COLLABORATION.md](COLLABORATION.md)，AI 代理入口见 [AGENTS.md](AGENTS.md)。
+
+## 深入阅读
+
+| 想知道 | 看 |
+|---|---|
+| 产品范围、六功能、五条公理 | [docs/00](docs/00-overview.md) |
+| 三态证据、术语 | [docs/01](docs/01-glossary.md) |
+| 契约与不变量 | [docs/02](docs/02-contracts.md) |
+| 15 条规则、冲突 ID | [docs/03](docs/03-rules.md) |
+| 两张状态机 76 格 | [docs/04](docs/04-state-machines.md) |
+| 模块边界 / 依赖矩阵 | [docs/05](docs/05-module-independence.md) |
+| 单元验证 / 矩阵 / 变异 | [docs/07](docs/07-unit-verification.md) |
+| 测试证据链（每道门证明什么） | [docs/19](docs/19-test-evidence.md) |
+| 范围外清单 | [docs/09](docs/09-ci-and-scope.md) |
+| 答辩口径 / 风险 | [docs/13](docs/13-risks.md) |
+| 提案 / 讲稿 / Q&A 原文 | [materials/](materials/README.md) |
+| 可点击的原型 | [site/](site/) |
+| 规约驱动 / spec-kit 取舍 | [docs/16](docs/16-spec-driven.md) |
+| 答辩演示脚本 / Q&A | [docs/defense/DEMO.md](docs/defense/DEMO.md) |
+| 3D 间隙预览（尺寸示意） | [docs/17](docs/17-3d-preview.md) · [坐标](docs/18-3d-coordinates.md) |
+
+## 自检
+
+```bash
+node tools/check-docs.mjs
+node ci/check-boundaries.mjs
+node ci/check-keywords.mjs
+node ci/check-test-tasks.mjs
+
+node tools/test-demo-engine.mjs
+node tools/test-demo-flow.mjs
+node tools/test-demo-ui.mjs
+
+# 矩阵要先跑测试再生成，否则 check-matrix 只会打印期望值
+./gradlew :data:testDebugUnitTest :feature:testDebugUnitTest :domain:rules:test \
+  :domain:state:test :domain:replacement:test :domain:compare:test \
+  :domain:revision:test :domain:recommend:test \
+  :ui:testDebugUnitTest :app:testDebugUnitTest :test-oracle:test
+node tools/test-matrix-tools.mjs   # 矩阵工具自测
+node tools/gen-matrix.mjs
+node tools/check-matrix.mjs
+```
+
+## 已知边界
+
+- 目录是 **demo 数据**，不是实时市场；价格带日期，但不承诺库存。
+- 不做 FPS / 跑分 / 性能分档；不做 3D 装配；不接账号 / 云同步。
+- Room 持久化已完成；杀进程后保存的 A/B 可恢复（诊断需重新检查）。
+- 组员入口见 [HANDOFF.md](HANDOFF.md)；当前 `main` 的测试/矩阵/变异状态以它为准。
+- 比较页目前只输出总价、状态、分类花费；功耗/升级余量/物理尺寸待补。
+- 演示只覆盖 2 份配置；3 份需要横向滚动。
 
 ---
 
-## 1. 一句话
-
-把一个「预算 + 用途」变成「一份花过钱、检查过、可比过的装机单」，
-并且**每一条结论都带着它的证据**：规格字段有证据状态，检查结果继承最弱证据，
-缺字段只能返回「未验证」，永远不能靠没人确认的字段宣布「兼容」。
-
-## 2. 为什么要有这份文档
-
-团队会用 LLM 写绝大部分代码。LLM 的失败模式不是「写不出代码」，而是：
-
-1. **重新定义语义**——把「未验证」写成「通过」，把「来源冲突」降级成数值比较；
-2. **跨越模块边界**——在 ViewModel 里算兼容性，在 UI 里读 DAO，在 domain 里 import Android；
-3. **改契约而不说**——为了让自己编译通过，顺手改了字段名或可空性；
-4. **用测试自证**——写一个断言自己实现的测试，绿了就算完成。
-
-这份文档用四件东西把上面四条堵死：**冻结契约**（02 章 + `contracts/`）、
-**单向依赖矩阵**（05 章）、**矩阵化单元验证**（07 章）、**CI 硬阻塞**（09 章）。
-
-## 3. 目录地图
-
-| 文件 | 内容 | 谁先读 |
-|---|---|---|
-| [docs/00-overview.md](docs/00-overview.md) | 定位、范围、六功能、五条设计公理、成功判据 | 所有人 |
-| [docs/01-glossary.md](docs/01-glossary.md) | 术语与三态/三结果语义（**歧义出现时以本文为准**） | 所有人 |
-| [docs/02-contracts.md](docs/02-contracts.md) | 契约语义、不变量、冻结规则、变更流程 | LLM 必读 |
-| [docs/03-rules.md](docs/03-rules.md) | 规则 DSL、15 条规则明细、fixture 规范、conflictId | LLM 必读 |
-| [docs/04-state-machines.md](docs/04-state-machines.md) | 诊断/替换两张状态机全转移表 + 导航 guard | LLM 必读 |
-| [docs/05-module-independence.md](docs/05-module-independence.md) | **模块独立性**：分层、端口、依赖矩阵、隔离机制 | 架构负责人必读 |
-| [docs/06-modules.md](docs/06-modules.md) | 六模块契约卡（职责/接口/禁止/失败/验收） | 分工后各读自己那张 |
-| [docs/07-unit-verification.md](docs/07-unit-verification.md) | **单元验证设计**：单元定义、替身、矩阵、属性、变异、DoD | 测试负责人 + LLM |
-| [docs/08-testing-and-triage.md](docs/08-testing-and-triage.md) | oracle 分层、失败归因五类、批次报告与人工批准 | 测试负责人 |
-| [docs/09-ci-and-scope.md](docs/09-ci-and-scope.md) | 范围外清单、CI 三层检查、白名单、解除流程 | 全员 |
-| [docs/10-llm-delivery.md](docs/10-llm-delivery.md) | 生成顺序、prompt 打包、闸门、评审清单、漂移检测 | 全员 |
-| [docs/11-adr/](docs/11-adr/) | 6 条架构决策记录（为什么这么做，什么时候该推翻） | 答辩前 |
-| [docs/12-prompt-templates.md](docs/12-prompt-templates.md) | 7 份可直接复制的模块 prompt 模板 | 开工第一天 |
-| [docs/13-risks.md](docs/13-risks.md) | 已知风险、TBD、答辩口径（哪些话不能说） | 答辩前 |
-| [docs/14-team-and-milestones.md](docs/14-team-and-milestones.md) | 角色与模块、四个里程碑、交接协议、砍功能顺序 | 组长 |
-| [contracts/](contracts/) | Kotlin 契约源码（**只读区**） | 只读 |
-| [contracts-test/](contracts-test/) | 端口契约测试基类（假实现与真实实现必须同过） | 测试负责人 |
-| [assets/rules/rules-v1.json](assets/rules/rules-v1.json) | 规则表数据 |
-| [assets/fixtures/](assets/fixtures/) | 60 条单规则 fixture + 8 条答辩锚点 fixture |
-| [ci/](ci/) | 边界检查、关键词检查、模块矩阵 |
-| [tools/check-docs.mjs](tools/check-docs.mjs) | 文档自检（链接 / ID / 矩阵完整性 / JSON 合法性） |
-
-## 4. 三种阅读路径
-
-**A. 人类新成员（约 60 分钟）**
-`00 → 01 → 05 → 06 → 07`。读完应当能回答：为什么不能缺字段 PASS；为什么 domain 不能 import Android；
-为什么测试矩阵空格子要 CI fail。
-
-**B. LLM 开工（每个模块一次，约 1 个上下文窗口）**
-[docs/12-prompt-templates.md](docs/12-prompt-templates.md) 里对应模板 → 模板会要求**只**加载：本模块卡（06）
-+ 相关契约（02 / `contracts/`）+ 相关状态机（04）+ 相关规则与 fixture（03）+ 本模块验收（07）。
-**不要喂全文档**，见 10 章 §10.3。
-
-**C. 答辩前复核（约 30 分钟）**
-`00 §0.5 范围` → `09 §9.1 范围外` → `13 风险与口径`。三处结论必须一致；
-不一致就改文档，不要在台上临场解释。
-
-## 5. 治理三规则（只有三条，别再发明）
-
-| # | 规则 | 谁批 | CI 行为 |
-|---|---|---|---|
-| G1 | 契约变更走 git，默认批准自动合并；必须留 diff + 影响模块 + ADR | 无人（记录即可） | 记录并在批次报告列出，不阻塞 |
-| G2 | 一个测试批次（milestone / release）的最终「通过」由人点批准；人不逐条看失败 | 人 | 只出报告，不代替人下结论 |
-| G3 | 范围外功能是硬阻塞；解除必须提交 `scope-change` 文档并由人批准 | 人 | fail-closed，无白名单不放行 |
-
-## 6. 自检
-
-```bash
-node tools/check-docs.mjs      # 文档链接 / ID 引用 / 矩阵完整性 / JSON 合法性
-node ci/check-boundaries.mjs   # 模块依赖边界（读取 ci/modules.json 与源码 import）
-node ci/check-keywords.mjs     # 范围外关键词与权限
-node tools/check-matrix.mjs    # 验证矩阵完整性（规则 60 / 状态机 76 / 不变量 18）
-```
-
-四个脚本都是**零依赖 Node**，不需要 Android SDK、不需要网络。
-任何一条不通过，视为文档/代码未完成，而不是「稍后修」。
-
-## 7. 版本与冻结
-
-- 文档版本见 `docs/VERSION`；契约版本由 `contracts/` 的 git 提交 + API dump 决定。
-- 每个构建、每个诊断、每份测试报告都必须记录三元组：`catalogueVersion / rulesVersion / commit`。
-- 失败报告额外记录：`seed / promptHash / modelVersion`（见 08 章 §8.5）。
-- **契约只允许经 ADR + 单独提交变更**；实现 PR 里顺手改 `contracts/` 一律打回（见 02 章 §2.9）。
+仓库：<https://github.com/pc-buildmate/pcbuildmate> · 文档版本见 [docs/VERSION](docs/VERSION)
 
 
 ---
@@ -275,7 +352,7 @@ domain 不依赖 Android；feature 不依赖 Room；UI 不依赖 domain 实现�
 ```
 app/                      Android 应用（只做装配与导航）
 contracts/                纯 Kotlin 模型 + 端口 + UI 契约（只读区）
-domain/build/             纯 JVM：revision、总价、diff、草稿
+domain/revision/             纯 JVM：revision、总价、diff、草稿
 domain/rules/             纯 JVM：规则引擎
 domain/replacement/       纯 JVM：候选过滤与排序
 domain/recommend/         纯 JVM：预算分配
@@ -555,7 +632,7 @@ demo 数据**禁止**进入生产 seed；生产 seed 的校验在启动时 fail-
 | ID | 不变量 | 违反归类 | 主要覆盖 |
 |---|---|---|---|
 | INV-01 | `totalCny == Σ(quantity × unitPriceCny)` | DOMAIN_BUG | 构造期 `require` + 属性测试 |
-| INV-02 | 同一 `buildId` 下 revision id 严格递增 | DOMAIN_BUG | `domain:build` |
+| INV-02 | 同一 `buildId` 下 revision id 严格递增 | DOMAIN_BUG | `domain:revision` |
 | INV-03 | 诊断只有 `revisionId == currentRevisionId` 才能作为当前结论展示 | UI_STATE_BUG | `currentDiagnosis` 访问器 |
 | INV-04 | 规则输入含 `EMPTY` / 缺失 → 不得 `Passed` | DOMAIN_BUG | 15 条规则 × `missing` fixture |
 | INV-05 | 规则输入含来源冲突 → 必须 `Unverified(SOURCE_CONFLICT)` | DOMAIN_BUG | `fx_source_conflict_*` |
@@ -692,6 +769,8 @@ val isDiagnosisStale: Boolean
 |---|---|
 | 总价与条目不符 | `BuildRevision.init` |
 | 数量 0 / 负价 | `BuildItem.init` |
+| 单件类目数量 > 1（CPU/主板/显卡/电源/机箱/散热） | `QuantityRules.isValid` + `:feature.setQuantity`（ADR-0010） |
+| 无独显但 CPU 无核显 | `DisplayOutputGuard`（ADR-0009）；显卡 0 件 = 不添加条目 |
 | `value != null` 却是 `EMPTY` | `FieldValue.init` |
 | `conflict = true` 但只有一个来源 | `FieldValue.init` |
 | revision id = 0 | `BuildRevision.init` |
@@ -843,6 +922,7 @@ if (mb.biosGeneration < cpu.minBiosGeneration) return Conflict(...)
 | CPU | `supportedChipsets` | csv | 大写 token，如 `B650,X670` |
 | CPU | `tdpW` | number | W |
 | CPU | `minBiosGeneration` | version | `主.次`，如 `1.0` |
+| CPU | `integratedGraphics` | string | `YES / NO`（无独显配置必须 YES） |
 | MOTHERBOARD | `socket` | string | 同上 |
 | MOTHERBOARD | `chipset` | string | 大写 token |
 | MOTHERBOARD | `biosGeneration` | version | `主.次` |
@@ -1147,7 +1227,7 @@ data class TransitionResult<S : Any>(
 | `RunDiagnosis(revisionId)` | ViewModel → `CompatibilityEvaluator` | 发 `CheckFailed` |
 | `CancelDiagnosis` | ViewModel（取消 job） | 忽略 |
 | `LoadCandidates(base, ruleId, conflictId)` | ViewModel → `ReplacementAdvisorPort` | 发 `CandidatesLoaded(空)` |
-| `BuildPreview(base, componentId)` | ViewModel → `domain:build` | 不产生 `PreviewBuilt`（保持 `previewRevisionId = null`） |
+| `BuildPreview(base, componentId)` | ViewModel → `domain:revision` | 不产生 `PreviewBuilt`（保持 `previewRevisionId = null`） |
 | `RecheckRevision(revisionId)` | ViewModel → 引擎全量重检 | 发 `RecheckRejected` |
 | `PersistRevision(revision)` | ViewModel → `BuildStorePort` | 保留内存态 + 提示 |
 | `PersistApplied(revision)` | 同上（仅在重检通过后） | 同上 |
@@ -1300,6 +1380,11 @@ Apply = Apply，Cancel = Cancel，RechDone = RecheckCompleted，RechRejected = R
 | R-29 | NoC | Dismiss / Cancel | — | Idle | [] | 关闭原因 |
 | R-30 | NoC | BuildEdited(r) | — | Idle | [SaveDraft(r)] | 改配置后再看 |
 
+> **guard 顺序（补记，2026-11）**：`PreviewCandidate` 在 `Candidates` 与 `Previewing` 下都**先判
+> base 是否过期**，再判候选是否存在。两者同时成立时返回 `APPLY_REVISION_STALE` 而不是
+> `CANDIDATE_NOT_FOUND`——base 已作废时，"这个候选还在不在"没有意义。R-09/R-10/R-11 的行序是
+> 判定项的列举，不是求值顺序；这条由状态机交叉校验（`app/src/test/.../ReplacementOracleCrossCheckTest.kt`）确定。
+
 > 「新 Conflict」的判定：`diagnosis.outcomes` 中第一条 `Conflict`（按 ruleId 字典序）；
 > 若存在 BLOCKER Conflict 优先取它。若没有 Conflict（只剩 Unverified），视为「无新冲突」。
 
@@ -1405,14 +1490,14 @@ fun `diagnosis full matrix`() = DIAGNOSIS_CASES.map { c ->
 |---|---|---|---|---|---|---|
 | 1 | `:contracts` | Kotlin/JVM | 否 | 仅 stdlib | JVM | 已冻结 |
 | 2 | `:contracts-test` | Kotlin/JVM | 否 | contracts + kotlin-test | JVM | 小 |
-| 3 | `:domain:build` | Kotlin/JVM | 否 | contracts | JVM | 小 |
+| 3 | `:domain:revision` | Kotlin/JVM | 否 | contracts | JVM | 小 |
 | 4 | `:domain:rules` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 5 | `:domain:replacement` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 6 | `:domain:recommend` | Kotlin/JVM | 否 | contracts | JVM | 中 |
 | 7 | `:domain:compare` | Kotlin/JVM | 否 | contracts | JVM | 小 |
 | 8 | `:domain:state` | Kotlin/JVM | 否 | contracts | JVM | 小（但测试最多） |
 | 9 | `:data` | Android Library | 是 | contracts + Room + assets | Robolectric / 内存 | 中 |
-| 10 | `:feature` | Android Library | 是 | contracts + domain:state + domain:build | JVM（协程测试） | 大 |
+| 10 | `:feature` | Android Library | 是 | contracts + domain:state + domain:revision | JVM（协程测试） | 大 |
 | 11 | `:ui` | Android Library | 是 | contracts + Compose | Robolectric（semantics） | 大 |
 | 12 | `:app` | Android App | 是 | 全部 | Instrumented（少量） | 小 |
 | 13 | `:testing` | Kotlin/JVM | 否 | contracts + kotlin-test | JVM | 小 |
@@ -1428,10 +1513,10 @@ fun `diagnosis full matrix`() = DIAGNOSIS_CASES.map { c ->
 
 行 = 消费者，列 = 被依赖者。✔ = 允许，✘ = 禁止（CI 直接 fail）。
 
-| 消费者 \ 提供者 | contracts | domain:build | domain:rules | domain:repl | domain:recom | domain:comp | domain:state | data | feature | ui | testing |
+| 消费者 \ 提供者 | contracts | domain:revision | domain:rules | domain:repl | domain:recom | domain:comp | domain:state | data | feature | ui | testing |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **contracts** | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
-| **domain:build** | ✔ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
+| **domain:revision** | ✔ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:rules** | ✔ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:replacement** | ✔ | ✘ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
 | **domain:recommend** | ✔ | ✘ | ✘ | ✘ | — | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ |
@@ -1442,6 +1527,10 @@ fun `diagnosis full matrix`() = DIAGNOSIS_CASES.map { c ->
 | **ui** | ✔ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | — | ✘ |
 | **app** | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | **testing** | ✔ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | — |
+
+**唯一例外在第 12 行**：`:app` 额外在 **test classpath** 上依赖 `:test-oracle`
+（`testImplementation`，不进 APK），因为只有它能同时看到生产实现和参考模型；
+交叉校验代码在 `app/src/test/.../OracleCrossCheckTest.kt`。
 
 三条要点：
 
@@ -1554,7 +1643,7 @@ internal object RuleDslParser
   │  WorkspaceIntent
   ▼
 [feature] WorkspaceViewModel
-  │  1. 调 domain:build 生成新 BuildRevision（纯函数）
+  │  1. 调 domain:revision 生成新 BuildRevision（纯函数）
   │  2. 把 BuildEdited(rev) 喂给两个状态机
   ▼
 [domain:state] transition(Done(rev1), BuildEdited(rev2))
@@ -1802,6 +1891,7 @@ val state: StateFlow<WorkspaceUiState>
 不变量：
 
 - 每次 Add/Remove/Replace/SetQuantity/Undo 产生新 revision，`totalCny` 同步（INV-01/02/10）；
+- 单件类目（CPU/主板/显卡/电源/机箱/散热）数量恒为 1；`SetQuantity > 1` 被拒绝且不产生新 revision（ADR-0010）；
 - 编辑后 `diagnosisState == Idle` 且 `currentDiagnosis == null`，**不自动** StartCheck；
 - 只有经 `Rechecking` 才能 `Applied`（INV-07）；
 - 被拒绝的意图不改变 state，只写 `rejection`。
@@ -1841,7 +1931,7 @@ val state: StateFlow<WorkspaceUiState>
 
 ### 独立性约束
 
-允许依赖：`contracts`、`domain:state`、`domain:build`。
+允许依赖：`contracts`、`domain:state`、`domain:revision`。
 **禁止** import `domain:rules` / `domain:replacement` / `domain:recommend` / `domain:compare` 的**实现类**（只能经接口）。
 
 ---
@@ -2169,7 +2259,7 @@ interface BuildComparatorPort {
 
 | 模块 | 单元 | 隔离手段 | Oracle | 环境 |
 |---|---|---|---|---|
-| `domain:build` | 一次编辑产生的新快照（含总价、id） | 纯函数，无依赖 | 不变量 + 属性 | JVM |
+| `domain:revision` | 一次编辑产生的新快照（含总价、id） | 纯函数，无依赖 | 不变量 + 属性 | JVM |
 | `domain:rules` | 一条规则对一组字段的判定 | 目录通过接口注入；fixture 自带数据 | fixture 期望 + 参考模型 | JVM |
 | `domain:replacement` | 一次候选过滤 + 排序 | 引擎通过接口注入（Fake 返回固定结果） | 不变量 + 排序键 | JVM |
 | `domain:recommend` | 一次预算分配 | 同上 | 不变量（预算/可行性） | JVM |
@@ -2252,21 +2342,41 @@ verify(engine, times(1)).evaluate(any())
 fun `gpu length conflict 337 vs 320`() { ... }
 ```
 
-标签是**唯一的机器可读接口**。CI 从 JUnit XML 里抽出全部 `rule:*` / `case:*` / `inv:*` 标签，
-与期望矩阵比对，**缺一格即 fail**（不是"警告"）。
+标签是**唯一的机器可读接口**。生成器把 JUnit XML 的测试结果与 fixture/状态机定义对齐，
+产出 `matrix.json`；CI 再拿它与期望矩阵比对，**缺一格即 fail**（不是"警告"）。
 
 ### 7.5.3 矩阵检查器行为
 
+期望格子只写一份：`tools/matrix-spec.mjs`。`tools/gen-matrix.mjs` 和
+`tools/check-matrix.mjs` 都从它取 `CASES` / `FSM_GRID` / `expectedInvariants`，
+避免生成器和校验器各写一份规格导致漂移。
+
 ```bash
-node tools/check-matrix.mjs
-# 读取 build/test-results/**/*.xml
+./gradlew :domain:...:test :data:test :feature:test   # 先产生 JUnit XML
+node tools/gen-matrix.mjs                             # XML + fixtures → build/reports/matrix.json
+node tools/check-matrix.mjs                           # 读 matrix.json，与期望矩阵比对
 # 1) 期望：rules-v1.json 的 15 条 × 4 case；状态机 76 格；INV-01..18
-# 2) 实际：XML 里出现的 tag 组合（且必须 passed）
+# 2) 实际：matrix.json 里 status=passed 的格子（status 取自 JUnit XML）
 # 3) 差集非空 -> 退出码 1，并打印缺失清单
 ```
 
+**CI 在哪跑**：`.github/workflows/ci.yml` 的 `jvm` job，在跑完全部单测（含 `:data:test`、
+`:feature:test`）之后执行 `gen-matrix` + `check-matrix`。这两个模块的测试产物缺一不可：
+INV-02/10 的测试在 `feature`，INV-11/17 在 `data`，少跑一个模块就会缺格子、门禁变红。
+没有 `matrix.json` 时 `check-matrix` 只打印期望值（规格模式）并以 0 退出，因此它不再放在
+`docs` job 里跑——那里没有测试结果，通过与否说明不了任何事。
+
+**变异怎么跑**：`node tools/run-mutations.mjs` 逐条改源码 → 跑目标测试 → 还原源码，产物是
+`build/reports/key-mutations.json`；再用 `node tools/check-matrix.mjs --mutations` 校验 12 条是否
+全部 `KILLED`。CI 里由 `mutations` job 执行（`needs: jvm`，测试先过再谈变异）。两个平台坑已固化在脚本里：
+补丁串按 LF 比较（Windows 检出是 CRLF），Gradle 启动失败（`ENOENT`/`EINVAL`）记 `BROKEN` 而不是
+`KILLED`——否则"没跑起来"会被误读成"变异被杀"。
+
 **为什么不用行覆盖率**：行覆盖率 90% 的规则引擎，可能漏掉"来源冲突"整条分支，因为那一行被别的用例覆盖到了。
 矩阵覆盖看的是**语义维度**，行覆盖看的是**代码维度**——前者才是我们要的。
+
+**`MISSING` 的映射**：fixture id 以 `_missing` 结尾（RuleOutcome 仍是 `UNVERIFIED`），
+不是第四种 outcome；生成器从 id 后缀取 case，避免把 45 格误报成 60 格。
 
 ## 7.6 端口契约测试（Fake 与真实实现的一致性）
 
@@ -2323,7 +2433,8 @@ M2/M3 不需要知道"正确答案"，只需要知道"方向"——非常适合�
 
 ## 7.8 变异测试（合并闸门）
 
-工具：PIT（JVM 模块）。**mutation score 不是 KPI**；**关键 mutation 未杀死 = 阻塞合并**。
+工具：本项目用 `tools/run-mutations.mjs`（12 条手工补丁，改源码→跑目标测试→恢复）为主；
+PIT 可作为后续全量扫描。**mutation score 不是 KPI**；**关键 mutation 未杀死 = 阻塞合并**。
 
 | ID | 变异 | 应杀死它的测试 |
 |---|---|---|
@@ -2416,14 +2527,15 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 
 ## 7.11 DoD：模块"做完"的机器可检查清单
 
-一个模块只有在**全部 8 条**为真时才算交付。前 6 条可脚本化，后 2 条靠评审。
+一个模块只有在**全部 9 条**为真时才算交付。前 7 条可脚本化，后 2 条靠评审。
 
 | # | 条件 | 检查方式 |
 |---|---|---|
 | 1 | 单模块测试全绿 | `./gradlew :module:test` |
 | 2 | 规则/状态机/不变量矩阵无空格 | `node tools/check-matrix.mjs` |
-| 3 | 关键 mutation 全杀死 | `node tools/check-matrix.mjs --mutations` |
+| 3 | 关键 mutation 全杀死 | `node tools/run-mutations.mjs` → `node tools/check-matrix.mjs --mutations` |
 | 4 | 边界/关键词检查通过 | `node ci/check-boundaries.mjs && node ci/check-keywords.mjs` |
+| 4b | 有测试的模块都在 CI 任务列表里 | `node ci/check-test-tasks.mjs` |
 | 5 | 公开 API 未变（或已走契约流程） | `./gradlew :contracts:apiCheck` |
 | 6 | 无 `TODO` / `FIXME` / `println` 在 `src/main` | `ci/check-keywords.mjs` 附带的卫生检查 |
 | 7 | 评审：没有把业务逻辑写进 ViewModel/UI | 评审清单（10 章 §10.6） |
@@ -2443,7 +2555,7 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 | 6 | 只测 happy path | 60 条 fixture 只有 pass 类 | 矩阵空格即 fail |
 | 7 | 断言文案全文 | `onNodeWithText("...")` | 扫描测试代码里的中文长串 |
 | 8 | 用真实时钟/随机 | `Instant.now()` 在测试断言里 | 评审 + 扫描 |
-| 9 | 把实现抄进 oracle | 参考模型 import 生产 `domain:rules` | `ci/check-boundaries.mjs`（test-oracle 规则） |
+| 9 | 把实现抄进 oracle | 参考模型 import 生产 `domain:rules` | `ci/check-boundaries.mjs`（test-oracle 规则）；参考模型与交叉校验见 [19 章](19-test-evidence.md) |
 | 10 | 跳过 missing case | ```Ignore` 掉 missing 用例 | 矩阵空格 + skip 即 fail |
 
 **评审口令**（写进 10 章清单）："这个测试如果实现写错了，它会红吗？"
@@ -2527,12 +2639,12 @@ object InvariantChecker {
 
 ## 8.3 轻量参考模型（只覆盖可判定部分）
 
-| 覆盖 | 不覆盖 |
-|---|---|
-| 三态传播（15 条规则的声明式表） | 推荐"最优" |
-| 状态机转移合法性 | 替换排序"最优" |
-| 总价 / 预算算术 | 性能预测（范围外） |
-| 候选硬约束过滤（过滤后是否消除冲突） | 候选体验好坏 |
+| 覆盖项 | 参考模型现状（2026-11） | 不覆盖 |
+|---|---|---|
+| 三态传播（15 条规则的声明式表） | ✅ 已实现；60 条规则 fixture + 7 条 anchor 逐条交叉校验 | 推荐"最优" |
+| 状态机转移合法性 | ✅ 已实现；诊断 4×4、替换 6×10 全格交叉校验 | 替换排序"最优" |
+| 总价 / 预算算术 | ⬜ 未实现。构造 `BuildRevision` 时已强制 `totalCny == Σ(qty × price)`（INV-01），另有推荐模块自己的预算测试；参考模型暂不重复 | 性能预测（范围外） |
+| 候选硬约束过滤（过滤后是否消除冲突） | ⬜ 未实现。当前由 MV 级测试 + MUT-07 覆盖，尚未做独立参考实现 | 候选体验好坏 |
 
 实现要求：
 
@@ -2542,6 +2654,11 @@ object InvariantChecker {
 - 与生产实现同一份 fixture，结果必须一致。
 
 **自证禁令**由 `ci/check-boundaries.mjs` 强制（test-oracle 的 forbiddenImports）。
+
+**实现位置**（2026-11）：参考模型在 `test-oracle/src/main/kotlin/pcbuildmate/oracle/`
+（自带 `MiniJson`，不依赖序列化库）；交叉校验在 `app/src/test/.../OracleCrossCheckTest.kt`，
+因为只有 `:app` 能同时看到两边。校验是双向的：oracle ↔ 生产实现逐条一致，
+且 oracle 本身要对得上 fixture 里冻结的期望值。
 
 ## 8.4 失败归因五类（冻结）
 
@@ -2745,7 +2862,7 @@ plan card 分享用应用内 JSON + 系统分享 Intent，**不需要** `INTERNE
 
 ```
 # 文件路径 | 关键词 | 理由 | 批准人 | 日期
-app/src/test/.../FpsRegressionTest.kt | FPS | 反例测试：断言范围外字段不会出现在 UI | 组长 | 2026-10-20
+app/src/test/.../FpsRegressionTest.kt | FPS | 反例测试：断言范围外字段不会出现在 UI | @MoeField | 2026-10-20
 ```
 
 规则：
@@ -2991,6 +3108,10 @@ notes: 规格空白 2 处已按 §10.5 询问后确定（记录在 PR 评论）
 | [0004](0004-pure-jvm-domain.md) | 纯 JVM domain + 端口 | 用编译期隔离代替纪律 | 模块构建 > 3 分钟 |
 | [0005](0005-rules-as-data.md) | 规则数据化 | 新增代际只改数据与 fixture | 出现第 3 条 formula 规则 |
 | [0006](0006-three-state-evidence.md) | 三态证据模型 | 三种"责任"，最弱传播，缺字段不通过 | 需要连续置信度 |
+| [0007](0007-rule-def-in-contracts.md) | `RuleDef` 放 contracts | 数据解析、领域判定，两边都不认识对方实现 | 第 8 种 kind / formula 变表达式 |
+| [0008](0008-state-rejection-textkeys.md) | 状态机拒绝的 TextKey | INVALID_STATE / PREVIEW_NOT_READY 只增不改 | 文案系统改成 reason→key 自动映射 |
+| [0009](0009-no-display-output-textkey.md) | 无显示输出文案 | build-level guard，不塞进 15 条规则 | 需要显示器/接口兼容时 |
+| [0010](0010-quantity-policy.md) | 数量策略 | 单件类目固定 1 件；多件会让价格翻倍但结论不变 | 支持双路/多卡，或 AddComponent 上线 |
 
 ## 写 ADR 的格式
 
@@ -3014,7 +3135,7 @@ notes: 规格空白 2 处已按 §10.5 询问后确定（记录在 PR 评论）
 # ADR-0001 · 用 MVI + BuildRevision 管理状态
 
 - 状态：已采纳（2026-10）
-- 影响：feature、ui、domain:build、domain:state
+- 影响：feature、ui、domain:revision、domain:state
 - 相关：docs/04-state-machines.md、docs/05-module-independence.md
 
 ## 背景
@@ -3678,7 +3799,7 @@ guard 失败只提示不导航；过期诊断只显示 banner
 
 | # | TBD | 建议值 | 何时必须定 |
 |---|---|---|---|
-| T1 | 最低 Android API | 26（Compose 要求） | S1 前 |
+| T1 | 最低 Android API | **31（Android 12+，已定）** | 已定 |
 | T2 | 每批随机 seed 数 N | 50 | S4 前 |
 | T3 | 「复制配置 / 另存为」是否在首版 | **建议在**（复用 SaveBuild + 新 buildId，不加新 Intent） | S4 前 |
 | T4 | 静态目录条目数 | 8 类 × 3–8 件 | S1 前 |
@@ -3715,6 +3836,9 @@ guard 失败只提示不导航；过期诊断只显示 banner
 | 竞品 | "PCPartPicker 目录更深，BuildCores 展示更强；我们聚焦手机上的闭环" | "他们没有这个功能"（要加"据我们了解"） |
 
 ## 13.5 演示脚本（与讲稿 Slide 16 对齐）
+
+> 可点击版本：[site/](../site/README.md)（静态原型，演示数据，`node tools/serve-site.mjs`）。
+> 下面每一步在原型里都能复现，数字一致（¥7,800 → ¥7,900）。
 
 ```
 1. 打开 Entry：预算 8000，用途 GAMING。
@@ -3762,7 +3886,7 @@ guard 失败只提示不导航；过期诊断只显示 banner
 
 # 14 · 分工、里程碑与交接
 
-> 读者：组长 / 全体成员。
+> 读者：@MoeField / 全体成员。
 > 本章只解决一件事：**13 个模块、6 个人、若干个 LLM，怎么排才不会互相堵住。**
 
 ---

@@ -1,6 +1,6 @@
 # COLLABORATION · 协作与交付协议
 
-> 版本 `v0.1-draft` · 2026-11-04 · 组长确认后冻结为 `v1.0`
+> 版本 `v0.1-draft` · 2026-11-04 · @MoeField 确认后冻结为 `v1.0`
 >
 > 读者：**6 名组员 + 所有 AI 代理**。本文件管「怎么做」，不管「做什么」；
 > 「做什么」以 [docs/](docs/) 与 [contracts/](contracts/) 为准。
@@ -17,7 +17,7 @@
 |---|---|---|
 | L1 | `main` 永远可构建、可跑四个自检脚本 | 当天回滚，不许「明天修」 |
 | L2 | 一个任务 = 一个分支 = 一个模块 | PR 打回拆小 |
-| L3 | `contracts/`、`assets/fixtures/`、`docs/01`–`04` 只读 | 变更必须单独 PR + ADR + 组长批准 |
+| L3 | `contracts/`、`assets/fixtures/`、`docs/01`–`04` 只读 | 变更必须单独 PR + ADR + @MoeField 批准 |
 | L4 | AI 只改任务包 `allowed paths` 里的文件 | PR 打回；不得「顺手重构」 |
 | L5 | 契约、UI、APK、范围变更必须人工复核 | AI 不得自行宣布完成 |
 | L6 | **开工前、提交前各同步一次**：`git fetch origin && git rebase origin/main`；同一文件已有未合并 PR 先协调 | 冲突、重复实现，PR 打回 |
@@ -51,11 +51,11 @@ node ci/check-boundaries.mjs && node ci/check-keywords.mjs
 
 | 层 | 位置 | 是什么 | 谁能改 | 冲突时 |
 |---|---|---|---|---|
-| S1 语义 | `docs/01-glossary.md` | 术语、三态/三结果 | 组长 + ADR | 以本文为准 |
-| S2 契约 | `docs/02-contracts.md`、`contracts/src/**` | 数据类型、不变量、端口 | 组长 + ADR | 以契约为准 |
-| S3 规则 | `docs/03-rules.md`、`assets/rules/`、`assets/fixtures/` | 15 条规则、60 条 fixture | 组长 + 规则 owner | 以 fixture 期望值为准 |
-| S4 状态机 | `docs/04-state-machines.md` | 76 格转移表 | 组长 + 工作区 owner | 以转移表为准 |
-| S5 模块卡 | `docs/06-modules.md` | 每模块职责/禁止/验收 | 模块 owner + 组长 | 以上层为准 |
+| S1 语义 | `docs/01-glossary.md` | 术语、三态/三结果 | @MoeField + ADR | 以本文为准 |
+| S2 契约 | `docs/02-contracts.md`、`contracts/src/**` | 数据类型、不变量、端口 | @MoeField + ADR | 以契约为准 |
+| S3 规则 | `docs/03-rules.md`、`assets/rules/`、`assets/fixtures/` | 15 条规则、60 条 fixture | @MoeField + 规则 owner | 以 fixture 期望值为准 |
+| S4 状态机 | `docs/04-state-machines.md` | 76 格转移表 | @MoeField + 工作区 owner | 以转移表为准 |
+| S5 模块卡 | `docs/06-modules.md` | 每模块职责/禁止/验收 | 模块 owner + @MoeField | 以上层为准 |
 | S6 工程约束 | `docs/05`、`docs/07`、`docs/09` | 依赖矩阵、验证、范围 | 任何 PR | 以上层为准 |
 | S7 代码 | `app/`、`core/`、`domain/`、`data/`、`feature/`、`ui/` | 实现 | 模块 owner | 代码与 S1–S6 不一致 = 代码 bug |
 | S8 原型 | `site/` | 可点击的 UI 逻辑参考 | UI owner | 以 S2–S4 为准 |
@@ -64,13 +64,13 @@ node ci/check-boundaries.mjs && node ci/check-keywords.mjs
 **裁决规则**
 
 1. 实现与规格冲突 → 改实现，不改规格。
-2. 规格之间冲突 → 查 `docs/01`；仍不能解 → 提 ADR，组长裁决。
+2. 规格之间冲突 → 查 `docs/01`；仍不能解 → 提 ADR，@MoeField 裁决。
 3. 提案/讲稿/PPT 与本仓库冲突 → 以本仓库为准；答辩材料必须改到一致（见 `docs/13 §13.3`）。
 4. 任何人（包括 AI）不得在 PR 里「顺手」修改 S1–S4 来让自己编译通过。
 
 ### 1.1 哪些文件是「冻结区」
 
-以下路径的变更**必须**单独开 `contract:` / `spec:` 分支，附 ADR 或影响说明，由组长批准：
+以下路径的变更**必须**单独开 `contract:` / `spec:` 分支，附 ADR 或影响说明，由 @MoeField 批准：
 
 ```
 contracts/**
@@ -93,7 +93,7 @@ build/** .gradle/**         # 构建产物，已在 .gitignore
 ```
 
 > **对 `docs/02 §2.9` 的收紧**：该节允许「追加枚举值 / 带默认值的字段 / 端口方法 / TextKey」
-> 无需人批、只留痕。本协议统一收紧为：**上述变更也要 Captain 批准**（一个 `contract:` PR 即可）。
+> 无需人批、只留痕。本协议统一收紧为：**上述变更也要 @MoeField 批准**（一个 `contract:` PR 即可）。
 > 原因：课程工期只有四周，AI 顺手扩契约的代价远高于多一次点击。语义本身仍按 §2.9 判定。
 
 ---
@@ -106,14 +106,14 @@ build/** .gradle/**         # 构建产物，已在 .gitignore
 
 | 角色 | 谁 | 拥有 | 可以合并 | 不能单独决定 |
 |---|---|---|---|---|
-| **Captain / 架构** | 待填 | `contracts/`、`ci/`、`main`、发布 | 所有 PR | 规则语义（需规则 owner） |
+| **Architecture / 架构** | @MoeField | `contracts/`、`ci/`、`main`、发布 | 所有 PR | 规则语义（需规则 owner） |
 | **Data owner** | 待填 | `data/`、`assets/catalogue/` | `data/**` | 契约字段路径 |
 | **Rules owner** | 待填 | `domain/rules/`、fixture 期望值 | `domain/rules/**` | 新增 ruleId |
 | **Strategy owner** | 待填 | `domain/replacement/`、`domain/recommend/` | 对应目录 | 新端口 |
 | **Workspace owner** | 待填 | `feature/`、状态机实现 | `feature/**` | 状态表 |
 | **UI owner** | 待填 | `ui/`、`domain/compare/`、`site/` | `ui/**`、`site/**` | 状态与文案 key |
 
-> 现实约束：**允许 owner 暂时不活跃**。Captain 是所有人的备份 owner；
+> 现实约束：**允许 owner 暂时不活跃**。@MoeField 是所有人的备份 owner；
 > 但「备份」不等于「改语义」——语义变更仍走冻结区流程。
 
 ### 2.2 AI 代理
@@ -130,14 +130,14 @@ AI 是**执行者**，不是所有者：
 
 | 路径 | Owner | 备份 |
 |---|---|---|
-| `contracts/**`、`ci/**`、`.github/**` | Captain | 无（只能 Captain） |
-| `data/**`、`assets/catalogue/**` | Data | Captain |
-| `domain/rules/**` | Rules | Captain |
-| `domain/replacement/**`、`domain/recommend/**` | Strategy | Captain |
-| `feature/**` | Workspace | Captain |
-| `ui/**`、`site/**`、`domain/compare/**` | UI | Captain |
-| `docs/**`、`materials/**` | Captain | 各模块 owner 可提 PR |
-| `app/**`（组装、导航、DI） | Captain | — |
+| `contracts/**`、`ci/**`、`.github/**` | @MoeField | 无（只能 @MoeField） |
+| `data/**`、`assets/catalogue/**` | Data | @MoeField |
+| `domain/rules/**` | Rules | @MoeField |
+| `domain/replacement/**`、`domain/recommend/**` | Strategy | @MoeField |
+| `feature/**` | Workspace | @MoeField |
+| `ui/**`、`site/**`、`domain/compare/**` | UI | @MoeField |
+| `docs/**`、`materials/**` | @MoeField | 各模块 owner 可提 PR |
+| `app/**`（组装、导航、DI） | @MoeField | — |
 
 **同一路径同一周只能有一个 owner。** 换人要交接四样东西（见 `docs/14 §14.4`）。
 
@@ -166,20 +166,20 @@ AI 是**执行者**，不是所有者：
 - 默认分支：`main`。
 - 不建 `develop` 分支；**trunk-based**，短分支直接进 `main`。
 - 开启：Issues、Projects、Actions；关闭：Wiki、Discussions（用 Issue 就够）。
-- 邀请 6 名成员为 `Write`；只有 Captain 为 `Admin`。
+- 邀请 6 名成员为 `Write`；只有 @MoeField 与共享账号为 `Admin`。
 
 ### 3.2 分支保护（Settings → Branches → `main`）
 
 | 选项 | 值 |
 |---|---|
 | Require a pull request before merging | ✅ |
-| Require approvals | 1（Captain 可用 admin 权限在 24h 无 review 后自审，须在 PR 留言理由） |
+| Require approvals | 1（@MoeField 可用 admin 权限在 24h 无 review 后自审，须在 PR 留言理由） |
 | Dismiss stale approvals | ✅ |
 | Require status checks | `docs`、`jvm`（S1 后加 `apk`） |
 | Require conversation resolution | ✅ |
 | Require linear history | ✅ |
 | Allow force pushes / deletions | ❌ |
-| Include administrators | ❌（保留 Captain 应急合并能力） |
+| Include administrators | ❌（保留 @MoeField 应急合并能力） |
 
 ### 3.3 合并方式
 
@@ -275,7 +275,7 @@ chore/gradle-scaffold
 ### 4.4 评审 SLA
 
 - 24 小时内必须有人看：approve / request changes / 明确说「这周没空」。
-- 24 小时无人 review 且 CI 全绿 → Captain 可加 `solo-merge` 标签后合并，PR 里写理由。
+- 24 小时无人 review 且 CI 全绿 → @MoeField 可加 `solo-merge` 标签后合并，PR 里写理由。
 - 有 `request changes` 未解决 → **不得合并**。
 
 ---
@@ -311,7 +311,7 @@ Backlog → Ready → Doing → Review → Done
 
 - `Ready` 的条件：九块填满 + 依赖已合并 + owner 已认领。
 - `Doing` 超过 3 天无 commit → 退回 `Ready` 并拆小。
-- `Review` 超过 24h → 提醒 reviewer；超过 48h → Captain 介入。
+- `Review` 超过 24h → 提醒 reviewer；超过 48h → @MoeField 介入。
 
 ### 5.4 给 AI 的提示词（固定四句）
 
@@ -370,7 +370,7 @@ AI 最容易制造的不是 bug，是**大而全的 diff**。以下规则强制�
 1. **一个任务一个模块**。跨模块任务拆成多个 PR，按依赖顺序合。
 2. **不格式化全文件**。只改必要的行；不调整 import 顺序、不换行、不重排。
 3. **不改公共符号**。不改类名/函数名/字段名；要改先提 `refactor:` PR。
-4. **不升级依赖**。Gradle/AGP/Compose 版本由 Captain 统一升级。
+4. **不升级依赖**。Gradle/AGP/Compose 版本由 @MoeField 统一升级。
 5. **不手改生成文件**（见 §1.1）。
 6. **不并发改同一文件**。两个任务都要改 `MainViewModel.kt` → 串行，后一个 rebase。
 7. **先 rebase 再 PR**。冲突自己解，解完重跑门禁；不要让 reviewer 替你解冲突。
@@ -382,10 +382,10 @@ AI 最容易制造的不是 bug，是**大而全的 diff**。以下规则强制�
 
 | # | 复核点 | 谁 | 看什么 | 不通过就 |
 |---|---|---|---|---|
-| H1 | 契约/规则/夹具 diff | Captain | 是否只改必要处；ADR 是否存在；影响模块 | 打回 |
-| H2 | UI 变更 | UI owner 或 Captain | 截图/录屏；文案；空态/错误态；深色模式 | 打回 |
+| H1 | 契约/规则/夹具 diff | @MoeField | 是否只改必要处；ADR 是否存在；影响模块 | 打回 |
+| H2 | UI 变更 | UI owner 或 @MoeField | 截图/录屏；文案；空态/错误态；深色模式 | 打回 |
 | H3 | APK | 任一成员 | Android 12+ arm64 真机安装；跑一遍演示脚本 | 打回 |
-| H4 | 发布/答辩 | Captain + 1 人 | tag、版本号、离线、演示步骤 1–9 | 不发 |
+| H4 | 发布/答辩 | @MoeField + 1 人 | tag、版本号、离线、演示步骤 1–9 | 不发 |
 
 > 用户明确要求：**CLI 构建可以自动，但产物必须人工复核**。
 > 因此 `ci-apk` 绿 ≠ 可发布；H3 必须有人真的装一次。
@@ -422,7 +422,7 @@ AI 最容易制造的不是 bug，是**大而全的 diff**。以下规则强制�
 - **不设每日站会**。用一个 pinned Issue「Daily log」异步留言：昨天/今天/阻塞。
 - 每周一次 15 分钟同步（可选），只看四个数字：rules __/60、fsm __/76、inv __/18、mutation __/12。
 - 不报「进度百分比」；只报「下一步做什么、谁做、什么时候」。
-- 阻塞超过 30 分钟 → Issue 加 `status:blocked` + `needs-human`，Captain 当天裁决。
+- 阻塞超过 30 分钟 → Issue 加 `status:blocked` + `needs-human`，@MoeField 当天裁决。
 - 所有决定写进 Issue/PR，不写进私聊；私聊结论必须回帖。
 
 ---
@@ -452,15 +452,15 @@ AI 最容易制造的不是 bug，是**大而全的 diff**。以下规则强制�
 | L2 | 1–2 天 | 一个模块（可全程用 AI） | 按任务包实现 D5，跑门禁 |
 | L3 | 3–5 天 | 模块 + 测试 + review | D3 规则引擎 + 变异测试 |
 
-> 到 W2 结束还没认领任何任务的人，由 Captain 把其模块转为备份并记录，**不静默等待**。
+> 到 W2 结束还没认领任何任务的人，由 @MoeField 把其模块转为备份并记录，**不静默等待**。
 
 ---
 
-## 13. 待确认（组长拍板后改 v1.0）
+## 13. 待确认（@MoeField 拍板后改 v1.0）
 
 1. GitHub 仓库归属：个人账号还是组织？仓库名 `pc-buildmate` 是否 OK？
 2. 私有 / 公开？（建议私有；答辩后可转公开）
-3. 是否接受「24h 无 review + CI 绿 → Captain 自审合并」？
+3. 是否接受「24h 无 review + CI 绿 → @MoeField 自审合并」？
 4. 看板用 GitHub Projects，还是只用一个 `TASKS.md` 表格？（建议 Projects）
 5. 六名成员的 GitHub 用户名（填进 §2.1）。
 6. 答辩准确日期（用于校准 §11）。

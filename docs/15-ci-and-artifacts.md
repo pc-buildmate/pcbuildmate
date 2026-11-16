@@ -54,7 +54,7 @@ platform-tools
 4. 生成 `PC-Buildmate-<tag>.apk` + `.sha256`；
 5. `gh release create <tag> --draft`，上传两个附件。
 
-**publish 仍由人点**：自动化只到 draft；答辩/冻结前由 Captain 检查后 publish。
+**publish 仍由人点**：自动化只到 draft；答辩/冻结前由 @MoeField 检查后 publish。
 
 Secrets（已设置，加密、不进仓库）：
 
@@ -81,7 +81,7 @@ KEY_PASSWORD
 4. 人检查 draft 的 APK/checksum/notes，点 **Publish**；
 5. 真机装 release 包跑 9 步。
 
-tag 由 Captain 打，不跟普通 PR 混；PR 上不碰 keystore。
+tag 由 @MoeField 打，不跟普通 PR 混；PR 上不碰 keystore。
 
 ## 15.6 为什么不用 tag-only
 
