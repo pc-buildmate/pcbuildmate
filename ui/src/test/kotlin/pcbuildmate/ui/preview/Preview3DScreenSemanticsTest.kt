@@ -49,6 +49,22 @@ class Preview3DScreenSemanticsTest {
     }
 
     @Test
+    fun `view presets switch the camera`() {
+        compose.setContent {
+            Preview3DScreen(revision = revisionWithGpuAndCase(), catalogue = FakeCatalogue(), onBack = {})
+        }
+
+        compose.onNodeWithText("俯视").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("背视").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("板面").performClick()
+        compose.waitForIdle()
+
+        compose.onNodeWithText("3D 间隙预览").assertExists()
+    }
+
+    @Test
     fun `the view can be reset`() {
         compose.setContent {
             Preview3DScreen(revision = revisionWithGpuAndCase(), catalogue = FakeCatalogue(), onBack = {})
