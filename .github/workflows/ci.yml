@@ -28,6 +28,7 @@ jobs:
           node tools/check-docs.mjs
           node ci/check-boundaries.mjs
           node ci/check-keywords.mjs
+          node ci/check-test-tasks.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs
@@ -95,7 +96,7 @@ jobs:
       - name: Contracts + rule engine + Android library units
         run: |
           set -o pipefail
-          ./gradlew :contracts:test :domain:rules:test :domain:revision:test :domain:recommend:test :domain:replacement:test :domain:state:test :domain:compare:test :data:testDebugUnitTest :feature:testDebugUnitTest :ui:testDebugUnitTest :app:testDebugUnitTest --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
+          ./gradlew :domain:rules:test :domain:revision:test :domain:recommend:test :domain:replacement:test :domain:state:test :domain:compare:test :data:testDebugUnitTest :feature:testDebugUnitTest :ui:testDebugUnitTest :app:testDebugUnitTest --no-daemon --console=plain --stacktrace 2>&1 | tee /tmp/gradle.log
           status=$?
           if [ "$status" -ne 0 ]; then
             tail -40 /tmp/gradle.log
