@@ -75,6 +75,11 @@ object InvariantChecker {
 
 **自证禁令**由 `ci/check-boundaries.mjs` 强制（test-oracle 的 forbiddenImports）。
 
+**实现位置**（2026-11）：参考模型在 `test-oracle/src/main/kotlin/pcbuildmate/oracle/`
+（自带 `MiniJson`，不依赖序列化库）；交叉校验在 `app/src/test/.../OracleCrossCheckTest.kt`，
+因为只有 `:app` 能同时看到两边。校验是双向的：oracle ↔ 生产实现逐条一致，
+且 oracle 本身要对得上 fixture 里冻结的期望值。
+
 ## 8.4 失败归因五类（冻结）
 
 | 类 | 含义 | 典型 |

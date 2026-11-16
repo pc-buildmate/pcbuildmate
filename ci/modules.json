@@ -207,7 +207,8 @@
         ":domain:replacement",
         ":domain:recommend",
         ":domain:compare",
-        ":domain:state"
+        ":domain:state",
+        ":test-oracle"
       ],
       "forbiddenImports": []
     },
