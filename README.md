@@ -138,6 +138,7 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 node tools/check-docs.mjs
 node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
+node ci/check-test-tasks.mjs
 
 node tools/test-demo-engine.mjs
 node tools/test-demo-flow.mjs

@@ -274,7 +274,7 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 
 ## 7.11 DoD：模块"做完"的机器可检查清单
 
-一个模块只有在**全部 8 条**为真时才算交付。前 6 条可脚本化，后 2 条靠评审。
+一个模块只有在**全部 9 条**为真时才算交付。前 7 条可脚本化，后 2 条靠评审。
 
 | # | 条件 | 检查方式 |
 |---|---|---|
@@ -282,6 +282,7 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 | 2 | 规则/状态机/不变量矩阵无空格 | `node tools/check-matrix.mjs` |
 | 3 | 关键 mutation 全杀死 | `node tools/check-matrix.mjs --mutations` |
 | 4 | 边界/关键词检查通过 | `node ci/check-boundaries.mjs && node ci/check-keywords.mjs` |
+| 4b | 有测试的模块都在 CI 任务列表里 | `node ci/check-test-tasks.mjs` |
 | 5 | 公开 API 未变（或已走契约流程） | `./gradlew :contracts:apiCheck` |
 | 6 | 无 `TODO` / `FIXME` / `println` 在 `src/main` | `ci/check-keywords.mjs` 附带的卫生检查 |
 | 7 | 评审：没有把业务逻辑写进 ViewModel/UI | 评审清单（10 章 §10.6） |
