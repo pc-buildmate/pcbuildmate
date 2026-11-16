@@ -141,10 +141,11 @@ jobs:
           echo "no" | "$AVDMANAGER" create avd -n ci -k "system-images;android-33;google_apis;x86_64" --device pixel_5 --force
       - name: Boot the emulator
         run: |
+          ADB="$ANDROID_HOME/platform-tools/adb"
           "$ANDROID_HOME/emulator/emulator" -avd ci -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
-          adb wait-for-device
+          "$ADB" wait-for-device
           for i in $(seq 1 120); do
-            if adb shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
+            if "$ADB" shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
               echo "emulator booted after $((i * 5))s"
               exit 0
             fi
