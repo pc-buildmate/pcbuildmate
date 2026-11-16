@@ -1,6 +1,6 @@
 # ADR-0007 · `RuleDef` 放在 `:contracts`
 
-- 状态：**提议**（等 Captain 批准；未批准前只在分支上，不进 `main`）
+- 状态：**提议**（等 @MoeField 批准；未批准前只在分支上，不进 `main`）
 - 影响：`:contracts`、`:data`、`:domain:rules`
 - 相关：`docs/03 §3.2`、`docs/05 §5.4`、`docs/06 D3`
 

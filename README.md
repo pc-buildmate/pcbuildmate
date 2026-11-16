@@ -60,11 +60,13 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 
 | GitHub | 现在 |
 |---|---|
-| [@MoeField](https://github.com/MoeField) | 架构 / 集成 / UI；核心与 QA 已收口，暂停等组员 |
+| [@MoeField](https://github.com/MoeField) | 暂时代理 lead（合并 / 发布 / CI）；架构 / 集成 / UI；核心与 QA 已收口 |
 | [@LIU132578](https://github.com/LIU132578) | 已加入；任务自由认领 |
 | [@yys1yys2yys](https://github.com/yys1yys2yys) | 已加入；任务自由认领 |
 | 待加入 | 随时加，直接认领 [BOARD](docs/tasks/BOARD.md) |
 
+> 我们没有正式设过负责人角色；**@MoeField 只是暂时代理 lead**（合并、发布、CI 排障）。
+>
 > **这个阶段不锁分工**：看到想做的，就在 [BOARD](docs/tasks/BOARD.md) 把 owner 改成自己，
 > 开 `feat/<id>-<slug>` 分支，按 [COLLABORATION.md](COLLABORATION.md) 走 PR。
 > 不要求按优先级做，也不要求每人只做一个模块；两人想做同一块就拆模块或拆 PR，别抢同一个文件。
