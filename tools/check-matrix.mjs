@@ -18,10 +18,10 @@
  *
  * 退出码：0 通过（或仅规格模式）；1 有空格子。
  */
-import { existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { join, dirname, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expectedRules, expectedFsm, expectedInvariants, readJson } from "./matrix-spec.mjs";
+import { expectedRules, expectedFsm, expectedInvariants } from "./matrix-spec.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const argFile = (() => {
@@ -29,6 +29,16 @@ const argFile = (() => {
   return i > -1 ? process.argv[i + 1] : null;
 })();
 const MUTATION_MODE = process.argv.includes("--mutations");
+
+/**
+ * 读矩阵/变异文件。`--file` 允许绝对路径：自测脚本（tools/test-matrix-tools.mjs）
+ * 会把临时文件放在系统临时目录，而不是仓库里。
+ */
+const resolvePath = (p) => (isAbsolute(p) ? p : join(ROOT, p));
+
+function readResultFile(p) {
+  return JSON.parse(readFileSync(resolvePath(p), "utf8"));
+}
 
 function diff(expected, actual, label) {
   const missing = [...expected].filter((x) => !actual.has(x)).sort();
@@ -45,11 +55,11 @@ function diff(expected, actual, label) {
 
 if (MUTATION_MODE) {
   const path = argFile || "build/reports/key-mutations.json";
-  if (!existsSync(join(ROOT, path))) {
+  if (!existsSync(resolvePath(path))) {
     console.log("[matrix] 规格模式：未找到 " + path + "，跳过（需要 12 条关键变异记录）");
     process.exit(0);
   }
-  const data = readJson(path);
+  const data = readResultFile(path);
   const byId = new Map((data.mutations || []).map((m) => [m.id, m]));
   let bad = 0;
   for (let i = 1; i <= 12; i++) {
@@ -64,7 +74,7 @@ if (MUTATION_MODE) {
 }
 
 const matrixPath = argFile || "build/reports/matrix.json";
-if (!existsSync(join(ROOT, matrixPath))) {
+if (!existsSync(resolvePath(matrixPath))) {
   console.log("[matrix] 规格模式（无测试产物）——期望覆盖：");
   console.log("    rules            " + expectedRules().size + " 格");
   console.log("    state machine    " + expectedFsm().size + " 格");
@@ -73,7 +83,7 @@ if (!existsSync(join(ROOT, matrixPath))) {
   process.exit(0);
 }
 
-const data = readJson(matrixPath);
+const data = readResultFile(matrixPath);
 const passed = (data.tests || []).filter((t) => t.status === "passed");
 const skipped = (data.tests || []).filter((t) => t.status === "skipped");
 if (skipped.length) console.warn("! 有 " + skipped.length + " 条 skipped 用例——跳过即视为空格");

@@ -149,6 +149,7 @@ node tools/test-demo-ui.mjs
   :domain:state:test :domain:replacement:test :domain:compare:test \
   :domain:revision:test :domain:recommend:test \
   :ui:testDebugUnitTest :app:testDebugUnitTest :test-oracle:test
+node tools/test-matrix-tools.mjs   # 矩阵工具自测
 node tools/gen-matrix.mjs
 node tools/check-matrix.mjs
 ```
