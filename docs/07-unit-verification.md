@@ -308,7 +308,7 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 | 6 | 只测 happy path | 60 条 fixture 只有 pass 类 | 矩阵空格即 fail |
 | 7 | 断言文案全文 | `onNodeWithText("...")` | 扫描测试代码里的中文长串 |
 | 8 | 用真实时钟/随机 | `Instant.now()` 在测试断言里 | 评审 + 扫描 |
-| 9 | 把实现抄进 oracle | 参考模型 import 生产 `domain:rules` | `ci/check-boundaries.mjs`（test-oracle 规则） |
+| 9 | 把实现抄进 oracle | 参考模型 import 生产 `domain:rules` | `ci/check-boundaries.mjs`（test-oracle 规则）；参考模型与交叉校验见 [19 章](19-test-evidence.md) |
 | 10 | 跳过 missing case | ```Ignore` 掉 missing 用例 | 矩阵空格 + skip 即 fail |
 
 **评审口令**（写进 10 章清单）："这个测试如果实现写错了，它会红吗？"
