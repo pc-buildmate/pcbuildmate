@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import pcbuildmate.contracts.BuildRevision
+import pcbuildmate.ui.R
 import pcbuildmate.contracts.CataloguePort
 import kotlin.math.cos
 import kotlin.math.min
@@ -68,17 +70,17 @@ fun Preview3DScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("3D 间隙预览") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("返回") } },
+                title = { Text(stringResource(R.string.preview3d_title)) },
+                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.common_back)) } },
                 actions = {
                     TextButton(onClick = { showCase = !showCase }) {
-                        Text(if (showCase) "隐藏机箱" else "显示机箱")
+                        Text(if (showCase) stringResource(R.string.preview3d_hide_case) else stringResource(R.string.preview3d_show_case))
                     }
                     TextButton(onClick = {
                         yaw = -1.35f
                         pitch = 0.35f
                         zoom = 1f
-                    }) { Text("重置视角") }
+                    }) { Text(stringResource(R.string.preview3d_reset)) }
                 },
             )
         },
@@ -90,7 +92,7 @@ fun Preview3DScreen(
                     .padding(padding)
                     .padding(24.dp),
             ) {
-                Text("还没有配置，先载入演示配置或生成一份配置。")
+                Text(stringResource(R.string.preview3d_empty))
             }
             return@Scaffold
         }
@@ -146,7 +148,7 @@ fun Preview3DScreen(
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "拖动旋转 · 盒体为尺寸示意，非外观模型",
+                    stringResource(R.string.preview3d_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
