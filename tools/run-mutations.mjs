@@ -120,11 +120,13 @@ const mutations = [
   },
 ];
 
+const originals = new Map(); // file -> 原始内容，结束时统一核对
 const results = [];
 for (const m of mutations) {
   if (ONLY && !ONLY.has(m.id)) continue;
   const path = join(ROOT, m.file);
   const original = readFileSync(path, "utf8");
+  if (!originals.has(path)) originals.set(path, original);
   // Windows 检出可能是 CRLF，补丁串是 LF：比较和替换都在规范化副本上做，
   // 结束后把原始内容整块写回，不改变仓库文件的换行风格。
   const normalized = original.replace(/\r\n/g, "\n");
@@ -153,6 +155,21 @@ for (const m of mutations) {
   }
   results.push({ ...m, status, note });
   console.log(`${m.id} ${status}  ${m.desc}`);
+}
+
+// 先核对所有被改过的文件都已还原：进程被杀时留下的半成品会污染后面的矩阵。
+let restored = true;
+for (const [path, original] of originals) {
+  if (readFileSync(path, "utf8") !== original) {
+    restored = false;
+    console.error(`[mutations] 源码未还原：${path}`);
+  }
+}
+if (!restored) {
+  console.error("[mutations] 有源码停在变异状态，后面的矩阵不可信");
+  process.exitCode = 1;
+} else {
+  console.log(`[mutations] 源码已还原（${originals.size} 个文件）`);
 }
 
 // 恢复源码后重跑一遍干净测试，避免失败 XML 留在 test-results 里污染矩阵。

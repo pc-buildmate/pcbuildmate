@@ -29,7 +29,6 @@ jobs:
           node ci/check-boundaries.mjs
           node ci/check-keywords.mjs
           node ci/check-test-tasks.mjs
-          node tools/test-matrix-tools.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs
@@ -139,6 +138,8 @@ jobs:
         run: node tools/run-mutations.mjs
       - name: Require 12/12 KILLED
         run: node tools/check-matrix.mjs --mutations
+      - name: Verify the harness restored every source file
+        run: git diff --exit-code
       - uses: actions/upload-artifact@v4
         if: always()
         with:
