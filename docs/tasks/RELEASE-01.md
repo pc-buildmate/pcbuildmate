@@ -45,6 +45,12 @@
 - GitHub Release 以 **draft** 形式创建，等 11/28 冻结后替换最终包再 publish；
 - release notes：`docs/defense/RELEASE_NOTES.md`。
 
+## 2026-11-17 自动化
+
+- 新增 `.github/workflows/release.yml`：`v*` tag → 解码 Secrets → `assembleRelease` → 校验签名/权限/ABI → 生成 checksum → **draft** Release；
+- Secrets 已设置：`KEYSTORE_BASE64`、`KEYSTORE_PASSWORD`、`KEY_ALIAS`、`KEY_PASSWORD`；
+- publish 仍由人点；流程见 `docs/15 §15.4`。
+
 ## 还差
 
 - 上传 GitHub Release（等 11/28 冻结后再打 tag）；
