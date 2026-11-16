@@ -71,7 +71,7 @@ QA 侧（不在 BOARD 卡里，见 issue #55）：`:test-oracle` 参考模型已
 
 ## 已知缺口
 
-- UI 只有真机 smoke + Node 原型，**没有 Compose semantics 测试**；
+- UI：Entry 屏已有 Compose semantics 测试（`ui/src/test/.../EntryScreenSemanticsTest.kt`，Robolectric，JVM 可跑）；其余屏幕仍只有真机 smoke；
 - Room 契约是真机 instrumented，CI 不跑（需要 emulator）；
 - D4 Preferences、Compare 功耗/余量、3 份比较未做（P3）；
 - 价格数据 adapter/Wayback 未做，当前快照是静态数据，价格准确度未核对；
