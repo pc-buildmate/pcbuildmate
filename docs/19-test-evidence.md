@@ -56,7 +56,7 @@ CI 里四个 job 对应：`docs`（后三项 + 原型回归 + 矩阵工具自测
 | 规则参数是否符合真实硬件 | fixture 是冻结的规格，规格错了两边一起错 | 人工核对数据（PRICEDATA-01 / 兼容性数据） |
 | 价格是否准确 | 目录是静态快照，没有来源对账 | 同上 |
 | 3D 预览的槽位坐标是否正确 | 缺主板 x16 槽位置数据，当前是常量估算（`docs/18 §18.8`） | 数据补齐后重估 |
-| UI 交互与可访问性 | Entry 屏已有 Compose semantics 测试（Robolectric，JVM 跑）；其余屏幕仍只有真机 smoke，可访问性未测 | POLISH-01 + 后续补测 |
+| UI 交互与可访问性 | Entry / Workspace / 诊断 / 比较四屏已有 Compose semantics 测试（Robolectric，JVM 跑）；可访问性（TalkBack 顺序、触控目标尺寸）未测 | POLISH-01 + 后续补测 |
 | Room 持久化在 CI 上是否可靠 | instrumented 测试需要设备，CI 无 emulator | 真机跑 `:data:connectedDebugAndroidTest` |
 | 性能 | 范围外 | 不承诺 |
 
