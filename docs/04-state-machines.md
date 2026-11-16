@@ -218,6 +218,11 @@ Apply = Apply，Cancel = Cancel，RechDone = RecheckCompleted，RechRejected = R
 | R-29 | NoC | Dismiss / Cancel | — | Idle | [] | 关闭原因 |
 | R-30 | NoC | BuildEdited(r) | — | Idle | [SaveDraft(r)] | 改配置后再看 |
 
+> **guard 顺序（补记，2026-11）**：`PreviewCandidate` 在 `Candidates` 与 `Previewing` 下都**先判
+> base 是否过期**，再判候选是否存在。两者同时成立时返回 `APPLY_REVISION_STALE` 而不是
+> `CANDIDATE_NOT_FOUND`——base 已作废时，"这个候选还在不在"没有意义。R-09/R-10/R-11 的行序是
+> 判定项的列举，不是求值顺序；这条由状态机交叉校验（`app/src/test/.../ReplacementOracleCrossCheckTest.kt`）确定。
+
 > 「新 Conflict」的判定：`diagnosis.outcomes` 中第一条 `Conflict`（按 ruleId 字典序）；
 > 若存在 BLOCKER Conflict 优先取它。若没有 Conflict（只剩 Unverified），视为「无新冲突」。
 
