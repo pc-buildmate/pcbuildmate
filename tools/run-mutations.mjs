@@ -3,8 +3,9 @@
  * 关键变异 MUT-01..12：直接改一处源码 -> 跑目标测试 -> 恢复源码。
  * 不用 PIT：课程项目只有 12 条关键变异，手工补丁更可解释。
  *
- * 用法：GRADLE_BIN=/path/to/gradle node tools/run-mutations.mjs
+ * 用法：GRADLE_BIN=/path/to/gradle node tools/run-mutations.mjs [--only MUT-01,MUT-05]
  * 产物：build/reports/key-mutations.json（供 check-matrix --mutations）
+ * CI：.github/workflows/ci.yml 的 mutations job；本地 Windows 检出为 CRLF 也能跑。
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -12,8 +13,25 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const GRADLE = process.env.GRADLE_BIN || join(ROOT, "gradlew");
+const GRADLE = process.env.GRADLE_BIN || join(ROOT, process.platform === "win32" ? "gradlew.bat" : "gradlew");
 const OUT = join(ROOT, "build/reports/key-mutations.json");
+const ONLY = (() => {
+  const i = process.argv.indexOf("--only");
+  return i > -1 ? new Set(process.argv[i + 1].split(",")) : null;
+})();
+
+/**
+ * 跨平台跑 Gradle：Windows 上 .bat 不能直接 execFileSync（EINVAL），要走 cmd.exe。
+ * GRADLE_USER_HOME 默认放仓库内，CI 里由环境变量覆盖以便复用缓存。
+ */
+function runGradle(args, opts = {}) {
+  const env = { ...process.env, GRADLE_USER_HOME: process.env.GRADLE_USER_HOME || join(ROOT, ".gradle-home") };
+  const options = { cwd: ROOT, stdio: "pipe", encoding: "utf8", env, ...opts };
+  if (process.platform === "win32" && /\.(bat|cmd)$/i.test(GRADLE)) {
+    return execFileSync("cmd.exe", ["/c", GRADLE, ...args], options);
+  }
+  return execFileSync(GRADLE, args, options);
+}
 
 const mutations = [
   {
@@ -104,24 +122,32 @@ const mutations = [
 
 const results = [];
 for (const m of mutations) {
+  if (ONLY && !ONLY.has(m.id)) continue;
   const path = join(ROOT, m.file);
   const original = readFileSync(path, "utf8");
-  if (!original.includes(m.find)) {
+  // Windows 检出可能是 CRLF，补丁串是 LF：比较和替换都在规范化副本上做，
+  // 结束后把原始内容整块写回，不改变仓库文件的换行风格。
+  const normalized = original.replace(/\r\n/g, "\n");
+  if (!normalized.includes(m.find)) {
     results.push({ ...m, status: "BROKEN", note: "patch not found" });
+    console.log(`${m.id} BROKEN  ${m.desc}`);
     continue;
   }
-  writeFileSync(path, original.replace(m.find, m.replace));
+  writeFileSync(path, normalized.replace(m.find, m.replace));
   let status = "SURVIVED";
   let note = "";
   try {
-    execFileSync(GRADLE, [m.test, "--no-daemon", "--console=plain", "-Pkotlin.compiler.execution.strategy=in-process"], {
-      cwd: ROOT, stdio: "pipe", encoding: "utf8",
-      env: { ...process.env, GRADLE_USER_HOME: join(ROOT, ".gradle-home") },
-    });
+    runGradle([m.test, "--no-daemon", "--console=plain", "-Pkotlin.compiler.execution.strategy=in-process"]);
   } catch (e) {
     const out = `${e.stdout || ""}\n${e.stderr || ""}`;
-    note = out.split("\n").filter((l) => l.includes("FAILED") || l.includes("e: ")).slice(0, 3).join(" | ");
-    status = /e: file:|Compilation error/.test(out) ? "BROKEN" : "KILLED";
+    if (e.code === "ENOENT" || e.code === "EINVAL" || e.code === "ENOEXEC") {
+      // Gradle 根本没启动：绝不能算"变异被杀"，否则整张表都是假绿。
+      status = "BROKEN";
+      note = `gradle launch failed: ${e.code} (${GRADLE})`;
+    } else {
+      note = out.split("\n").filter((l) => l.includes("FAILED") || l.includes("e: ")).slice(0, 3).join(" | ");
+      status = /e: file:|Compilation error/.test(out) ? "BROKEN" : "KILLED";
+    }
   } finally {
     writeFileSync(path, original);
   }
@@ -131,16 +157,19 @@ for (const m of mutations) {
 
 // 恢复源码后重跑一遍干净测试，避免失败 XML 留在 test-results 里污染矩阵。
 try {
-  execFileSync(GRADLE, [
-    ":data:testDebugUnitTest", ":feature:testDebugUnitTest", ":app:testDebugUnitTest",
+  runGradle([
+    ":data:testDebugUnitTest", ":feature:testDebugUnitTest", ":app:testDebugUnitTest", ":ui:testDebugUnitTest",
     ":domain:rules:test", ":domain:revision:test", ":domain:recommend:test",
     ":domain:replacement:test", ":domain:state:test", ":domain:compare:test",
     "--rerun-tasks", "--no-daemon", "--console=plain",
     "-Pkotlin.compiler.execution.strategy=in-process",
-  ], { cwd: ROOT, stdio: "pipe", encoding: "utf8", env: { ...process.env, GRADLE_USER_HOME: join(ROOT, ".gradle-home") } });
+  ]);
   console.log("[mutations] clean test suite passed");
 } catch (e) {
   console.error("[mutations] clean test suite failed — matrix will contain holes");
+  const out = `${e.stdout || ""}\n${e.stderr || ""}`.trim();
+  if (out) console.error(out.split("\n").slice(-12).join("\n"));
+  if (e.code) console.error(`[mutations] launcher=${GRADLE} code=${e.code}`);
   process.exitCode = 1;
 }
 
