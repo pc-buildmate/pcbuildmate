@@ -83,6 +83,8 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
+    // 只在测试 classpath 上：交叉校验生产引擎与参考模型（docs/08 §8.3）
+    testImplementation(project(":test-oracle"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

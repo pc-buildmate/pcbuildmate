@@ -62,6 +62,10 @@
 | **app** | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | **testing** | ✔ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | ✘ | — |
 
+**唯一例外在第 12 行**：`:app` 额外在 **test classpath** 上依赖 `:test-oracle`
+（`testImplementation`，不进 APK），因为只有它能同时看到生产实现和参考模型；
+交叉校验代码在 `app/src/test/.../OracleCrossCheckTest.kt`。
+
 三条要点：
 
 1. **domain 之间零依赖**。`domain:replacement` 需要"评估一份配置是否还冲突"，
