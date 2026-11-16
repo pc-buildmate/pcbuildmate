@@ -9,7 +9,7 @@
 | Pull request | docs + JVM + **mutations** + Android **debug** | `pcbuildmate-debug-apk`、`key-mutations` |
 | push `main` | 同上 + **Room instrumented（模拟器）** | 同上、`room-instrumented-results` |
 | Actions → Run workflow | 全部，含 Room instrumented | 同上 |
-| push tag `v*` | **暂不触发** release；等 RELEASE-01 | — |
+| push tag `v*` | **release.yml**：签名 arm64 APK + 校验 + **draft** GitHub Release | `PC-Buildmate-<tag>.apk` + `.sha256` |
 
 **结论：debug 构建是无条件的**（PR/main 都跑），因为：
 
@@ -44,17 +44,19 @@ build-tools;37.0.0
 platform-tools
 ```
 
-## 15.4 本地签名 APK（已完成）
+## 15.4 自动 release（2026-11-17 起）
 
-- `versionName=1.0.0-defense`
-- 本地 `.signing/pcbuildmate-defense.jks`，`keystore.properties` 已在 `.gitignore`
-- `./gradlew :app:assembleRelease` → `app/build/outputs/apk/release/app-release.apk`
-- `apksigner verify`：v2 通过
-- 答辩副本：`artifacts/PC-Buildmate-1.0.0-defense.apk`
+`.github/workflows/release.yml`，只对 `v*` tag 触发：
 
-## 15.5 Release 计划（RELEASE-01）
+1. 从 GitHub Secrets 解码 `KEYSTORE_BASE64` 到 `$RUNNER_TEMP/signing/defense.jks`，写临时 `keystore.properties`；
+2. `./gradlew :app:assembleRelease`；
+3. `apksigner verify`、检查无 `INTERNET`、`aapt dump badging` 必须只有 `arm64-v8a`；
+4. 生成 `PC-Buildmate-<tag>.apk` + `.sha256`；
+5. `gh release create <tag> --draft`，上传两个附件。
 
-需要四个 GitHub Secrets：
+**publish 仍由人点**：自动化只到 draft；答辩/冻结前由 Captain 检查后 publish。
+
+Secrets（已设置，加密、不进仓库）：
 
 ```text
 KEYSTORE_BASE64
@@ -63,18 +65,23 @@ KEY_ALIAS
 KEY_PASSWORD
 ```
 
-然后加一个 tag-triggered job：
+## 15.5 本地签名 APK（已完成）
 
-```yaml
-on:
-  push:
-    tags: ["v*"]
-```
+- `versionName=1.0.0-defense`
+- 本地 `.signing/pcbuildmate-defense.jks`，`keystore.properties` 已在 `.gitignore`
+- `./gradlew :app:assembleRelease` → `app/build/outputs/apk/release/app-release.apk`
+- `apksigner verify`：v2 通过
+- 答辩副本：`artifacts/PC-Buildmate-1.0.0-defense.apk`
 
-- 只有 tag 才 `assembleRelease` + 签名；
-- 上传 `pcbuildmate-release-apk`；
-- 没有 secrets 时只构建 debug，不假装“已发布”；
-- tag 由 Captain 打，不跟普通 PR 混。
+## 15.5 Release 流程（RELEASE-01）
+
+1. 冻结后本地确认 `versionCode`/`versionName`（决定是否 +1）；
+2. `git tag -a v1.0.0-defense -m "..." && git push origin v1.0.0-defense`；
+3. `release` workflow 自动出签名 APK + draft Release；
+4. 人检查 draft 的 APK/checksum/notes，点 **Publish**；
+5. 真机装 release 包跑 9 步。
+
+tag 由 Captain 打，不跟普通 PR 混；PR 上不碰 keystore。
 
 ## 15.6 为什么不用 tag-only
 
