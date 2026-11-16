@@ -146,7 +146,8 @@ node tools/test-demo-ui.mjs
 # 矩阵要先跑测试再生成，否则 check-matrix 只会打印期望值
 ./gradlew :data:testDebugUnitTest :feature:testDebugUnitTest :domain:rules:test \
   :domain:state:test :domain:replacement:test :domain:compare:test \
-  :domain:revision:test :domain:recommend:test
+  :domain:revision:test :domain:recommend:test \
+  :ui:testDebugUnitTest :app:testDebugUnitTest
 node tools/gen-matrix.mjs
 node tools/check-matrix.mjs
 ```
