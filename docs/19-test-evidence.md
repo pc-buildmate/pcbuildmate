@@ -57,7 +57,7 @@ CI 里四个 job 对应：`docs`（后三项 + 原型回归 + 矩阵工具自测
 | 价格是否准确 | 目录是静态快照，没有来源对账 | 同上 |
 | 3D 预览的槽位坐标是否正确 | 缺主板 x16 槽位置数据，当前是常量估算（`docs/18 §18.8`） | 数据补齐后重估 |
 | UI 交互与可访问性 | Entry / Workspace / 诊断 / 比较四屏已有 Compose semantics 测试（Robolectric，JVM 跑）；可访问性（TalkBack 顺序、触控目标尺寸）未测 | POLISH-01 + 后续补测 |
-| Room 持久化在 CI 上是否可靠 | instrumented 测试需要设备，CI 无 emulator | 真机跑 `:data:connectedDebugAndroidTest` |
+| Room 持久化在 PR 上是否可靠 | instrumented 测试需要设备；`room` job 只在 main / 手动触发 | 改 `:data` 的 PR 手动 dispatch 一次 `room` job |
 | 性能 | 范围外 | 不承诺 |
 
 ## 19.6 被问"测试是不是照抄实现"时的答法（30 秒）

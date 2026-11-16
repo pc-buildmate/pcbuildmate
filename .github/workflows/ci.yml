@@ -110,6 +110,57 @@ jobs:
           node tools/check-matrix.mjs
 
 
+  room:
+    name: Room on emulator (instrumented)
+    # PR 上不跑：要下载系统镜像、启动模拟器，约 10 分钟；只守 main 与手动触发。
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"'             | sudo tee /etc/udev/rules.d/99-kvm4all.rules >/dev/null
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install SDK, emulator image and create the AVD
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
+          AVDMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name avdmanager -type f | head -1)
+          test -n "$SDKMANAGER" && test -n "$AVDMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platforms;android-37.0" "build-tools;37.0.0" "platform-tools" "emulator" "system-images;android-33;google_apis;x86_64"
+          echo "no" | "$AVDMANAGER" create avd -n ci -k "system-images;android-33;google_apis;x86_64" --device pixel_5 --force
+      - name: Boot the emulator
+        run: |
+          "$ANDROID_HOME/emulator/emulator" -avd ci -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+          adb wait-for-device
+          for i in $(seq 1 120); do
+            if adb shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
+              echo "emulator booted after $((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error title=emulator::未在 10 分钟内启动完成"
+          exit 1
+      - name: Room store contracts on device
+        run: ./gradlew :data:connectedDebugAndroidTest --no-daemon --console=plain --stacktrace
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: room-instrumented-results
+          path: data/build/outputs/androidTest-results
+          if-no-files-found: warn
+
   mutations:
     name: Key mutations (MUT-01..12)
     runs-on: ubuntu-latest
