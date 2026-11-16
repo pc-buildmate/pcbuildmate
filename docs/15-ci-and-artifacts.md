@@ -7,8 +7,8 @@
 | 事件 | 跑什么 | 产物 |
 |---|---|---|
 | Pull request | docs + JVM + **mutations** + Android **debug** | `pcbuildmate-debug-apk`、`key-mutations` |
-| push `main` | 同上 | 同上 |
-| Actions → Run workflow | 手动跑全部 | 同上 |
+| push `main` | 同上 + **Room instrumented（模拟器）** | 同上、`room-instrumented-results` |
+| Actions → Run workflow | 全部，含 Room instrumented | 同上 |
 | push tag `v*` | **暂不触发** release；等 RELEASE-01 | — |
 
 **结论：debug 构建是无条件的**（PR/main 都跑），因为：

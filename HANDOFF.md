@@ -42,7 +42,7 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 ./gradlew :data:connectedDebugAndroidTest
 ```
 
-CI（`.github/workflows/ci.yml`）四个 job：`docs`（含边界/关键词/任务覆盖/原型回归）、`jvm`（单测 + 矩阵）、`android`（debug APK）、`mutations`（12 条变异，`needs: jvm`）。
+CI（`.github/workflows/ci.yml`）五个 job：`docs`（含边界/关键词/任务覆盖/原型回归）、`jvm`（单测 + 矩阵）、`android`（debug APK）、`mutations`（12 条变异，`needs: jvm`）、`room`（Room instrumented，真机/模拟器，只在 main 与手动触发）。
 
 ## 组员从哪开始
 
@@ -72,7 +72,7 @@ QA 侧（不在 BOARD 卡里，见 issue #55）：`:test-oracle` 参考模型已
 ## 已知缺口
 
 - UI：Entry / Workspace / 诊断 / 比较四屏已有 Compose semantics 测试（`ui/src/test/.../*ScreenSemanticsTest.kt`，Robolectric，JVM 可跑）；可访问性未测；
-- Room 契约是真机 instrumented，CI 不跑（需要 emulator）；
+- Room 契约：已在 `room` job 里用 CI 模拟器跑（仅 main / 手动）；PR 上仍不跑，改 `:data` 的 PR 需要手动 dispatch 一次；
 - D4 Preferences、Compare 功耗/余量、3 份比较未做（P3）；
 - 价格数据 adapter/Wayback 未做，当前快照是静态数据，价格准确度未核对；
 - 兼容性数据不全：例如**主板第一个 x16 槽的位置信息没有记录**，3D 预览里的槽位是按常量估算的（`docs/18 §18.8`）；
