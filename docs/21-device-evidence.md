@@ -37,7 +37,8 @@ adb wait-for-device
 ## 21.2 真机 9 步演示（Aura A1）
 
 设备：**Aura A1**（真机，型号/系统版本待首次记录时填写）
-脚本：[defense/DEMO.md](defense/DEMO.md) §2；每步记录"开始/结束时间、结果、偏差、截图"。
+脚本：[defense/DEMO.md](defense/DEMO.md) §2；操作步骤与命令：[qa/device-run-tutorial.md](../qa/device-run-tutorial.md)；
+每步记录"开始/结束时间、结果、偏差、截图"。
 
 ### Run 1
 
