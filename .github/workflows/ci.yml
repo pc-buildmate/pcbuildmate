@@ -229,7 +229,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release download --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --pattern '*.sha256' --dir dist
+          # 不能用 --latest：预发布（pre-release）不会被算作 latest。
+          TAG=$(gh api "repos/$GITHUB_REPOSITORY/releases" --jq '.[0].tag_name')
+          test -n "$TAG"
+          echo "verifying $TAG"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY"             --pattern '*.apk' --pattern '*.sha256' --dir dist
           ls -l dist
       - name: Verify
         run: |
