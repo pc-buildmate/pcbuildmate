@@ -9,7 +9,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -33,7 +33,7 @@ function runGradle(args, opts = {}) {
   return execFileSync(GRADLE, args, options);
 }
 
-const mutations = [
+export const mutations = [
   {
     id: "MUT-01", desc: "EMPTY/missing -> PASSED",
     file: "domain/rules/src/main/kotlin/pcbuildmate/domain/rules/DefaultRuleEngine.kt",
@@ -120,6 +120,7 @@ const mutations = [
   },
 ];
 
+function main() {
 const originals = new Map(); // file -> 原始内容，结束时统一核对
 const results = [];
 for (const m of mutations) {
@@ -193,3 +194,9 @@ try {
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify({ mutations: results }, null, 2) + "\n");
 console.log(`[mutations] -> ${OUT}`);
+}
+
+// 只有直接运行才执行变异；被 import 时只导出表，供静态自检使用。
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}

@@ -142,6 +142,7 @@ node tools/check-docs.mjs
 node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
 node ci/check-test-tasks.mjs
+node ci/check-mutations.mjs     # 变异表静态自检（不跑 Gradle）
 
 node tools/test-demo-engine.mjs
 node tools/test-demo-flow.mjs
