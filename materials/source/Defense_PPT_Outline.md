@@ -118,6 +118,16 @@ adapters, then feature freeze on 11/28.
 
 ---
 
+## Appendix (not counted in the 15 minutes)
+
+| Slide | Content | When to jump |
+|---|---|---|
+| A1/A2 | The 15 rules with their kinds | "How do you organise the rules?" |
+| B | Evidence at a glance (60/76/18, 12/12, oracle, Room, three runs) | "Why should we trust the checks?" |
+| C | Scope boundaries (no FPS/prices/accounts/3D assembly) | Any request for something out of scope |
+
+Every appendix answer is one line; the detail lives in `docs/03`, `docs/19` and `docs/21`.
+
 ## Delivery notes
 
 - English only on slides and speech; Chinese only in rehearsal notes.
