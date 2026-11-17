@@ -50,8 +50,10 @@ platform-tools
 
 1. 从 GitHub Secrets 解码 `KEYSTORE_BASE64` 到 `$RUNNER_TEMP/signing/defense.jks`，写临时 `keystore.properties`；
 2. `./gradlew :app:assembleRelease`；
-3. `apksigner verify`、检查无 `INTERNET`、`aapt dump badging` 必须只有 `arm64-v8a`；
-4. 生成 `PC-Buildmate-<tag>.apk` + `.sha256`；
+3. 生成 `PC-Buildmate-<tag>.apk` + `.sha256`；
+4. **用 `qa/verify-release.sh` 校验**（四项权限 / 签名且拒绝 debug 证书 / ABI / 包名 / versionName），
+   并设置 `REQUIRE_ARM64_ONLY=1`，出现非 arm64 ABI 直接失败；
+   tag 规则：正式 tag 去 `v` 后必须等于 versionName，`-rcN` 只比较前缀（决策见 issue #105）；
 5. `gh release create <tag> --draft`，上传两个附件。
 
 **publish 仍由人点**：自动化只到 draft；答辩/冻结前由 @MoeField 检查后 publish。
