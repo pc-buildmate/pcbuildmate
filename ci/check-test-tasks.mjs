@@ -77,6 +77,26 @@ for (const task of ciTasks) {
   if (!modules.includes(mod)) errors.push(`未知模块：${task}（settings.gradle.kts 里没有 ${mod}）`);
 }
 
+// ---------- instrumented 测试也要有人跑 ----------
+// `:module:test` 守的是 JVM 单测；`src/androidTest` 的契约（Room 等）只有
+// `connected*AndroidTest` 才会执行，漏掉它 CI 依旧全绿。
+const instrumented = modules.filter((mod) => {
+  const dir = join(ROOT, dirOf(mod), "src", "androidTest");
+  return existsSync(dir) && statSync(dir).isDirectory();
+});
+
+if (instrumented.length) {
+  if (!/:\w[\w:-]*:connectedDebugAndroidTest/.test(ciText)) {
+    errors.push(
+      `缺：*:connectedDebugAndroidTest（${instrumented.join(", ")} 有 src/androidTest，但 CI 不跑 instrumented 测试）`,
+    );
+  }
+  if (!/^\s{2}room:/m.test(ciText)) {
+    errors.push("缺：CI 里没有 `room` job（instrumented 测试需要模拟器，单独成 job）");
+  }
+  if (VERBOSE) console.log(`[test-tasks] instrumented 模块：${instrumented.join(", ")}`);
+}
+
 if (errors.length) {
   console.error(`✗ [test-tasks] ${errors.length} 个问题：`);
   for (const e of errors) console.error("  " + e);

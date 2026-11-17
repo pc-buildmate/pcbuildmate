@@ -21,7 +21,7 @@
 | **矩阵门** | 每条规则的 4 类结果、每格状态机转移、18 条不变量，是否都有**真实执行过**的用例 | `node tools/gen-matrix.mjs && node tools/check-matrix.mjs` | 60/60、76/76、18/18 |
 | **变异门** | 把实现改坏一处，测试会不会红 | `node tools/run-mutations.mjs && node tools/check-matrix.mjs --mutations` | 12/12 KILLED |
 | **参考模型门** | 测试与实现是不是同一套理解 | `:app` 的 `OracleCrossCheckTest` / `DiagnosisOracleCrossCheckTest` / `ReplacementOracleCrossCheckTest` | 60+7 条 fixture、4×4 + 6×10 全格一致 |
-| **防漂移门** | 有测试的模块会不会悄悄不在 CI 里跑 | `node ci/check-test-tasks.mjs` | 覆盖全部含测试模块 |
+| **防漂移门** | 有测试的模块会不会悄悄不在 CI 里跑 | `node ci/check-test-tasks.mjs` | 覆盖全部含测试模块；有 `src/androidTest` 时还要求 CI 存在 instrumented 任务与 `room` job |
 
 支撑它们的三项检查：`tools/check-docs.mjs`（文档/规则/fixture 自洽）、`ci/check-boundaries.mjs`
 （模块依赖与 test-oracle 自证禁令）、`ci/check-keywords.mjs`（范围外关键词与权限）。
