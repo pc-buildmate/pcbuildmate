@@ -225,6 +225,8 @@ jobs:
           test -n "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" --install "build-tools;37.0.0" "platform-tools"
+      - name: Evidence completeness (docs/21 has no blanks, screenshots exist)
+        run: node qa/check-evidence.mjs
       - name: Download the latest release APK and checksum
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
