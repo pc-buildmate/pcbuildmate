@@ -31,6 +31,15 @@
 | [source/Defense_Rehearsal_Plan.md](source/Defense_Rehearsal_Plan.md) | 三次合练与过关标准 | 可用 |
 | [source/Defense_Numbers_To_Confirm.md](source/Defense_Numbers_To_Confirm.md) | 所有数字的 owner 与确认状态 | 持续更新 |
 
+### 怎么改文案（避免出现多份 deck）
+
+- **备注里的口播**：把你的英文段落发到 PR/issue，或直接改 `Defense_PPT_Outline.md` 对应页；
+  需要重新生成 PPT 时统一由维护者执行一次，避免各自另存一份 `.pptx`。
+- **幻灯片标题/要点**：改 `Defense_PPT_Outline.md`，PPT 的要点与备注与它一一对应。
+- **数字**：先改 `Defense_Numbers_To_Confirm.md` 的状态，再改文案；不要只改一处。
+- **截图**：只用 `qa/screenshots/` 里的图（同一批真机证据），不要混入自制示意图。
+
+
 ## 与本仓库的口径差异（答辩前必须处理）
 
 | # | 原始材料 | 本仓库 | 处理 |
