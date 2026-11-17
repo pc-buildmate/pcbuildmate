@@ -99,6 +99,8 @@ adb wait-for-device
 | 权限 | `aapt2 dump permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ✅ 仅 `io.github.pcbuildmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（androidx 自用） |
 | ABI | `aapt dump badging` / `unzip -l` | 含 `arm64-v8a` | ✅ **仅** `arm64-v8a`（无 x86_64） |
 | 安装 | `adb install -r` | Success | ✅ 2026-11-17 09:40 在 DBR-W10 上 `Success`（`versionName 1.0.0-defense`） |
+
+> 一条命令复现上面四项：`bash qa/verify-release.sh <apk> <sha256 文件或值>`（sha256 / 签名 / 权限 / ABI / 包名，任一不符返回非零）。
 | 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ✅ 三次演示全程 `airplane_mode_on=1`，推荐/检查/替换/比较均正常 |
 
 ---
