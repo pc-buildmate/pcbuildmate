@@ -17,7 +17,7 @@
 | 时间 | 环境 | 命令 | 结果 | 记录人 |
 |---|---|---|---|---|
 | 2026-11-16 | 本机 AVD `Pixel_9`（API 37，google_apis_playstore，x86_64） | `./gradlew :data:connectedDebugAndroidTest` | **8 / 8 通过，0 失败 0 跳过**（2m38s） | @yys1yys2yys |
-| 2026-11-16 | GitHub Actions `room` job（API 33，x86_64） | 同上 | ⬜ 待记录（见 PR #70） | @yys1yys2yys |
+| 2026-11-16 17:57Z | GitHub Actions `room` job（run `43923693331`，API 33，x86_64） | 同上 | **通过**：模拟器 30 s 启动，`connectedDebugAndroidTest` + `assembleDebug` 三次 `BUILD SUCCESSFUL`，启动冒烟拿到 pid 5253 | @yys1yys2yys |
 
 结论：Room 的 `BuildStorePort` / `DraftStorePort` 在两个独立实现环境（本地模拟器 + CI 模拟器）上都通过同一份契约。
 
@@ -72,14 +72,18 @@ adb wait-for-device
 
 ## 21.3 Release 校验（与阮立坤的发布包对账）
 
-| 检查 | 命令 | 期望 | 结果 |
+校验对象：[Release `v1.0.0-defense-rc2`](https://github.com/pc-buildmate/pcbuildmate/releases/tag/v1.0.0-defense-rc2)
+`PC-Buildmate-v1.0.0-defense-rc2.apk`（23,545,828 B，`versionName = 1.0.0-defense`，`versionCode = 1`，
+`minSdk = 31`，`targetSdk = 37`，`package = io.github.pcbuildmate`）。
+
+| 检查 | 命令 | 期望 | 结果（2026-11-17） |
 |---|---|---|---|
-| APK 存在且签名 | `apksigner verify --print-certs <apk>` | 签名有效、证书非 debug | ⬜ |
-| sha256 | `sha256sum <apk>`（Windows: `certutil -hashfile <apk> SHA256`） | 与 Release 页面一致 | ⬜ |
-| 权限 | `aapt dump permissions <apk>` 或 `apkanalyzer manifest permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ⬜ |
-| ABI | `unzip -l <apk> \| grep lib/` | 含 `arm64-v8a`（并确认是否另有 x86_64） | ⬜ |
-| 安装 | `adb install -r <apk>` | Success | ⬜ |
-| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⬜ |
+| APK 存在且签名 | `apksigner verify --print-certs` | 签名有效、证书非 debug | ✅ `CN=PC Buildmate, OU=EE5415, O=CityU`，证书 SHA-256 `d6d6b224…82c10` |
+| sha256 | `sha256sum` | 与 Release 的 `.sha256` 一致 | ✅ `750b2d76…ecd44e`，与附件逐字节一致 |
+| 权限 | `aapt2 dump permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ✅ 仅 `io.github.pcbuildmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（androidx 自用） |
+| ABI | `aapt dump badging` / `unzip -l` | 含 `arm64-v8a` | ✅ **仅** `arm64-v8a`（无 x86_64） |
+| 安装 | `adb install -r` | Success | ⬜ 待 Aura A1 |
+| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⬜ 待 Aura A1 |
 
 ---
 
@@ -87,6 +91,7 @@ adb wait-for-device
 
 | 时间 | 现象 | issue | 状态 |
 |---|---|---|---|
-| ⬜ | ⬜ | ⬜ | ⬜ |
+| 2026-11-16 15:37Z | `room` job 失败：`Unknown AVD name [ci]`（avdmanager 未写出 `ci.ini`），模拟器起不来 | 未开 issue：与 main 上同一修复合并前的一次实验运行（PR #70） | **已解决**：main 的创建步骤加了 `--abi x86_64` 与一次重试，之后 main 上连续三次 `room` 全绿 |
+| 2026-11-16 14:08Z | `room` job 撞 35 分钟 job 超时被标记 cancelled | 同上 | **已解决**：等待改为 `timeout 180 adb wait-for-device` + 进程存活检查 + 8 分钟启动上限，失败会打印模拟器日志 |
 
 规则：失败必须开 issue，标题 `[QA-03] ...`，不要只在群里说。
