@@ -17,7 +17,7 @@
 | 时间 | 环境 | 命令 | 结果 | 记录人 |
 |---|---|---|---|---|
 | 2026-11-16 | 本机 AVD `Pixel_9`（API 37，google_apis_playstore，x86_64） | `./gradlew :data:connectedDebugAndroidTest` | **8 / 8 通过，0 失败 0 跳过**（2m38s） | @yys1yys2yys |
-| 2026-11-16 | GitHub Actions `room` job（API 33，x86_64） | 同上 | ⬜ 待记录（见 PR #70） | @yys1yys2yys |
+| 2026-11-16 17:57Z | GitHub Actions `room` job（run `43923693331`，API 33，x86_64） | 同上 | **通过**：模拟器 30 s 启动，`connectedDebugAndroidTest` + `assembleDebug` 三次 `BUILD SUCCESSFUL`，启动冒烟拿到 pid 5253 | @yys1yys2yys |
 
 结论：Room 的 `BuildStorePort` / `DraftStorePort` 在两个独立实现环境（本地模拟器 + CI 模拟器）上都通过同一份契约。
 
@@ -87,6 +87,7 @@ adb wait-for-device
 
 | 时间 | 现象 | issue | 状态 |
 |---|---|---|---|
-| ⬜ | ⬜ | ⬜ | ⬜ |
+| 2026-11-16 15:37Z | `room` job 失败：`Unknown AVD name [ci]`（avdmanager 未写出 `ci.ini`），模拟器起不来 | 未开 issue：与 main 上同一修复合并前的一次实验运行（PR #70） | **已解决**：main 的创建步骤加了 `--abi x86_64` 与一次重试，之后 main 上连续三次 `room` 全绿 |
+| 2026-11-16 14:08Z | `room` job 撞 35 分钟 job 超时被标记 cancelled | 同上 | **已解决**：等待改为 `timeout 180 adb wait-for-device` + 进程存活检查 + 8 分钟启动上限，失败会打印模拟器日志 |
 
 规则：失败必须开 issue，标题 `[QA-03] ...`，不要只在群里说。
