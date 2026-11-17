@@ -88,6 +88,16 @@ node tools/run-mutations.mjs
 node tools/check-matrix.mjs --mutations
 ```
 
+设备与发布（需要真机 / 已发布的 APK，见 [21 章](21-device-evidence.md)）：
+
+```bash
+# 真机九步（会 pm clear 应用数据，逐步截图到 qa/screenshots/）
+bash qa/drive-demo.sh run1 qa/screenshots
+
+# 发布产物：sha256 / 签名 / 权限 / ABI
+bash qa/verify-release.sh PC-Buildmate-<ver>.apk PC-Buildmate-<ver>.apk.sha256
+```
+
 ## 19.8 设备与发布证据
 
 上面四道门守的是"代码里的行为"；还有两类证据只能来自真实设备，记在
