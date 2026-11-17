@@ -11,6 +11,8 @@ set -u
 APK="${1:?usage: verify-release.sh <apk> [sha256-file-or-value] [expected-versionName]}"
 EXPECT="${2:-}"
 EXPECT_VERSION="${3:-}"
+[ -f "$APK" ] || { echo "找不到 APK：$APK" >&2; exit 2; }
+
 BT="${BUILD_TOOLS:-$(ls -d "${ANDROID_HOME:-$HOME/Android/Sdk}"/build-tools/*/ 2>/dev/null | tail -1)}"
 [ -n "$BT" ] || { echo "找不到 build-tools，设置 BUILD_TOOLS 或 ANDROID_HOME" >&2; exit 2; }
 
