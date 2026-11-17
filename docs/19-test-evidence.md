@@ -57,7 +57,7 @@ CI 里四个 job 对应：`docs`（后三项 + 原型回归 + 矩阵工具自测
 | 价格是否准确 | 目录是静态快照，没有来源对账 | 同上 |
 | 3D 预览的槽位坐标是否正确 | 缺主板 x16 槽位置数据，当前是常量估算（`docs/18 §18.8`） | 数据补齐后重估 |
 | UI 交互与可访问性 | Entry / Workspace / 诊断 / 比较四屏已有 Compose semantics 测试（Robolectric，JVM 跑）；可访问性（TalkBack 顺序、触控目标尺寸）未测 | POLISH-01 + 后续补测 |
-| Room 持久化在 PR 上是否可靠 | instrumented 测试需要设备；`room` job 只在 main / 手动触发 | 改 `:data` 的 PR 手动 dispatch 一次 `room` job |
+| Room 持久化在 PR 上是否可靠 | instrumented 测试需要设备；`room` job 只在 main / 手动触发（main 上已连续绿三次） | 改 `:data` 的 PR 手动 dispatch 一次 `room` job |
 | 性能 | 范围外 | 不承诺 |
 
 ## 19.6 被问"测试是不是照抄实现"时的答法（30 秒）
@@ -87,3 +87,16 @@ node tools/check-matrix.mjs
 node tools/run-mutations.mjs
 node tools/check-matrix.mjs --mutations
 ```
+
+## 19.8 设备与发布证据
+
+上面四道门守的是"代码里的行为"；还有两类证据只能来自真实设备，记在
+[21 · 设备侧证据](21-device-evidence.md)：
+
+| 证据 | 现状（2026-11-17） |
+|---|---|
+| Room 契约（8 个 instrumented 用例） | ✅ 本地 AVD 8/8；✅ CI `room` job 在 main 上连续通过（模拟器 30 s 启动，含启动冒烟） |
+| Release 产物（`v1.0.0-defense-rc2`） | ✅ sha256 与附件一致；✅ 发布证书（非 debug）；✅ 无 INTERNET/CAMERA/LOCATION/推送权限；✅ 仅 `arm64-v8a`。复现：`bash qa/verify-release.sh <apk> <sha>`，或手动 dispatch 勾选 `verify_release`（job `release-verify` 自动下载最新 release 再校验） |
+| 真机 9 步 ×3 | ✅ 2026-11-17 在 HUAWEI DBR-W10（Android 12）上连跑三次，锚点全中；步骤见 [qa/device-run-tutorial.md](../qa/device-run-tutorial.md)，截图在 [qa/screenshots](../qa/screenshots/)，驱动脚本 `qa/drive-demo.sh` |
+
+答辩口径：三行都可以当场给数字和命令。
