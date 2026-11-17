@@ -1,0 +1,67 @@
+# Defense · Q&A follow-ups (English, 10 deeper questions)
+
+> Companion to `Defense_QA_EN.md`. These are the second-round questions — what an examiner asks after
+> the first answer lands. Each answer is two or three sentences and points at where the detail lives.
+> No number here goes beyond `Defense_Numbers_To_Confirm.md`.
+
+**F1. Why fifteen rules? Why not twenty?**
+Because a rule has to be decidable from fields we carry and explainable in one line. Each of the
+fifteen has four fixtures (passed / conflict / unverified / missing), so adding one is a data change
+plus four cases, not a code change. The boundary is in `docs/03` §3.6, including what we deliberately
+did not model.
+
+**F2. What if two rules contradict each other?**
+They cannot silently: each rule returns its own outcome, and the overall status is a fold over them,
+not a vote. If two rules genuinely conflict, the build shows both — the user sees the disagreement
+instead of an averaged verdict. INV-15 keeps the output order stable by rule id.
+
+**F3. Why not just query an existing compatibility database?**
+Because the product promise is about evidence, not just answers. An external database gives a verdict
+without telling us which field is missing or which source disagrees, and it would require network
+access, which we deliberately do not request. Our catalogue is static and dated so the demo is
+reproducible offline.
+
+**F4. How would you validate the data at scale?**
+The same way we validate it now, automated: a field-path table with types and units, an audit script
+that checks every record against it (`docs/20`), and seed validation that rejects unknown paths before
+the app ships. What changes at scale is the ingest side — adapters per store — not the validation.
+
+**F5. What is the biggest technical risk?**
+That the catalogue is wrong in a way our rules cannot see: the engine and the oracle would agree with
+each other and both be wrong. That is why the evidence chapter says explicitly that rule parameters
+and price accuracy are not proven by the test suite, and why field-level sources are the next data
+task.
+
+**F6. Why Kotlin and Compose?**
+Compose lets the UI depend only on the contract types, so screens can be rendered from static state —
+which is also how the Compose semantics tests run on the JVM without a device. Kotlin gives us a pure
+JVM domain layer, which is what makes the 163 unit tests fast enough to run on every pull request.
+
+**F7. What about multiple GPUs or multi-socket boards?**
+Out of scope by decision, not by accident: the catalogue pins single-instance categories to one unit
+(ADR-0010), and the rules evaluate one card. Multi-GPU is physically possible but would change the
+power, clearance and slot model, so it is documented as unsupported rather than silently mis-evaluated.
+
+**F8. Does it handle ATX 3.0 / 12VHPWR?**
+The connector set is a CSV field, so `12VHPWR` is expressible and the subset rule checks it. What we do
+not model is the per-rail distribution or transient spikes — that needs vendor data we do not have,
+and guessing it would violate the evidence principle.
+
+**F9. How do you know the UI matches the rules?**
+Two layers: the workspace state exposes a diagnosis only when its revision matches the current one,
+and that accessor has unit tests; on top of that, Compose semantics tests assert what the screens show
+in the stale case — no summary, and a "please recheck" banner instead.
+
+**F10. What would you do with two more weeks?**
+Field-level sources for the catalogue, then the data work's two gaps: the motherboard x16 slot position
+for the 3D view and price reconciliation against official pages. Functionally we would rather harden
+than add features — the feature set is frozen on 11-28.
+
+---
+
+## How to use these
+
+- Only reach for a follow-up if the first answer was accepted; otherwise expand the first answer.
+- Each answer ends with a pointer ("in docs/03", "in docs/20"); say the pointer out loud, it shows the
+  claim is checkable.
+- If a question is about numbers we have not confirmed, say so — do not improvise.
