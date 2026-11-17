@@ -24,7 +24,7 @@
 | [source/Defense_Script_TestEvidence_EN.md](source/Defense_Script_TestEvidence_EN.md) | 测试证据与收尾两段的逐字稿 | 已定稿（本人负责段） |
 | [source/Defense_Script_Sections_1-4_EN.md](source/Defense_Script_Sections_1-4_EN.md) | 其余四段的逐字稿**草稿** | 待 owner 修订 |
 | [source/Defense_QA_EN.md](source/Defense_QA_EN.md) | 18 题英文答案 + 中文要点 | 已按现状重写 |
-| [source/Defense_QA_Followups_EN.md](source/Defense_QA_Followups_EN.md) | 10 个追问答案 + 中文要点 | 已定稿 |
+| [source/Defense_QA_Followups_EN.md](source/Defense_QA_Followups_EN.md) | 12 个追问答案 + 中文要点 | 已定稿 |
 | [source/Defense_Run_Sheet.md](source/Defense_Run_Sheet.md) | 一页英文 run sheet | 可用 |
 | [source/Defense_Run_Sheet_CN.md](source/Defense_Run_Sheet_CN.md) | 中文操作 + 英文口播的现场卡 | 建议打印 |
 | [source/Defense_Repo_Walkthrough_EN.md](source/Defense_Repo_Walkthrough_EN.md) | "打开给我看"时的 10 条主张 → 文件 | 可用 |
