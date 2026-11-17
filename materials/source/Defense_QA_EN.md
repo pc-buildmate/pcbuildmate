@@ -22,9 +22,10 @@ fit the course constraints. A web app could do something similar; we are not cla
 required.
 
 **Q4. Where do specifications and prices come from?**
-A static, versioned catalogue shipped with the app; every price carries a snapshot date, and sources
-are listed in `assets/catalogue/SOURCES.md`. Prices are being reconciled against official store pages
-[confirm: 陈思言]; we do not scrape live prices.
+A static, versioned catalogue shipped with the app; every price carries a snapshot date. Source
+traceability is at **record level** today: all 30 records are listed in `assets/catalogue/SOURCES.md`,
+14 of them with a URL. Field-level source URLs are **not yet populated** (0 of 158 fields), so we do
+not claim per-field provenance. We do not scrape live prices.
 
 ## Evidence and correctness
 

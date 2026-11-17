@@ -103,8 +103,9 @@ orbit camera, no GL dependency, offline. [confirm: 阮立坤 for screenshot and 
   forbidden from importing domain code) agrees on 60+7 fixtures and all 76 state-machine cells.
 - Will it drift? A check fails if any module with tests is missing from the CI task list.
 
-**Slide 22 — What this does not prove.** Rule parameters, price accuracy, 3D slot coordinates,
-UI accessibility, and Room on pull requests. Say it before the examiner asks.
+**Slide 22 — What this does not prove.** Rule parameters, price accuracy, **field-level source URLs
+(0 of 158 fields; only record-level sources exist)**, 3D slot coordinates, UI accessibility, and Room
+on pull requests. Say it before the examiner asks.
 
 ## 6 · Limits and conclusion (杨壹硕)
 
