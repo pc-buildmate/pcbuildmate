@@ -44,7 +44,7 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 
 CI（`.github/workflows/ci.yml`）五个 job：`docs`（含边界/关键词/任务覆盖/原型回归）、`jvm`（单测 + 矩阵）、`android`（debug APK）、`mutations`（12 条变异，`needs: jvm`）、`room`（Room instrumented，真机/模拟器，只在 main 与手动触发）。
 
-## 组员从哪开始
+## 成员从哪开始
 
 只看 [docs/tasks/BOARD.md](docs/tasks/BOARD.md)。当前状态：
 

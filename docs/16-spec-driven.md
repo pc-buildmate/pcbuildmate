@@ -53,7 +53,7 @@
 - 或单独 `spike/` 分支做实验，不碰 `main`；
 - 课程项目本身不建议。
 
-## 16.5 给组员的一句话
+## 16.5 给成员的一句话
 
 > 我们已经有 spec / plan / tasks / converge，只是名字不叫 speckit。
 > 你按 `docs/tasks/TEMPLATE.md` 填满九块，比跑 `/speckit.*` 更稳。

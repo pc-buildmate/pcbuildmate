@@ -117,27 +117,27 @@ CI 现在跑文档 + JVM + **Android debug APK**；Actions 里下载 `pcbuildmat
 | `:domain:compare` | A/B 比较 | 完成 | [D6-01](docs/tasks/D6-01.md) |
 | `:domain:recommend` | 预算推荐 | 完成 | [D4-01](docs/tasks/D4-01.md) |
 | `:domain:revision` | revision 构造 + 无显示输出 guard | 完成 | [D2-03](docs/tasks/D2-03.md) |
-| `:feature` | ViewModel / MVI 编排 | 核心完成 | [docs/06](docs/06-modules.md) |
-| `:ui` | Compose 四屏 | 可用；待打磨 | [POLISH-01](docs/tasks/POLISH-01.md) |
+| `:feature` | ViewModel / MVI 编排 | 完成 | [docs/06](docs/06-modules.md) |
+| `:ui` | Compose 四屏 + 3D 预览 | 已收口（文案/视角） | [POLISH-01](docs/tasks/POLISH-01.md) |
 | `:app` | Activity / 手动导航 / 装配 | 完成 | [docs/05](docs/05-module-independence.md) |
-| `:testing` | Fake / Stub | 待补 | [docs/07](docs/07-unit-verification.md) |
-| `:test-oracle` | 独立参考模型 | 待补 | [QA-01](docs/tasks/QA-01.md) |
+| `:testing` | Fake / Stub | 可选（暂无缺口） | [docs/07](docs/07-unit-verification.md) |
+| `:test-oracle` | 独立参考模型 | 完成（QA-02） | [QA-01](docs/tasks/QA-01.md) |
 
 > 目录价格来源见 [assets/catalogue/SOURCES.md](assets/catalogue/SOURCES.md)：App 使用 30 条合并快照（26 active + 4 demo anchors），2026-11-04 参考价，不承诺实时/库存。
 > 价格数据管道（2020+，半自动，App 只读快照）见 [pricedata/README.md](pricedata/README.md)。
 > 长期只采 CPU / 主板 / 内存 / 硬盘 / 电源 / 显卡；机箱、散热、无线网卡只保留 App demo，不采历史价。
 
-## 这一周做什么
+## 当前阶段（11/17–11/28）
 
-核心 + QA 已收口，**暂停一周等组员提交**。从 [HANDOFF.md](HANDOFF.md) 开始：
+核心 + QA 已收口，release/CI 已自动化。现在是**收尾 + 答辩材料**阶段：12 月初答辩，**11/28 功能冻结**。
 
 1. **答辩材料**：讲稿 / 9 步演示 / Q&A / PPT（DEFENSE-01）
-2. **签名 APK**：`v1.0-defense`（RELEASE-01）
-3. **UI 收口**：文案、可访问性、截图（POLISH-01）
-4. **数据管道**：华硕/七彩虹 adapter、Wayback（PRICEDATA-01，P2）
-5. 组员按 [BOARD](docs/tasks/BOARD.md) 自由认领；没人做的 @MoeField 兜底。
+2. **最终 Release**：打 `v1.0.0-defense` tag → 自动签名 APK + draft，人工 publish（RELEASE-01）
+3. **UI / 3D 收口**：文案、视角、截图；尺寸字段等 ADR（POLISH-01 / UI-02）
+4. **数据与证据**：价格快照、目录来源、尺寸字段（INFO-01/02）
+5. 成员按 [BOARD](docs/tasks/BOARD.md) 自由认领；没人做的 @MoeField 兜底。
 
-每个任务都有一页小文档，放在 [docs/tasks/](docs/tasks/)。
+每个任务有一页小文档，放在 [docs/tasks/](docs/tasks/)；测试证据见 [docs/19](docs/19-test-evidence.md)。
 开工前只读：任务包 + 本模块卡（06）+ 相关契约（02/`contracts/`）+ 相关规则/状态机。
 
 ## 协作三条
@@ -195,7 +195,7 @@ node tools/check-matrix.mjs
 - 目录是 **demo 数据**，不是实时市场；价格带日期，但不承诺库存。
 - 不做 FPS / 跑分 / 性能分档；不做 3D 装配；不接账号 / 云同步。
 - Room 持久化已完成；杀进程后保存的 A/B 可恢复（诊断需重新检查）。
-- 组员入口见 [HANDOFF.md](HANDOFF.md)；当前 `main` 的测试/矩阵/变异状态以它为准。
+- 成员入口见 [HANDOFF.md](HANDOFF.md)；当前 `main` 的测试/矩阵/变异状态以它为准。
 - 比较页目前只输出总价、状态、分类花费；功耗/升级余量/物理尺寸待补。
 - 演示只覆盖 2 份配置；3 份需要横向滚动。
 

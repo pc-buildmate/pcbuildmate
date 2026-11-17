@@ -219,7 +219,7 @@ PYTHONPATH=pricedata/src python3 -m pricepipe.cli export \
 
 ---
 
-## 9. 变更手册（给组员的 agent 看）
+## 9. 变更手册（给成员的 agent 看）
 
 ### 9.1 想把起点改成 2016
 

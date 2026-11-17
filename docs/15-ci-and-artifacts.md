@@ -1,6 +1,6 @@
 # 15 · CI 与构建产物
 
-> 读者：组员 / AI agent。当前配置见 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)。
+> 读者：成员 / AI agent。当前配置见 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)。
 
 ## 15.1 触发条件
 
