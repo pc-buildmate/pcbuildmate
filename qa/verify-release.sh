@@ -50,7 +50,13 @@ printf '%s' "$perms" | grep -q "android.permission.INTERNET" || ok "无 INTERNET
 # 4. ABI
 abis=$("$BT/aapt" dump badging "$APK" 2>/dev/null | grep -o "native-code:.*" || true)
 printf '%s' "$abis" | grep -q "arm64-v8a" && ok "含 arm64-v8a（$abis）" || bad "缺 arm64-v8a：$abis"
-printf '%s' "$abis" | grep -q "x86" && echo "… 另含 x86 ABI：$abis（确认是否有意）"
+if printf '%s' "$abis" | grep -q "x86"; then
+  if [ "${REQUIRE_ARM64_ONLY:-0}" = "1" ]; then
+    bad "包含非 arm64 ABI：$abis（REQUIRE_ARM64_ONLY=1）"
+  else
+    echo "… 另含 x86 ABI：$abis（确认是否有意；设置 REQUIRE_ARM64_ONLY=1 可视为失败）"
+  fi
+fi
 
 # 5. 版本与包名
 pkg=$("$BT/aapt" dump badging "$APK" 2>/dev/null | grep -m1 -o "name='[^']*'" | head -1 | sed "s/name=//; s/'//g")
