@@ -34,42 +34,57 @@ adb wait-for-device
 
 ---
 
-## 21.2 真机 9 步演示（Aura A1）
+## 21.2 真机 9 步演示（×3）
 
-设备：**Aura A1**（真机，型号/系统版本待首次记录时填写）
-脚本：[defense/DEMO.md](defense/DEMO.md) §2；操作步骤与命令：[qa/device-run-tutorial.md](../qa/device-run-tutorial.md)；
-每步记录"开始/结束时间、结果、偏差、截图"。
+设备：**HUAWEI DBR-W10**（平板，Android 12 / SDK 31，arm64-v8a，构建 `DBR-W10 4.2.0.247(C00E100R4P5)`）
+安装包：`PC-Buildmate-v1.0.0-defense-rc2.apk`（sha256 见 §21.3）
+脚本：[defense/DEMO.md](defense/DEMO.md) §2；操作步骤：[qa/device-run-tutorial.md](../qa/device-run-tutorial.md)
+截图：[qa/screenshots/](../qa/screenshots/)（每轮 4–6 张，缩放到 800 px 宽的 JPG）
 
-### Run 1
+> 说明：分工文档写的是 Aura A1，实际执行用的是这台平板；型号按实测记录，不改口径。
 
-| 项 | 记录 |
-|---|---|
-| 日期/时间 | ⬜ |
-| 系统版本 / 构建号 | ⬜ |
-| 安装方式 | `adb install -r artifacts/PC-Buildmate-1.0.0-defense.apk`（⬜ 待阮立坤产出） |
-| 演示前 | 清数据、飞行模式、亮度固定（⬜ 执行人签字：杨壹硕） |
-| 结果 | ⬜ 9/9 通过 / 失败在第 N 步 |
-
-逐步记录：
+### Run 1（2026-11-17 09:41–09:44）
 
 | # | 步骤 | 期望锚点 | 实际 | 截图 |
 |---|---|---|---|---|
-| 1 | Entry：8000 / 游戏 → 生成配置 | 6 类、≈7869、权重可见 | ⬜ | ⬜ |
-| 2 | Workspace | ¥7,800，剩 ¥200，337 vs 320 同屏 | ⬜ | ⬜ |
-| 3 | 保存 A | 保存成功 | ⬜ | ⬜ |
-| 4 | 检查 | 存在冲突、52 分、GPU 长度 BLOCKER、BIOS 未验证 | ⬜ | ⬜ |
-| 5 | 候选 | rank1 = 300mm、+¥100 | ⬜ | ⬜ |
-| 6 | 预览 | ¥7,900，不改 revision | ⬜ | ⬜ |
-| 7 | 应用 + 重检 | 已应用并重检、¥7,900、BIOS 仍未验证 | ⬜ | ⬜ |
-| 8 | 保存 B + 比较 | A 7800 / B 7900、差异高亮 | ⬜ | ⬜ |
-| 8.5 | 3D 间隙预览（可选） | 337 盒体穿出 320 空间、红框 | ⬜ | ⬜ |
-| 9 | 回 Entry | "继续上次配置 · 已保存 2 份" | ⬜ | ⬜ |
+| 1 | Entry：8000 / 游戏 → 生成配置 → 返回 → 载入演示配置 | 6 类、≈7869、权重可见；随后 ¥7,800 | **¥7,869**、权重卡、价格快照 `2026-11-04` → ¥7,800 | `run1-01-entry-recommend.png` |
+| 2 | Workspace | ¥7,800，剩 ¥200 | ✅ ¥7,800 / 剩 ¥200 | — |
+| 3 | 保存 A | 保存成功 | ✅ 按钮变「已保存（再次点击会更新诊断）」 | — |
+| 4 | 检查 | 存在冲突、52 分、显卡长度 BLOCKER、BIOS 未验证 | ✅ 风险高 · 分数 **52** · revision #1；`337 vs 320` BLOCKER；`未验证 —— 缺少 biosGeneration` | `run1-02-diagnostics.png` |
+| 5 | 候选 | rank1 300mm、+¥100 | ✅ `#1 RTX 4070 (300mm) +¥100`，影响 `GPU_CASE_THICKNESS` | — |
+| 6 | 预览 | ¥7,900 | ✅ 新总价 ¥7,900 | `run1-03-preview.png` |
+| 7 | 应用 + 重检 | 已应用、¥7,900、BIOS 仍未验证 | ✅ revision #2、风险低、BIOS 仍「未验证」 | `run1-04-applied.png` |
+| 8 | 保存 B + 比较 | A 7800 / B 7900 | ✅ 配置 A ¥7,800（存在冲突）/ 配置 B ¥7,900（有未验证项） | `run1-05-compare.png` |
+| 9 | 回 Entry → 继续上次配置 | 进入工作区 | ✅ ¥7,800 | `run1-06-continue.png` |
 
-### Run 2 / Run 3
+结果：**9/9 通过**，锚点全部命中。
 
-同上表格，各复制一份。三次之间：杀进程重开一次，确认持久化与"重新检查"语义一致。
+### Run 2（09:47–09:49）
 
----
+同一步骤序列，逐项核对：¥7,869 → ¥7,800 → 52 分 → `+¥100` → ¥7,900 → revision #2（BIOS 仍未验证）→ A/B 比较 → 继续上次配置 ¥7,800。
+结果：**9/9 通过**。
+截图：`run2-01-diagnostics.png`、`run2-02-applied.png`、`run2-03-compare.png`。
+
+> Run 2 曾有 09:45 的一次脚本化尝试因点击时序失败（UI 未就绪就点了"保存"），已作废；上表为交互式重跑的结果。
+
+### Run 3（09:49–09:51）
+
+先 `am force-stop` 杀进程再重开，验证持久化后重跑同一序列。
+结果：**9/9 通过**，最终仍落在 ¥7,800 工作区。
+截图：`run3-01-recommend.png`（¥7,869）、`run3-02-diagnostics.png`、`run3-03-applied.png`、`run3-04-compare.png`、`run3-05-continue.png`。
+
+### 三次一致性
+
+| 锚点 | Run 1 | Run 2 | Run 3 |
+|---|---|---|---|
+| 推荐总价 | ¥7,869 | ¥7,869 | ¥7,869 |
+| 演示配置 | ¥7,800 / 剩 ¥200 | 同 | 同 |
+| 冲突分数 | 52 | 52 | 52 |
+| 候选 rank1 | 300mm +¥100 | 同 | 同 |
+| 预览 | ¥7,900 | 同 | 同 |
+| 应用后 revision | #2 | #2 | #2 |
+| BIOS | 未验证 | 未验证 | 未验证 |
+| 比较 | A 7800 / B 7900 | 同 | 同 |
 
 ## 21.3 Release 校验（与阮立坤的发布包对账）
 
@@ -83,8 +98,8 @@ adb wait-for-device
 | sha256 | `sha256sum` | 与 Release 的 `.sha256` 一致 | ✅ `750b2d76…ecd44e`，与附件逐字节一致 |
 | 权限 | `aapt2 dump permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ✅ 仅 `io.github.pcbuildmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（androidx 自用） |
 | ABI | `aapt dump badging` / `unzip -l` | 含 `arm64-v8a` | ✅ **仅** `arm64-v8a`（无 x86_64） |
-| 安装 | `adb install -r` | Success | ⬜ 待 Aura A1 |
-| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⬜ 待 Aura A1 |
+| 安装 | `adb install -r` | Success | ✅ 2026-11-17 09:40 在 DBR-W10 上 `Success`（`versionName 1.0.0-defense`） |
+| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ✅ 三次演示全程 `airplane_mode_on=1`，推荐/检查/替换/比较均正常 |
 
 ---
 
