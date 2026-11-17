@@ -16,12 +16,12 @@
 | N6 | Catalogue size: **30 records** | S18/S23 maybe | 刘喆 / 陈思言 | `assets/catalogue/catalogue-app.json`（30 条，见 #81 审计报告） | [x] 2026-11-17 核对 |
 | N7 | Price snapshot: **2026-11-04**（catalogueVersion 2026.11） | S12, Q4 | 陈思言 | `assets/catalogue/catalogue-app.json` + `SOURCES.md` | [x] 文件值；App 内显示待截图确认 |
 | N8 | Demo anchors **¥7,800 → ¥7,900**, +¥100 | S11–S16, Q&As | 王嘉瑞 | fixture `fx_suggestion_300_plus_100` | [x] fixture-frozen |
-| N9 | Recommendation example **≈¥7,869** | S11 | 黄奕维 / 陈思言 | live app on demo data | [ ] confirm on rc2 APK |
-| N10 | Conflict score **52** | S12, step 4 | 王嘉瑞 | app output | [ ] confirm on rc2 APK |
+| N9 | Recommendation example **¥7,869** | S11 | 黄奕维 / 陈思言 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
+| N10 | Conflict score **52** | S12, step 4 | 王嘉瑞 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
 | N11 | Module count **14** | S18 | 黄奕维 | `settings.gradle.kts` | [x] |
-| N12 | 3D estimated constants (GPU height 120 mm, board bottom 80 mm, slot offset) | S15, S19, Q&A 3D | 阮立坤 | `docs/18 §18.8` | [ ] confirm current values |
+| N12 | 3D constants: GPU 宽 110 mm、第一槽 I/O 下缘 −7.52 mm、槽距 20.32 mm | S15, S19, Q&A 3D | 阮立坤 | `docs/18 §18.2`（§18.8 仍列估算项） | [ ] 数值已从文档核对；**x16 槽位置仍是数据缺口**（INFO-02） |
 | N13 | APK identity: `1.0.0-defense`, arm64-only, 23,545,828 B, sha256 `750b2d76…` | S24, Q&A release | 杨壹硕 | `docs/21 §21.3` | [x] verified |
-| N14 | Device demo runs: **3 / 3** recorded | S24, Q15 | 杨壹硕 | `docs/21 §21.2` | [ ] pending device |
+| N14 | Device demo runs: **3 / 3** recorded（DBR-W10 / Android 12） | S24, Q15 | 杨壹硕 | `docs/21 §21.2` + `qa/screenshots/` | [x] 2026-11-17 |
 
 ## How to close a row
 
