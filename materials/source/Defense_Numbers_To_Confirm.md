@@ -14,7 +14,7 @@
 | N4 | Invariants: **18 / 18** | S21, Q15 | 杨壹硕 | same command | [x] |
 | N5 | Mutations: **12 / 12 killed** | S21, Q15 | 杨壹硕 | `run-mutations.mjs` + CI `mutations` job | [x] |
 | N6 | Catalogue size: **30 records** | S18/S23 maybe | 刘喆 / 陈思言 | `assets/catalogue/catalogue-app.json`（30 条，见 #81 审计报告） | [x] 2026-11-17 核对 |
-| N7 | Price snapshot: **2026-11-04**（catalogueVersion 2026.11） | S12, Q4 | 陈思言 | `assets/catalogue/catalogue-app.json` + `SOURCES.md` | [x] 文件值；App 内显示待截图确认 |
+| N7 | Price snapshot: **2026-11-04**（catalogueVersion 2026.11） | S12, Q4 | 陈思言 | `assets/catalogue/catalogue-app.json` + `SOURCES.md` | [x] 文件值 + 真机截图显示 `价格快照 2026-11-04 · 2026.11` |
 | N8 | Demo anchors **¥7,800 → ¥7,900**, +¥100 | S11–S16, Q&As | 王嘉瑞 | fixture `fx_suggestion_300_plus_100` | [x] fixture-frozen |
 | N9 | Recommendation example **¥7,869** | S11 | 黄奕维 / 陈思言 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
 | N10 | Conflict score **52** | S12, step 4 | 王嘉瑞 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
