@@ -47,11 +47,11 @@ node tools/check-matrix.mjs --mutations
 | 17 端口契约 | `InMemoryBuildStoreTest` + `RoomBuildStoreTest`（真机 instrumented） |
 | 18 无 I/O | `node ci/check-boundaries.mjs` |
 
-## 仍要补的
+## 仍要补的（2026-11-17 更新）
 
-- **`:test-oracle` 参考模型**：还没单独建模块；目前靠 JS 原型差分 + fixture。
-- **Room 不在 CI**：契约测试是真机 instrumented；CI 没有设备，不能自动跑。
-- **UI semantics**：Node 原型 + 真机 smoke，没有 Compose 测试。
+- **`test-oracle` 参考模型**：已建（`test-oracle/src/main/...`，规则 + 两张状态机），与生产实现在 60+7 fixture 和 76 格上交叉校验；oracle 自身另有 29 个单测。
+- **Room 已在 CI**：`room` job（模拟器，push main / 手动触发）跑 `:data:connectedDebugAndroidTest` + 启动冒烟；PR 上不跑。
+- **UI semantics**：Entry / Workspace / 诊断 / 比较 / 3D 预览已有 Compose 测试（Robolectric，JVM 跑）。
 
 Room 契约已补：`:data:connectedDebugAndroidTest` 8/8；契约测试抓到了
 `@Insert(REPLACE)` 删除父 build 触发 revision 级联删除的真实 bug，已改 `@Upsert`。
@@ -65,3 +65,17 @@ D4 全规则集成已补：`:app:testDebugUnitTest` 的 `RecommendationIntegrati
 - 不为了数字写“只调用一次实现”的空测试；
 - 变异测试优先于覆盖率数字；
 - 矩阵从测试结果生成，不手填。
+
+## 脚本与设备证据
+
+| 文件 | 做什么 | 用法 |
+|---|---|---|
+| `drive-demo.sh` | 按 `docs/defense/DEMO.md` 的九步驱动真机，按文本找控件、等锚点、逐步截图 | `bash qa/drive-demo.sh run4 qa/screenshots` |
+| `verify-release.sh` | 校验发布 APK：sha256、签名（拒绝 debug 证书）、四项权限、ABI、包名、可选 versionName | `bash qa/verify-release.sh <apk> <sha256> [版本号]` |
+| `check-evidence.mjs` | 发布前检查 `docs/21` 没有 `⬜`、引用的截图都存在 | `node qa/check-evidence.mjs` |
+
+三个脚本失败时都返回非零，可以直接进发布前清单。
+
+- 截图在 `screenshots/`（三轮九步，800 px 宽 JPG），与 [docs/21](../docs/21-device-evidence.md) §21.2 的表格一一对应；
+- 操作步骤与排障：[device-run-tutorial.md](device-run-tutorial.md)；
+- 驱动脚本会 `pm clear` 应用数据，跑之前确认设备上没有要保留的配置。
