@@ -67,6 +67,17 @@ for the 3D view and price reconciliation against official pages. Functionally we
 than add features — the feature set is frozen on 11-28.
 中文要点：先补字段级来源，再补 x16 槽位与价格对账；功能冻结后再加功能不是优先项。
 
+**F11. What if the catalogue has no dimension for a part?**
+The 3D view draws what exists and labels what it estimates (for example the card's body width);
+a red box is only drawn when the catalogue actually declares a limit, because "no limit data" must not
+become "does not fit". The clearance view is a visual aid on top of the rules — it never decides
+compatibility on its own.
+
+**F12. Why is the release arm64-only?**
+Because every phone that runs this app is arm64 and shipping x86 doubles the download for a device
+class we do not target. The release workflow enforces it: any non-arm64 ABI fails the build rather
+than being noticed later.
+
 ---
 
 ## How to use these
