@@ -7,9 +7,9 @@
     {
       "componentId": "case-demo-320",
       "category": "CASE",
-      "manufacturer": "Fractal",
-      "model": "North (320mm)",
-      "partNumber": "FD-NORTH",
+      "manufacturer": "COUGAR",
+      "model": "Airface Pure Pro",
+      "partNumber": "CGR-2GA5B-P",
       "priceCny": 400,
       "attributes": {
         "maxGpuLengthMm": {
@@ -178,35 +178,35 @@
       "attributes": {
         "socket": {
           "value": "LGA1700",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "supportedChipsets": {
           "value": "B760,Z790",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "tdpW": {
           "value": "125",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 125
         },
         "minBiosGeneration": {
           "value": "1.0",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 1
         },
         "integratedGraphics": {
           "value": "YES",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -274,35 +274,35 @@
       "attributes": {
         "socket": {
           "value": "AM5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "supportedChipsets": {
           "value": "B650,X670,B850,X870",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "tdpW": {
           "value": "65",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 65
         },
         "minBiosGeneration": {
           "value": "1.0",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 1.0
         },
         "integratedGraphics": {
           "value": "NO",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -322,35 +322,35 @@
       "attributes": {
         "socket": {
           "value": "AM5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "supportedChipsets": {
           "value": "B650,X670",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "tdpW": {
           "value": "105",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 105
         },
         "minBiosGeneration": {
           "value": "1.0",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 1
         },
         "integratedGraphics": {
           "value": "YES",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -466,49 +466,49 @@
     {
       "componentId": "gpu-demo-337",
       "category": "GPU",
-      "manufacturer": "NVIDIA",
-      "model": "RTX 4070 Ti (337mm)",
-      "partNumber": "DEMO-337",
+      "manufacturer": "MSI",
+      "model": "GeForce RTX 4070 Ti GAMING X TRIO 12G",
+      "partNumber": "RTX-4070TI-GAMING-X-TRIO-12G",
       "priceCny": 3400,
       "attributes": {
         "lengthMm": {
           "value": "337",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 337
         },
         "thicknessMm": {
           "value": "61",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 61
         },
         "slotWidth": {
           "value": "3",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 3
         },
         "tdpW": {
           "value": "285",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 285
         },
         "recommendedPsuW": {
           "value": "750",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 750
         },
         "requiredPsuConnectors": {
           "value": "12VHPWR",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -815,6 +815,20 @@
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "76.5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 76.5
+        },
+        "pcieSlotCount": {
+          "value": "2",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 2
         }
       },
       "catalogueVersion": "2026.11",
@@ -831,14 +845,14 @@
       "attributes": {
         "socket": {
           "value": "AM5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "chipset": {
           "value": "B650",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -852,52 +866,66 @@
         },
         "memoryGeneration": {
           "value": "DDR5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "memorySlots": {
           "value": "4",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 4
         },
         "maxMemoryGb": {
           "value": "128",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 128
         },
         "formFactor": {
           "value": "ATX",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "m2Slots": {
           "value": "2",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 2
         },
         "sataPorts": {
           "value": "4",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 4
         },
         "storageInterfaces": {
           "value": "M2_NVME,SATA",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "137.5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 137.5
+        },
+        "pcieSlotCount": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
         }
       },
       "catalogueVersion": "2026.11",
@@ -981,6 +1009,20 @@
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "137.5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 137.5
+        },
+        "pcieSlotCount": {
+          "value": "4",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 4
         }
       },
       "catalogueVersion": "2026.11",
@@ -1064,6 +1106,20 @@
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "76.5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 76.5
+        },
+        "pcieSlotCount": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
         }
       },
       "catalogueVersion": "2026.11",
@@ -1080,70 +1136,70 @@
       "attributes": {
         "socket": {
           "value": "LGA1700",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "chipset": {
           "value": "B760",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "biosGeneration": {
           "value": "1.0",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 1
         },
         "memoryGeneration": {
           "value": "DDR5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "memorySlots": {
           "value": "4",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 4
         },
         "maxMemoryGb": {
           "value": "128",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 128
         },
         "formFactor": {
           "value": "MICRO_ATX",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "m2Slots": {
           "value": "2",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 2
         },
         "sataPorts": {
           "value": "4",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 4
         },
         "storageInterfaces": {
           "value": "M2_NVME,SATA",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -1230,6 +1286,20 @@
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "76.5",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 76.5
+        },
+        "pcieSlotCount": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
         }
       },
       "catalogueVersion": "2026.11",
@@ -1246,28 +1316,28 @@
       "attributes": {
         "generation": {
           "value": "DDR4",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "moduleCapacityGb": {
           "value": "16",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 16
         },
         "kitCapacityGb": {
           "value": "32",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 32
         },
         "moduleCount": {
           "value": "2",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 2
@@ -1328,28 +1398,28 @@
       "attributes": {
         "generation": {
           "value": "DDR5",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
         },
         "moduleCapacityGb": {
           "value": "16",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 16
         },
         "kitCapacityGb": {
           "value": "32",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 32
         },
         "moduleCount": {
           "value": "2",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 2
@@ -1369,14 +1439,14 @@
       "attributes": {
         "continuousW": {
           "value": "550",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 550
         },
         "connectors": {
           "value": "8PIN_X2,SATA",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -1396,14 +1466,14 @@
       "attributes": {
         "continuousW": {
           "value": "750",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": 750
         },
         "connectors": {
           "value": "12VHPWR,8PIN_X2,SATA",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -1450,7 +1520,7 @@
       "attributes": {
         "interface": {
           "value": "M2_NVME",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -1470,7 +1540,7 @@
       "attributes": {
         "interface": {
           "value": "SATA",
-          "state": "REPORTED",
+          "state": "VERIFIED",
           "sources": [],
           "conflict": false,
           "numeric": null

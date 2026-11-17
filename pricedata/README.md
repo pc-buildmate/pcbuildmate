@@ -285,7 +285,8 @@ PYTHONPATH=pricedata/src python3 -m pricepipe.cli export \
 - [x] `export`：`products.csv` / `prices.csv` / `catalogue-2026.11.json` / `manifest.json`
 - [x] `integrated_graphics` 字段；`cpu-demo-7500f` 为 `NO`，用于无 GPU 冲突测试
 - [x] 标准库测试 3 条 + CI 步骤
-- [ ] `asus_store` / `colorful_store` adapter（当前价）
+- [x] `colorful_store` adapter（**已接通真实 API** `https://interface.skycolorful.com`：`fetch_page` / `fetch_index_list` / `fetch_detail` 实测可抓价；25 条测试全离线）
+- [ ] `asus_store` adapter（JS 渲染，优先找 JSON 接口；`enabled=false` 待人工确认页面结构）
 - [ ] `wayback` 历史回填
 - [ ] GitHub Action 每周采集
 - [ ] App pin 快照（等 D4 需要时）

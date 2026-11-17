@@ -351,9 +351,9 @@
     {
       "componentId": "gpu-demo-337",
       "category": "GPU",
-      "manufacturer": "NVIDIA",
-      "model": "RTX 4070 Ti (337mm)",
-      "partNumber": "DEMO-337",
+      "manufacturer": "MSI",
+      "model": "GeForce RTX 4070 Ti GAMING X TRIO 12G",
+      "partNumber": "RTX-4070TI-GAMING-X-TRIO-12G",
       "priceCny": 3400,
       "attributes": {
         "lengthMm": {
@@ -515,9 +515,9 @@
     {
       "componentId": "case-demo-320",
       "category": "CASE",
-      "manufacturer": "Fractal",
-      "model": "North (320mm)",
-      "partNumber": "FD-NORTH",
+      "manufacturer": "COUGAR",
+      "model": "Airface Pure Pro",
+      "partNumber": "CGR-2GA5B-P",
       "priceCny": 400,
       "attributes": {
         "maxGpuLengthMm": {
