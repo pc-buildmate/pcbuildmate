@@ -13,6 +13,24 @@
 > PDF 为文本层提取，版式/分栏可能丢失；以原始 PDF 为准。
 > Docx 转换保留了表格与图片，但标题层级被压平成段落；阅读时按加粗行分段。
 
+## 答辩交付物（2026-11 新增，随仓库维护）
+
+原始材料保持不变；下面这些是**按现状重写**的答辩材料，以它们的口径为准。
+
+| 文件 | 内容 | 状态 |
+|---|---|---|
+| [source/Defense_Deck.pptx](source/Defense_Deck.pptx) | 30 页英文 PPT（25 计时 + 5 附录），演讲者备注含英文口播 + 中文排练提示 | 可用骨架，配图/措辞待各 owner 微调 |
+| [source/Defense_PPT_Outline.md](source/Defense_PPT_Outline.md) | 逐页大纲、时间与讲者、附录触发问题 | 与 PPT 同步 |
+| [source/Defense_Script_TestEvidence_EN.md](source/Defense_Script_TestEvidence_EN.md) | 测试证据与收尾两段的逐字稿 | 已定稿（本人负责段） |
+| [source/Defense_Script_Sections_1-4_EN.md](source/Defense_Script_Sections_1-4_EN.md) | 其余四段的逐字稿**草稿** | 待 owner 修订 |
+| [source/Defense_QA_EN.md](source/Defense_QA_EN.md) | 18 题英文答案 + 中文要点 | 已按现状重写 |
+| [source/Defense_QA_Followups_EN.md](source/Defense_QA_Followups_EN.md) | 10 个追问答案 + 中文要点 | 已定稿 |
+| [source/Defense_Run_Sheet.md](source/Defense_Run_Sheet.md) | 一页英文 run sheet | 可用 |
+| [source/Defense_Run_Sheet_CN.md](source/Defense_Run_Sheet_CN.md) | 中文操作 + 英文口播的现场卡 | 建议打印 |
+| [source/Defense_Repo_Walkthrough_EN.md](source/Defense_Repo_Walkthrough_EN.md) | "打开给我看"时的 10 条主张 → 文件 | 可用 |
+| [source/Defense_Rehearsal_Plan.md](source/Defense_Rehearsal_Plan.md) | 三次合练与过关标准 | 可用 |
+| [source/Defense_Numbers_To_Confirm.md](source/Defense_Numbers_To_Confirm.md) | 所有数字的 owner 与确认状态 | 持续更新 |
+
 ## 与本仓库的口径差异（答辩前必须处理）
 
 | # | 原始材料 | 本仓库 | 处理 |
