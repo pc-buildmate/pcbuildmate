@@ -126,6 +126,7 @@ adapters, then feature freeze on 11/28.
 | A1/A2 | The 15 rules with their kinds | "How do you organise the rules?" |
 | B | Evidence at a glance (60/76/18, 12/12, oracle, Room, three runs) | "Why should we trust the checks?" |
 | C | Scope boundaries (no FPS/prices/accounts/3D assembly) | Any request for something out of scope |
+| D | Data provenance: 30 records, 14 URLs, 0/158 field-level sources | "Where does the data come from?" |
 
 Every appendix answer is one line; the detail lives in `docs/03`, `docs/19` and `docs/21`.
 
