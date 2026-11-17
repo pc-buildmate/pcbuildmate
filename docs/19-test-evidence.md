@@ -110,3 +110,21 @@ bash qa/verify-release.sh PC-Buildmate-<ver>.apk PC-Buildmate-<ver>.apk.sha256
 | 真机 9 步 ×3 | ✅ 2026-11-17 在 HUAWEI DBR-W10（Android 12）上连跑三次，锚点全中；步骤见 [qa/device-run-tutorial.md](../qa/device-run-tutorial.md)，截图在 [qa/screenshots](../qa/screenshots/)，驱动脚本 `qa/drive-demo.sh` |
 
 答辩口径：三行都可以当场给数字和命令。
+
+## 19.9 本地静态分析（Android Lint）
+
+CI 里没有跑 Lint；本地执行 `./gradlew :app:lintDebug` 的结果：
+
+| 时间 | 结果 | 说明 |
+|---|---|---|
+| 2026-11-17 | **0 error / 3 warning** | 报告：`app/build/reports/lint-results-debug.txt` |
+
+三条告警的去向：
+
+| 检查项 | 处理 |
+|---|---|
+| `MissingApplicationIcon`（manifest 无 `android:icon`） | 真问题，已开 issue #104（app/ owner） |
+| `DataExtractionRules`（`allowBackup` 已废弃） | 同上，建议加 dataExtractionRules 并关闭云备份 |
+| `ChromeOsAbiSupport`（缺 x86_64） | 非问题：release 明确只出 arm64，可不处理 |
+
+把 Lint 接进 CI 之前需要先清掉前两条，否则每个 PR 都会红；是否接、接在哪个 job 由 lead 决定。
