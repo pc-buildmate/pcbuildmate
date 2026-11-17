@@ -1,4 +1,4 @@
-# Defense · Q&A follow-ups (English, 10 deeper questions)
+# Defense · Q&A follow-ups (English, 12 deeper questions)
 
 > Companion to `Defense_QA_EN.md`. These are the second-round questions — what an examiner asks after
 > the first answer lands. Each answer is two or three sentences and points at where the detail lives.
