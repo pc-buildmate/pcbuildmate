@@ -1,15 +1,16 @@
 #!/bin/bash
 # 校验一个发布 APK：sha256、签名、权限、ABI、版本。任何一项不符返回非零。
 #
-# 用法: bash qa/verify-release.sh <apk> [<sha256 文件或期望值>]
-#   例: bash qa/verify-release.sh PC-Buildmate.apk PC-Buildmate.apk.sha256
+# 用法: bash qa/verify-release.sh <apk> [<sha256 文件或期望值>] [<期望 versionName>]
+#   例: bash qa/verify-release.sh PC-Buildmate.apk PC-Buildmate.apk.sha256 1.0.0-defense
 #   例: bash qa/verify-release.sh app.apk 750b2d76...
 #
 # 需要: build-tools 里的 apksigner / aapt，以及 JDK 17+（apksigner 需要 java）。
 set -u
 
-APK="${1:?usage: verify-release.sh <apk> [sha256-file-or-value]}"
+APK="${1:?usage: verify-release.sh <apk> [sha256-file-or-value] [expected-versionName]}"
 EXPECT="${2:-}"
+EXPECT_VERSION="${3:-}"
 BT="${BUILD_TOOLS:-$(ls -d "${ANDROID_HOME:-$HOME/Android/Sdk}"/build-tools/*/ 2>/dev/null | tail -1)}"
 [ -n "$BT" ] || { echo "找不到 build-tools，设置 BUILD_TOOLS 或 ANDROID_HOME" >&2; exit 2; }
 
@@ -55,7 +56,12 @@ printf '%s' "$abis" | grep -q "x86" && echo "… 另含 x86 ABI：$abis（确认
 pkg=$("$BT/aapt" dump badging "$APK" 2>/dev/null | grep -m1 -o "name='[^']*'" | head -1 | sed "s/name=//; s/'//g")
 ver=$("$BT/aapt" dump badging "$APK" 2>/dev/null | grep -m1 -o "versionName='[^']*'" | sed "s/versionName=//; s/'//g")
 [ "$pkg" = "io.github.pcbuildmate" ] && ok "包名 $pkg" || bad "包名异常：$pkg"
-echo "… versionName = $ver"
+
+if [ -n "$EXPECT_VERSION" ]; then
+  [ "$ver" = "$EXPECT_VERSION" ] && ok "versionName $ver" || bad "versionName 不符：期望 $EXPECT_VERSION，实际 $ver"
+else
+  echo "… versionName = $ver（未指定期望值，跳过比对）"
+fi
 
 [ $fail -eq 0 ] && echo "全部通过" || echo "有检查未通过"
 exit $fail
