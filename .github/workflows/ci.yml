@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      verify_release:
+        description: "同时校验最新 release 的 APK（sha256/签名/权限/ABI）"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -198,6 +203,39 @@ jobs:
           name: room-instrumented-results
           path: data/build/outputs/androidTest-results
           if-no-files-found: warn
+
+  release-verify:
+    name: Verify a published release asset
+    # 只在手动触发时跑：下载已发布的 APK 并校验 sha256 / 签名 / 权限 / ABI。
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.verify_release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install build-tools
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -1)
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "build-tools;37.0.0" "platform-tools"
+      - name: Download the latest release APK and checksum
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --pattern '*.sha256' --dir dist
+          ls -l dist
+      - name: Verify
+        run: |
+          APK=$(ls dist/*.apk | head -1)
+          SHA=$(ls dist/*.sha256 | head -1)
+          bash qa/verify-release.sh "$APK" "$SHA"
 
   mutations:
     name: Key mutations (MUT-01..12)
