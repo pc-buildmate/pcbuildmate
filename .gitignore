@@ -59,3 +59,10 @@ artifacts/
 keystore.properties
 *.jks
 *.keystore
+
+# 根目录简报（团队材料放项目外，不入库）
+/2026-11-16-*.md
+/brief-chen.md
+
+# Gradle daemon JVM 本地生成
+gradle/gradle-daemon-jvm.properties

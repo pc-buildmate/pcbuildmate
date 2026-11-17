@@ -26,10 +26,10 @@ android {
 
     sourceSets {
         getByName("main") {
-            assets.srcDir(rootProject.file("assets"))
+            assets.directories.add(rootProject.file("assets").path)
         }
         getByName("test") {
-            resources.srcDir(rootProject.file("assets"))
+            resources.directories.add(rootProject.file("assets").path)
         }
     }
 }
