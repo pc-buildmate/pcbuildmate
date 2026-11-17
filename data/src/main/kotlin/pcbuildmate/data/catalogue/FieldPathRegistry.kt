@@ -33,6 +33,8 @@ internal object FieldPathRegistry {
             "m2Slots" to FieldType.NUMBER,
             "sataPorts" to FieldType.NUMBER,
             "storageInterfaces" to FieldType.CSV,
+            "pcieX16SlotMm" to FieldType.NUMBER,
+            "pcieSlotCount" to FieldType.NUMBER,
         ),
         Category.MEMORY to mapOf(
             "generation" to FieldType.STRING,
