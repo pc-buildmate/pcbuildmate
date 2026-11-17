@@ -23,11 +23,13 @@
 | **参考模型门** | 测试与实现是不是同一套理解 | `:app` 的 `OracleCrossCheckTest` / `DiagnosisOracleCrossCheckTest` / `ReplacementOracleCrossCheckTest` | 60+7 条 fixture、4×4 + 6×10 全格一致 |
 | **防漂移门** | 有测试的模块会不会悄悄不在 CI 里跑 | `node ci/check-test-tasks.mjs` | 覆盖全部含测试模块；有 `src/androidTest` 时还要求 CI 存在 instrumented 任务与 `room` job |
 
-支撑它们的三项检查：`tools/check-docs.mjs`（文档/规则/fixture 自洽）、`ci/check-boundaries.mjs`
-（模块依赖与 test-oracle 自证禁令）、`ci/check-keywords.mjs`（范围外关键词与权限）。
+支撑它们的静态检查：`tools/check-docs.mjs`（文档/规则/fixture 自洽）、`ci/check-boundaries.mjs`
+（模块依赖与 test-oracle 自证禁令）、`ci/check-keywords.mjs`（范围外关键词与权限）、
+`ci/check-test-tasks.mjs`（测试任务覆盖）、`ci/check-mutations.mjs`（变异表还能不能打进去）。
 
-CI 里四个 job 对应：`docs`（后三项 + 原型回归 + 矩阵工具自测）、`jvm`（单测 + 矩阵门）、
-`android`（debug APK）、`mutations`（变异门，`needs: jvm`）。
+CI 里五个常规 job：`docs`（上述静态检查 + 原型回归 + 矩阵工具自测）、`jvm`（单测 + 矩阵门）、
+`android`（debug APK）、`mutations`（变异门，`needs: jvm`）、`room`（Room instrumented，main / 手动）。
+另有手动触发的 `release-verify`（先查证据文档完整，再校验最新 release 产物）。
 
 ## 19.3 参考模型为什么算"独立"
 
