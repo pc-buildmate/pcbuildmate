@@ -87,6 +87,8 @@ if (mb.biosGeneration < cpu.minBiosGeneration) return Conflict(...)
 | MOTHERBOARD | `m2Slots` | number | 个 |
 | MOTHERBOARD | `sataPorts` | number | 个 |
 | MOTHERBOARD | `storageInterfaces` | csv | `M2_NVME,SATA` |
+| MOTHERBOARD | `pcieX16SlotMm` | number | mm（首个 x16 槽中心距板下沿） |
+| MOTHERBOARD | `pcieSlotCount` | number | 个（PCIe 槽总数） |
 | MEMORY | `generation` | string | `DDR4 / DDR5` |
 | MEMORY | `moduleCapacityGb` | number | GB |
 | MEMORY | `kitCapacityGb` | number | GB（整套） |
