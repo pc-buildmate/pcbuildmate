@@ -64,6 +64,18 @@ adb exec-out screencap -p > qa/run1-01-entry.png
 
 **时间**：第 1 步约 60s，其余每步 15–45s；整轮目标 4–5 分钟（不含讲解）。
 
+## 2.5 可选：脚本化跑完九步
+
+`qa/drive-demo.sh` 会用 `uiautomator` 按文本找控件，自动走完九步并逐步截图（找不到控件会直接失败，不会静默跳过）：
+
+```bash
+export ADB="$HOME/AppData/Local/android-sdk/platform-tools/adb"   # 或 adb 已在 PATH
+bash qa/drive-demo.sh run4 qa/screenshots
+```
+
+脚本会先 `pm clear` 应用数据，所以每一轮都是干净状态；截图存成 `<run>-01..08-*.png`。
+第一次跑前请确认设备已授权（`adb devices` 显示 `device`）。
+
 ## 3. 每一轮之间
 
 ```bash
