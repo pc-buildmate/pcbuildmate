@@ -58,22 +58,6 @@ jobs:
       - name: Build the signed release APK
         run: ./gradlew :app:assembleRelease --no-daemon --console=plain --stacktrace
 
-      - name: Verify signature, permissions and ABI
-        run: |
-          BT="$ANDROID_HOME/build-tools/37.0.0"
-          APK=app/build/outputs/apk/release/app-release.apk
-          test -f "$APK"
-          "$BT/apksigner" verify --print-certs "$APK"
-          if "$BT/aapt" dump permissions "$APK" | grep -q "android.permission.INTERNET"; then
-            echo "::error title=permissions::release APK requests INTERNET"
-            exit 1
-          fi
-          "$BT/aapt" dump badging "$APK" | grep -q "native-code: 'arm64-v8a'"
-          if "$BT/aapt" dump badging "$APK" | grep "native-code" | grep -qv "arm64-v8a"; then
-            echo "::error title=abi::release APK contains non-arm64 ABIs"
-            exit 1
-          fi
-
       - name: Package and checksum
         run: |
           TAG="${GITHUB_REF_NAME}"
@@ -81,6 +65,22 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk "dist/PC-Buildmate-${TAG}.apk"
           (cd dist && sha256sum "PC-Buildmate-${TAG}.apk" > "PC-Buildmate-${TAG}.apk.sha256")
           cat "dist/PC-Buildmate-${TAG}.apk.sha256"
+
+      - name: Verify the artifact (permissions, signature, ABI, package, version)
+        env:
+          REQUIRE_ARM64_ONLY: "1"
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          # 预发布允许 -rcN 后缀差异：v1.0.0-defense-rc2 对应 versionName 1.0.0-defense；
+          # 正式 tag 必须与 versionName 完全相同（决策见 issue #105）。
+          if printf '%s' "$VERSION" | grep -qE -- '-rc[0-9]+$'; then
+            EXPECTED_VERSION="${VERSION%-rc*}"
+          else
+            EXPECTED_VERSION="$VERSION"
+          fi
+          echo "tag=$TAG expected versionName=$EXPECTED_VERSION"
+          bash qa/verify-release.sh "dist/PC-Buildmate-${TAG}.apk" "dist/PC-Buildmate-${TAG}.apk.sha256" "$EXPECTED_VERSION"
 
       - name: Create a draft GitHub Release
         env:
