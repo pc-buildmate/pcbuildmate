@@ -8,6 +8,10 @@
 > concept prototype and has no 3D preview, no quantity policy and no test-evidence story.
 > This outline replaces those parts; the rest of its wording can be reused.
 
+**Deck skeleton**: [Defense_Deck.pptx](Defense_Deck.pptx) — 25 slides, 16:9, English titles and bullets,
+speaker notes carrying the owner and the cue for each slide. It is a skeleton to fill in, not a finished
+design: images, screenshots (from `qa/screenshots/`) and the owners' own wording still have to go in.
+
 ## Timing and speakers
 
 | # | Section | Slides | Time | Speaker |
