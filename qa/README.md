@@ -73,6 +73,7 @@ D4 全规则集成已补：`:app:testDebugUnitTest` 的 `RecommendationIntegrati
 | `drive-demo.sh` | 按 `docs/defense/DEMO.md` 的九步驱动真机，按文本找控件、等锚点、逐步截图 | `bash qa/drive-demo.sh run4 qa/screenshots` |
 | `verify-release.sh` | 校验发布 APK：sha256、签名（拒绝 debug 证书）、四项权限、ABI、包名、可选 versionName | `bash qa/verify-release.sh <apk> <sha256> [版本号]` |
 | `check-evidence.mjs` | 发布前检查 `docs/21` 没有 `⬜`、引用的截图都存在 | `node qa/check-evidence.mjs` |
+| `release-checklist.md` | 发布当天的操作顺序（tag → 校验 → publish → 回写证据） | 打印或按步骤执行 |
 
 三个脚本失败时都返回非零，可以直接进发布前清单。
 
