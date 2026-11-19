@@ -35,6 +35,7 @@ jobs:
           node ci/check-keywords.mjs
           node ci/check-test-tasks.mjs
           node ci/check-mutations.mjs
+          node ci/check-field-paths.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs

@@ -79,6 +79,9 @@ const FIELDS = {
     m2Slots: int(0),
     sataPorts: int(0),
     storageInterfaces: csv(STORAGE_INTERFACES),
+    // ADR-0011：3D 槽位用（docs/03 §3.3 已有，见 issue #149）
+    pcieX16SlotMm: int(0),
+    pcieSlotCount: int(0),
   },
   MEMORY: {
     generation: oneOf(MEMORY_GENERATIONS),

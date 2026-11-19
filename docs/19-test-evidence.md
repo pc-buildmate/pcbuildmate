@@ -79,6 +79,7 @@ node ci/check-keywords.mjs
 node ci/check-test-tasks.mjs
 node tools/test-matrix-tools.mjs
 node ci/check-mutations.mjs
+node ci/check-field-paths.mjs
 
 ./gradlew :app:testDebugUnitTest :ui:testDebugUnitTest :feature:testDebugUnitTest \
   :data:testDebugUnitTest :test-oracle:test \
