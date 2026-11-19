@@ -55,7 +55,7 @@ CI（`.github/workflows/ci.yml`）五个 job：`docs`（含边界/关键词/任�
 | DEFENSE-01 | doing | @MoeField |
 | RELEASE-01 | doing | @MoeField |
 
-QA 侧（不在 BOARD 卡里，见 issue #55）：`:test-oracle` 参考模型已覆盖规则引擎与两张状态机，交叉校验在 `app/src/test`。
+QA 侧：`:test-oracle` 参考模型已覆盖规则引擎与两张状态机（issue #55 已关闭），交叉校验在 `app/src/test`；证据链见 `docs/19`。
 
 规则：先改 BOARD owner，再开分支；**开工前先看 open PR，开工/开 PR 前各 `git fetch origin` 并 rebase**；
 同一文件已有未合并 PR 先协调；一个 PR 一个模块、≤400 行；CI 绿了再 squash merge。
@@ -75,7 +75,7 @@ QA 侧（不在 BOARD 卡里，见 issue #55）：`:test-oracle` 参考模型已
 - Room 契约：已在 `room` job 里用 CI 模拟器跑（仅 main / 手动）；PR 上仍不跑，改 `:data` 的 PR 需要手动 dispatch 一次；
 - D4 Preferences、Compare 功耗/余量、3 份比较未做（P3）；
 - 价格数据 adapter/Wayback 未做，当前快照是静态数据，价格准确度未核对；
-- 兼容性数据不全：例如**主板第一个 x16 槽的位置信息没有记录**，3D 预览里的槽位是按常量估算的（`docs/18 §18.8`）；
+- 兼容性数据：`pcieX16SlotMm` / `pcieSlotCount` 已入目录（6 板中 5 板，见 ADR-0011），但 **3D 预览仍用常量估算**（issue #152）；`mb-demo-lga1700` 缺这两个字段（#149）；
 - `Add/Remove/Import/Reload` intent 还没有 UI 入口。
 
 ## 时间线
