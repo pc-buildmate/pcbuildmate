@@ -57,7 +57,7 @@ CI 里五个常规 job：`docs`（上述静态检查 + 原型回归 + 矩阵工�
 |---|---|---|
 | 规则参数是否符合真实硬件 | fixture 是冻结的规格，规格错了两边一起错 | 人工核对数据（PRICEDATA-01 / 兼容性数据） |
 | 价格是否准确 | 目录是静态快照，没有来源对账 | 同上 |
-| 字段级来源是否可追溯 | 158 个字段的 `sources` 全为空（0/158），只有**记录级**来源（`SOURCES.md`，30/30，其中 14 条带 URL，见 `docs/20 §20.5`） | 数据补齐（INFO-01）；答辩口径：只说记录级，不声称字段级可溯源 |
+| 字段级来源是否可追溯 | 168 个字段的 `sources` 全为空（0/168），只有**记录级**来源（`SOURCES.md`，30/30，其中 27 条带 URL，见 `docs/20 §20.5`） | 数据补齐（INFO-01）；答辩口径：只说记录级，不声称字段级可溯源 |
 | 3D 预览的槽位坐标是否正确 | 缺主板 x16 槽位置数据，当前是常量估算（`docs/18 §18.8`） | 数据补齐后重估 |
 | UI 交互与可访问性 | Entry / Workspace / 诊断 / 比较四屏已有 Compose semantics 测试（Robolectric，JVM 跑）；可访问性（TalkBack 顺序、触控目标尺寸）未测 | POLISH-01 + 后续补测 |
 | Room 持久化在 PR 上是否可靠 | instrumented 测试需要设备；`room` job 只在 main / 手动触发（main 上已连续绿三次） | 改 `:data` 的 PR 手动 dispatch 一次 `room` job |
@@ -134,4 +134,4 @@ CI 里没有跑 Lint；本地执行 `./gradlew :app:lintDebug` 的结果：
 | `DataExtractionRules`（`allowBackup` 已废弃） | 同上，建议加 dataExtractionRules 并关闭云备份 |
 | `ChromeOsAbiSupport`（缺 x86_64） | 非问题：release 明确只出 arm64，可不处理 |
 
-把 Lint 接进 CI 之前需要先清掉前两条，否则每个 PR 都会红；是否接、接在哪个 job 由 lead 决定。
+**关于接进 CI**（2026-11-18 更正）：Android Lint 默认**只在 error 时**让任务失败——实测 0 error / 3 warning 时 `:app:lintDebug` 是成功的，warning 不会让 CI 红。要防回归必须显式配置 `lint { warningsAsErrors = true }`（或接 baseline）；只加一个 job 拦不住任何东西。先修前两条 warning，再接 job。

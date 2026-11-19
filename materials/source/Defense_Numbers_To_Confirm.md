@@ -19,7 +19,7 @@
 | N9 | Recommendation example **¥7,869** | S11 | 黄奕维 / 陈思言 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
 | N10 | Conflict score **52** | S12, step 4 | 王嘉瑞 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
 | N11 | Module count **14** | S18 | 黄奕维 | `settings.gradle.kts` | [x] |
-| N12 | 3D constants: GPU 宽 110 mm、第一槽 I/O 下缘 −7.52 mm、槽距 20.32 mm | S15, S19, Q&A 3D | 陈思言 | `docs/18 §18.2`（§18.8 仍列估算项） | [ ] 数值已从文档核对；**x16 槽位置仍是数据缺口**（INFO-02） |
+| N12 | 3D constants: GPU 宽 110 mm、第一槽 I/O 下缘 −7.52 mm、槽距 20.32 mm | S15, S19, Q&A 3D | 陈思言 | `docs/18 §18.2`（§18.8 仍列估算项） | [x] 数值已从文档核对；**x16 槽位置已进目录**（6 板中 5 板有 `pcieX16SlotMm`，lga1700 缺），3D 视图尚未读取该字段 |
 | N13 | APK identity: `1.0.0-defense`, arm64-only, 23,545,828 B, sha256 `750b2d76…` | S24, Q&A release | 杨壹硕 | `docs/21 §21.3` | [x] verified |
 | N14 | Device demo runs: **3 / 3** recorded（DBR-W10 / Android 12） | S24, Q15 | 杨壹硕 | `docs/21 §21.2` + `qa/screenshots/` | [x] 2026-11-17 |
 
