@@ -64,7 +64,7 @@ object InvariantChecker {
 | 三态传播（15 条规则的声明式表） | ✅ 已实现；60 条规则 fixture + 7 条 anchor 逐条交叉校验 | 推荐"最优" |
 | 状态机转移合法性 | ✅ 已实现；诊断 4×4、替换 6×10 全格交叉校验 | 替换排序"最优" |
 | 总价 / 预算算术 | ✅ 参考模型 `test-oracle/.../OracleBudget.kt`（总价、是否在预算内、超出/剩余）+ 5 条单测。生产侧由 `BuildRevision` 构造强制（INV-01），因此不做交叉校验——没有"两边各自实现同一判定"的空间 | 性能预测（范围外） |
-| 候选硬约束过滤（过滤后是否消除冲突） | ⬜ 参考实现未做。当前覆盖：真实目录下全 GPU×CASE 的属性测试（`app/src/test/.../ReplacementPropertiesTest.kt`，校验目标冲突消失、无新 BLOCKER、排序与 rank）+ MUT-07 | 候选体验好坏 |
+| 候选硬约束过滤（过滤后是否消除冲突） | ✅ 参考实现 `test-oracle/.../OracleAdvisor.kt`（目标冲突必须消失、不得引入新 BLOCKER、新 MAJOR 不淘汰）+ 4 条单测。生产侧另有真实目录属性测试（`app/src/test/.../ReplacementPropertiesTest.kt`）与 MUT-07；两边未做逐条交叉校验——oracle 不做排序与价格 | 候选体验好坏 |
 
 实现要求：
 
