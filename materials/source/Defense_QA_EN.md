@@ -27,9 +27,9 @@ required.
 **Q4. Where do specifications and prices come from?**
 A static, versioned catalogue shipped with the app; every price carries a snapshot date. Source
 traceability is at **record level** today: all 30 records are listed in `assets/catalogue/SOURCES.md`,
-14 of them with a URL. Field-level source URLs are **not yet populated** (0 of 158 fields), so we do
+27 of them with a URL. Field-level source URLs are **not yet populated** (0 of 168 fields), so we do
 not claim per-field provenance. We do not scrape live prices.
-中文要点：静态目录 + 带日期的参考价；记录级有来源（30/30，14 带 URL），字段级 0/158，不声称逐字段可溯源。
+中文要点：静态目录 + 带日期的参考价；记录级有来源（30/30，27 带 URL），字段级 0/168，不声称逐字段可溯源。
 
 ## Evidence and correctness
 
