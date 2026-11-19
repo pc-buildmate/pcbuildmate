@@ -42,6 +42,8 @@ adb wait-for-device
 截图：[qa/screenshots/](../qa/screenshots/)（每轮 4–6 张，缩放到 800 px 宽的 JPG）
 
 > 说明：分工文档写的是 Aura A1，实际执行用的是这台平板；型号按实测记录，不改口径。
+> 另一个时间点说明：三轮记录基于 **rc2**（2026-11-17）。此后 ADR-0011 给目录加了 `pcieX16SlotMm` / `pcieSlotCount`，
+> 但演示流程与锚点不涉及这两个字段，因此记录仍然有效；**最终发布包需要按 §21.3 重新校验**，并在发包后补一次真机确认（见 `qa/release-checklist.md` 第 5 步）。
 
 ### Run 1（2026-11-17 09:41–09:44）
 
