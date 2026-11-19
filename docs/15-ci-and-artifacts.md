@@ -8,7 +8,7 @@
 |---|---|---|
 | Pull request | docs + JVM + **mutations** + Android **debug** | `pcbuildmate-debug-apk`、`key-mutations` |
 | push `main` | 同上 + **Room instrumented（模拟器）** | 同上、`room-instrumented-results` |
-| Actions → Run workflow | 全部，含 Room instrumented | 同上 |
+| Actions → Run workflow | 全部，含 Room instrumented；勾选 `verify_release` 时另跑 `release-verify` | 同上、`room-instrumented-results` |
 | push tag `v*` | **release.yml**：签名 arm64 APK + 校验 + **draft** GitHub Release | `PC-Buildmate-<tag>.apk` + `.sha256` |
 
 **结论：debug 构建是无条件的**（PR/main 都跑），因为：
@@ -55,6 +55,10 @@ platform-tools
    并设置 `REQUIRE_ARM64_ONLY=1`，出现非 arm64 ABI 直接失败；
    tag 规则：正式 tag 去 `v` 后必须等于 versionName，`-rcN` 只比较前缀（决策见 issue #105）；
 5. `gh release create <tag> --draft`，上传两个附件。
+
+**手动校验已发布产物**：Actions → Run workflow，勾选输入 `verify_release`。job `release-verify` 会先跑
+`node qa/check-evidence.mjs`（docs/21 无空格子、截图齐全），再通过 API 取**最新 release**（含 pre-release）
+下载 APK 与 `.sha256`，最后执行 `bash qa/verify-release.sh`（六项：sha256 / 签名 / 四项权限 / ABI / 包名 / versionName）。
 
 **publish 仍由人点**：自动化只到 draft；答辩/冻结前由 @MoeField 检查后 publish。
 
