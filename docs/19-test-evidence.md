@@ -20,7 +20,7 @@
 |---|---|---|---|
 | **矩阵门** | 每条规则的 4 类结果、每格状态机转移、18 条不变量，是否都有**真实执行过**的用例 | `node tools/gen-matrix.mjs && node tools/check-matrix.mjs` | 60/60、76/76、18/18 |
 | **变异门** | 把实现改坏一处，测试会不会红 | `node tools/run-mutations.mjs && node tools/check-matrix.mjs --mutations` | 12/12 KILLED |
-| **参考模型门** | 测试与实现是不是同一套理解 | `:app` 的 `OracleCrossCheckTest` / `DiagnosisOracleCrossCheckTest` / `ReplacementOracleCrossCheckTest` | 60+7 条 fixture、4×4 + 6×10 全格一致 |
+| **参考模型门** | 测试与实现是不是同一套理解 | `:app` 的 `OracleCrossCheckTest` / `DiagnosisOracleCrossCheckTest` / `ReplacementOracleCrossCheckTest`；参考模型自身另有 `test-oracle` 单测（规则/两部状态机/预算算术/候选过滤） | 60+7 条 fixture、4×4 + 6×10 全格一致；`test-oracle` 自身 34 条单测（含预算 5 条、候选过滤 4 条） |
 | **防漂移门** | 有测试的模块会不会悄悄不在 CI 里跑 | `node ci/check-test-tasks.mjs` | 覆盖全部含测试模块；有 `src/androidTest` 时还要求 CI 存在 instrumented 任务与 `room` job |
 
 支撑它们的静态检查：`tools/check-docs.mjs`（文档/规则/fixture 自洽）、`ci/check-boundaries.mjs`
@@ -38,7 +38,8 @@ CI 里五个常规 job：`docs`（上述静态检查 + 原型回归 + 矩阵工�
 
 - 自带 JSON 读取器（`MiniJson`），不复用 `:data` 的 `RuleParser`；
 - 按 `docs/03 §3.4.2` 重写三态传播，不调用 `DefaultRuleEngine`；
-- 按 `docs/04` 的转移表重写两张状态机，不调用 `DiagnosisMachine` / `ReplacementMachine`。
+- 按 `docs/04` 的转移表重写两张状态机，不调用 `DiagnosisMachine` / `ReplacementMachine`；
+- 预算算术（`OracleBudget`）与候选硬约束过滤（`OracleAdvisor`）同样独立实现——前者不读 `BuildRevision` 的构造校验，后者不读 `DefaultReplacementAdvisor`。
 
 交叉校验放在 `:app`——唯一能同时看到两边的模块，且只在 test classpath 上依赖 `:test-oracle`。
 
