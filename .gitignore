@@ -66,3 +66,5 @@ keystore.properties
 
 # Gradle daemon JVM 本地生成
 gradle/gradle-daemon-jvm.properties
+# 本地工具输出（OpenCLI web read 等），不入库
+web-articles/

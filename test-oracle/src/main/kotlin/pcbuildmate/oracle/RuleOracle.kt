@@ -43,6 +43,10 @@ data class OracleOutcome(
     val rightValue: String? = null,
     val missingPath: String? = null,
     val index: Int? = null,
+    /** 冲突时用于构造 conflictId（docs/03 §3.5）；聚合/公式规则为 null。 */
+    val leftComponentId: String? = null,
+    val rightComponentId: String? = null,
+    val severity: Severity? = null,
 )
 
 object RuleOracle {
@@ -280,12 +284,16 @@ object RuleOracle {
             leftValue = left.text,
             rightValue = right.text,
             index = index,
+            leftComponentId = left.id,
+            rightComponentId = right.id,
+            severity = rule.severity,
         )
     }
 
     // ---------- 工具 ----------
 
     private data class Resolved(
+        val id: String,
         val text: String,
         val state: VerificationState,
         val conflict: Boolean,
@@ -305,7 +313,7 @@ object RuleOracle {
         if (record.category != category) return null
         val fv: FieldValue = record.attributes[path] ?: return null
         val text = fv.value ?: ""
-        return Resolved(text, fv.state, fv.conflict, fv.numeric)
+        return Resolved(item.componentId, text, fv.state, fv.conflict, fv.numeric)
     }
 
     private fun BuildItem.conflicts(
