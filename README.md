@@ -143,6 +143,7 @@ node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
 node ci/check-test-tasks.mjs
 node ci/check-mutations.mjs     # 变异表静态自检（不跑 Gradle）
+node ci/check-field-paths.mjs   # docs/03 ↔ registry ↔ 审计字段表
 
 node tools/test-demo-engine.mjs
 node tools/test-demo-flow.mjs
