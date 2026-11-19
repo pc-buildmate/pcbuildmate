@@ -1,0 +1,53 @@
+name: review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  issues:
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "pr or issue"
+        type: choice
+        options: [pr, issue]
+        required: true
+      number:
+        description: "PR / issue number"
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: review-${{ github.event.pull_request.number || github.event.issue.number || inputs.number }}
+  cancel-in-progress: true
+
+jobs:
+  static-review:
+    name: Static PR / issue review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve mode and number
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "MODE=pr" >> "$GITHUB_ENV"
+            echo "NUMBER=${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "issues" ]; then
+            echo "MODE=issue" >> "$GITHUB_ENV"
+            echo "NUMBER=${{ github.event.issue.number }}" >> "$GITHUB_ENV"
+          else
+            echo "MODE=${{ inputs.mode }}" >> "$GITHUB_ENV"
+            echo "NUMBER=${{ inputs.number }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Post the static review
+        run: bash ci/static-review.sh

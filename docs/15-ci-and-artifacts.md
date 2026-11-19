@@ -10,6 +10,8 @@
 | push `main` | 同上 + **Room instrumented（模拟器）** | 同上、`room-instrumented-results` |
 | Actions → Run workflow | 全部，含 Room instrumented | 同上 |
 | push tag `v*` | **release.yml**：签名 arm64 APK + 校验 + **draft** GitHub Release | `PC-Buildmate-<tag>.apk` + `.sha256` |
+| pull request 变化 | **review.yml**：静态审核评论（作者/范围/冻结区/CI/模板） | PR 评论（非阻塞） |
+| issue 变化 | **review.yml**：triage 评论（作者/长度/建议 owner/验收） | issue 评论（非阻塞） |
 
 **结论：debug 构建是无条件的**（PR/main 都跑），因为：
 
@@ -101,3 +103,29 @@ tag 由 @MoeField 打，不跟普通 PR 混；PR 上不碰 keystore。
 | `platforms;android-37.0` 找不到 | SDK 包名不是 `android-37` | 用 `android-37.0` |
 | APK artifact 为空 | Gradle 失败但 job 继续 | `if-no-files-found: error` 已设 |
 | 只改文档也跑 Android | 当前无条件 | 可接受；要省分钟数再加 `paths-ignore` |
+
+
+## 15.8 事件驱动静态审核（2026-11-19 起）
+
+`.github/workflows/review.yml` + `ci/static-review.sh`：
+
+- 触发：`pull_request`（opened/synchronize/reopened/ready_for_review/edited）、`issues`（opened/edited/reopened）、手动 `workflow_dispatch`；
+- 只读 GitHub 元数据 + diff 文件名，**不 checkout 执行 PR 代码**，不 approve、不 merge、不 close；
+- 检查：作者身份（共享账号会标红）、是否碰冻结区、diff 大小、CI 计数、PR 模板是否有任务包/门禁、是否带测试；issue 则是正文长度/验收标准/建议 owner；
+- 去重：PR 按 head SHA、issue 按 updatedAt，同一个状态只评论一次；
+- 权限：`contents: read`、`pull-requests: write`、`issues: write`；失败不影响分支保护（不是 required check）。
+
+本地演练：
+
+```bash
+export GH_TOKEN=$(gh auth token)
+MODE=pr NUMBER=85 REPO=pc-buildmate/pcbuildmate DRY_RUN=1 bash ci/static-review.sh
+MODE=issue NUMBER=119 REPO=pc-buildmate/pcbuildmate DRY_RUN=1 bash ci/static-review.sh
+```
+
+手动测试已合并 workflow：
+
+```bash
+gh workflow run review -f mode=issue -f number=119
+gh run list --workflow review --limit 1
+```
