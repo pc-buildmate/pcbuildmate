@@ -23,8 +23,10 @@ if [ "$MODE" = "pr" ]; then
   author=$(jq -r '.author.login' <<<"$data")
   [ "$author" = "MoeField" ] && { echo "own PR, skip"; exit 0; }
 
+  body=$(gh pr view "$NUMBER" --repo "$REPO" --json body --jq '.body // ""' 2>/dev/null || true)
   sha=$(jq -r '.headRefOid' <<<"$data")
-  marker="<!-- auto-review:pr=$NUMBER:sha=$sha -->"
+  bodyhash=$(sha256sum <<<"$body" | cut -c1-12)
+  marker="<!-- auto-review:pr=$NUMBER:sha=$sha:body=$bodyhash -->"
   if jq -r '.comments[].body' <<<"$data" | grep -qF "$marker"; then
     echo "already reviewed $sha, skip"; exit 0
   fi
@@ -34,8 +36,6 @@ if [ "$MODE" = "pr" ]; then
   add=$(jq -r '.additions' <<<"$data")
   del=$(jq -r '.deletions' <<<"$data")
   draft=$(jq -r '.isDraft' <<<"$data")
-  body=$(gh pr view "$NUMBER" --repo "$REPO" --json body --jq '.body // ""' 2>/dev/null || true)
-
   frozen=$(grep -E '^(contracts/|assets/rules/|assets/fixtures/|docs/0[1-4]-)' <<<"$files" || true)
   tests=$(grep -E 'src/(test|androidTest)/' <<<"$files" || true)
 
@@ -96,10 +96,15 @@ if [ "$MODE" = "issue" ]; then
   [ "$author" = "pc-buildmate" ] && identity="⚠️ 共享账号（请用个人账号重开）"
 
   owner="待定"
-  grep -qiE 'cooler|散热' <<<"$body" && owner="陈思言（数据）/ 刘喆（data）"
-  grep -qiE '3d|预览|preview' <<<"$body" && owner="阮立坤（UI）"
-  grep -qiE 'release|workflow|ci|tag' <<<"$body" && owner="杨壹硕（QA/CI）"
-  grep -qiE 'lint|icon|manifest' <<<"$body" && owner="阮立坤（UI）"
+  if grep -qiE '3d|scene3d|预览|preview' <<<"$body"; then
+    owner="阮立坤（UI / 3D）"
+  elif grep -qiE 'catalogue|sources|audit|pricedata|price|散热|cooler|socketmounts|pciex16|字段' <<<"$body"; then
+    owner="陈思言（数据）/ 刘喆（data）"
+  elif grep -qiE '\brelease\b|workflow|\bci\b|tag' <<<"$body"; then
+    owner="杨壹硕（QA/CI）"
+  elif grep -qiE 'lint|icon|manifest' <<<"$body"; then
+    owner="阮立坤（UI）"
+  fi
 
   checklist=""
   grep -qE '验收|acceptance|完成|done' <<<"$body" || checklist+="- 缺少验收标准（建议补“怎么算完成”）"$'\n'
