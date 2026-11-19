@@ -15,6 +15,7 @@
 | [0008](0008-state-rejection-textkeys.md) | 状态机拒绝的 TextKey | INVALID_STATE / PREVIEW_NOT_READY 只增不改 | 文案系统改成 reason→key 自动映射 |
 | [0009](0009-no-display-output-textkey.md) | 无显示输出文案 | build-level guard，不塞进 15 条规则 | 需要显示器/接口兼容时 |
 | [0010](0010-quantity-policy.md) | 数量策略 | 单件类目固定 1 件；多件会让价格翻倍但结论不变 | 支持双路/多卡，或 AddComponent 上线 |
+| [0011](0011-pcie-x16-slot-mm.md) | 主板首个 PCIe x16 槽位字段 | 用 `pcieX16SlotMm` / `pcieSlotCount` 逐板记录，覆盖 7.52 mm 与「固定第 2 槽」常量 | 3D 视图改用字段，或拿到更细板图 |
 
 ## 写 ADR 的格式
 
