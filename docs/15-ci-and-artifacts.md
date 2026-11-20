@@ -59,7 +59,8 @@ platform-tools
 5. `gh release create <tag> --draft`，上传两个附件。
 
 **手动校验已发布产物**：Actions → Run workflow，勾选输入 `verify_release`。job `release-verify` 会先跑
-`node qa/check-evidence.mjs`（docs/21 无空格子、截图齐全），再通过 API 取**最新 release**（含 pre-release）
+`node qa/check-evidence.mjs`（docs/21 无空格子、截图齐全）与 `node qa/check-audit-report.mjs`
+（docs/20 与目录实测一致），再通过 API 取**最新 release**（含 pre-release）
 下载 APK 与 `.sha256`，最后执行 `bash qa/verify-release.sh`（六项：sha256 / 签名 / 四项权限 / ABI / 包名 / versionName）。
 
 **publish 仍由人点**：自动化只到 draft；答辩/冻结前由 @MoeField 检查后 publish。
