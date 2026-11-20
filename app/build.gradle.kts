@@ -58,6 +58,13 @@ android {
         }
     }
 
+    lint {
+        // release 只打 arm64，ChromeOS 不在答辩范围；这条 warning 会一直存在。
+        disable += "ChromeOsAbiSupport"
+        // adaptive-icon 仍需要 -v26 目录（AAPT 要求），但 minSdk 31 会被提示 qualifier 冗余。
+        disable += "ObsoleteSdkInt"
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
