@@ -105,6 +105,7 @@ bash qa/verify-release.sh PC-Buildmate-<ver>.apk PC-Buildmate-<ver>.apk.sha256 <
 
 # 发布前：证据文档里不能有空格子，引用的截图必须存在
 node qa/check-evidence.mjs
+node qa/check-audit-report.mjs
 ```
 
 ## 19.8 设备与发布证据
@@ -115,7 +116,7 @@ node qa/check-evidence.mjs
 | 证据 | 现状（2026-11-17） |
 |---|---|
 | Room 契约（8 个 instrumented 用例） | ✅ 本地 AVD 8/8；✅ CI `room` job 在 main 上连续通过（模拟器 30 s 启动，含启动冒烟） |
-| Release 产物（`v1.0.0-defense-rc2`） | ✅ sha256 与附件一致；✅ 发布证书（非 debug）；✅ 无 INTERNET/CAMERA/LOCATION/推送权限；✅ 仅 `arm64-v8a`。复现：`bash qa/verify-release.sh <apk> <sha>`，或手动 dispatch 勾选 `verify_release`（job `release-verify` 先跑 `qa/check-evidence.mjs`，再下载最新 release 校验） |
+| Release 产物（`v1.0.0-defense-rc2`） | ✅ sha256 与附件一致；✅ 发布证书（非 debug）；✅ 无 INTERNET/CAMERA/LOCATION/推送权限；✅ 仅 `arm64-v8a`。复现：`bash qa/verify-release.sh <apk> <sha>`，或手动 dispatch 勾选 `verify_release`（job `release-verify` 先跑 `qa/check-evidence.mjs` 与 `qa/check-audit-report.mjs`，再下载最新 release 校验） |
 | 真机 9 步 ×3 | ✅ 2026-11-17 在 HUAWEI DBR-W10（Android 12）上连跑三次，锚点全中；步骤见 [qa/device-run-tutorial.md](../qa/device-run-tutorial.md)，截图在 [qa/screenshots](../qa/screenshots/)，驱动脚本 `qa/drive-demo.sh` |
 
 答辩口径：三行都可以当场给数字和命令。
