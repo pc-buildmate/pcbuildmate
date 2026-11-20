@@ -52,14 +52,34 @@ class Scene3dTest {
     }
 
     @Test
-    fun `gpu sits at the second slot centerline`() {
+    fun `gpu sits at the x16 slot read from the catalogue field`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue(slotMm = 137.5)),
+        )
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+
+        assertEquals(137.5f, gpu.max.z, 0.01f, "挡板上沿 = 字段给的 x16 槽中线")
+    }
+
+    @Test
+    fun `missing x16 slot field falls back to the io offset constant`() {
         val scene = assertNotNull(SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue()))
         val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
-        val first = 305f - SceneBuilder.IO_HEIGHT_MM - SceneBuilder.FIRST_SLOT_FROM_IO_MM
-        val expected = first - SceneBuilder.SLOT_PITCH_MM
+        val fallback = 305f - SceneBuilder.IO_HEIGHT_MM - SceneBuilder.FIRST_SLOT_FROM_IO_MM
 
-        assertEquals(expected, gpu.max.z, 0.01f, "挡板上沿 = 槽位中线")
-        assertEquals(117.16f, expected, 0.01f)
+        assertEquals(137.48f, fallback, 0.01f)
+        assertEquals(fallback, gpu.max.z, 0.01f, "缺字段回退 I/O 下缘 - 7.52，放在首槽")
+        assertTrue(scene.notes.any { it.contains("缺字段回退") }, "回退要在提示里说明")
+    }
+
+    @Test
+    fun `slot count comes from the field when present`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue(slotMm = 137.5, slotCount = 4)),
+        )
+
+        assertTrue(scene.labels.any { it.text.contains("4 槽") }, "槽数用字段，不用 ATX 推断的 7")
+        assertTrue(scene.labels.none { it.text.contains("7 槽") })
     }
 
     @Test
@@ -179,9 +199,25 @@ class Scene3dTest {
         )
     }
 
-    private fun catalogue(formFactor: String = "ATX"): CataloguePort = MapCatalogue(
+    private fun catalogue(
+        formFactor: String = "ATX",
+        slotMm: Double? = null,
+        slotCount: Int? = null,
+    ): CataloguePort {
+        val boardAttrs = buildMap {
+            put("formFactor", f(formFactor))
+            if (slotMm != null) put("pcieX16SlotMm", f(fmtOf(slotMm), slotMm))
+            if (slotCount != null) put("pcieSlotCount", f(slotCount.toString(), slotCount.toDouble()))
+        }
+        return catalogueOf(boardAttrs)
+    }
+
+    private fun fmtOf(value: Double): String =
+        if (value % 1.0 == 0.0) value.toInt().toString() else value.toString()
+
+    private fun catalogueOf(boardAttrs: Map<String, FieldValue>): CataloguePort = MapCatalogue(
         listOf(
-            record("mb", Category.MOTHERBOARD, mapOf("formFactor" to f(formFactor))),
+            record("mb", Category.MOTHERBOARD, boardAttrs),
             record("case-320", Category.CASE, mapOf(
                 "maxGpuLengthMm" to f("320", 320.0),
                 "maxGpuThicknessMm" to f("80", 80.0),

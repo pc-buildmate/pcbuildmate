@@ -83,6 +83,8 @@
 - `FieldPathRegistry.kt` 同步（代码冻结表副本）；
 - 已填 5 块主板（`mb-demo-b650`、`mb-demo-b850-cvn`、`mb-demo-b850m`、`mb-demo-z890m`、`mb-demo-b550m`），
   值为标准布局参考值（ATX 137.5mm / M-ATX 76.5mm，基于现有 3D 常量公式）；
+- `Scene3d` 已按字段放置显卡（`pcieX16SlotMm` 即首个 x16 槽，`pcieSlotCount` 覆盖槽数），
+  缺字段的 `mb-demo-lga1700` 走 I/O 下缘 − 7.52 的常量回退，界面注明「缺字段回退」；
   导出时字段 `state` 随记录级 `confidence=high` 标为 `VERIFIED`，但数值精度是「标准布局参考级」，
   精确逐板值需厂商布局图人工核实（TODO：升为逐板实测值）；
 - `mb-demo-lga1700` 未加字段，保留「唯一 EMPTY = `biosGeneration`」锚点。
