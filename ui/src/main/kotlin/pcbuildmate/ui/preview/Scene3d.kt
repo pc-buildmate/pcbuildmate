@@ -210,6 +210,9 @@ object SceneBuilder {
                 ),
                 conflict = overHeight,
             )
+        } else {
+            labels += DimLabel("未选择散热 · 不画散热器", Tone.MUTED)
+            notes += "当前配置没有散热条目：不显示散热器预览，也不判断限高"
         }
 
         // 机箱允许空间：透明 ghost，上沿与主板上沿对齐
