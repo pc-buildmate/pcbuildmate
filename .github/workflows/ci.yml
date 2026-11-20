@@ -229,6 +229,8 @@ jobs:
           "$SDKMANAGER" --install "build-tools;37.0.0" "platform-tools"
       - name: Evidence completeness (docs/21 has no blanks, screenshots exist)
         run: node qa/check-evidence.mjs
+      - name: Catalogue audit report matches the data
+        run: node qa/check-audit-report.mjs
       - name: Download the latest release APK and checksum
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
