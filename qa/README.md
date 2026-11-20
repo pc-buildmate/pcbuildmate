@@ -49,7 +49,7 @@ node tools/check-matrix.mjs --mutations
 
 ## 仍要补的（2026-11-17 更新）
 
-- **`test-oracle` 参考模型**：已建（`test-oracle/src/main/...`，规则 + 两张状态机），与生产实现在 60+7 fixture 和 76 格上交叉校验；oracle 自身另有 29 个单测。
+- **`test-oracle` 参考模型**：已建（`test-oracle/src/main/...`，规则 + 两张状态机），与生产实现在 60+7 fixture 和 76 格上交叉校验；oracle 自身另有 38 个单测（MiniJson / 规则 / 状态机 / 预算 / 候选过滤）。
 - **Room 已在 CI**：`room` job（模拟器，push main / 手动触发）跑 `:data:connectedDebugAndroidTest` + 启动冒烟；PR 上不跑。
 - **UI semantics**：Entry / Workspace / 诊断 / 比较 / 3D 预览已有 Compose 测试（Robolectric，JVM 跑）。
 
