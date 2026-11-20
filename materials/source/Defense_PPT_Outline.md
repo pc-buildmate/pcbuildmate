@@ -104,12 +104,13 @@ orbit camera, no GL dependency, offline. [confirm: 阮立坤 for screenshot and 
 - Will it drift? A check fails if any module with tests is missing from the CI task list.
 
 **Slide 22 — What this does not prove.** Rule parameters, price accuracy, **field-level source URLs
-(0 of 168 fields; only record-level sources exist)**, 3D slot coordinates (the field now exists, the view does not read it yet), UI accessibility, and Room on pull requests. Say it before the examiner asks.
+(0 of 168 fields; only record-level sources exist)**, 3D slot precision (the field is read, but its
+values are standard-layout references, not vendor-verified), UI accessibility, and Room on pull requests. Say it before the examiner asks.
 
 ## 6 · Limits and conclusion (杨壹硕)
 
-**Slide 23 — Known limits.** Static catalogue with dated reference prices; motherboard x16 slot
-position not yet in the catalogue (3D slot uses a constant); no real-device automation of gestures.
+**Slide 23 — Known limits.** Static catalogue with dated reference prices; x16 slot position recorded
+for five of six boards (the sixth falls back to the documented constant); no real-device automation of gestures.
 
 **Slide 24 — Next steps.** Signed release with checksum, device evidence ×3, official-store price
 adapters, then feature freeze on 11/28.
