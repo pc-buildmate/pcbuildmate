@@ -24,6 +24,11 @@ node tools/check-docs.mjs
 node ci/check-boundaries.mjs
 node ci/check-keywords.mjs
 node ci/check-test-tasks.mjs      # 有测试的模块必须在 CI 任务列表里
+node ci/check-field-paths.mjs     # docs/03 §3.3、FieldPathRegistry、审计 FIELDS 三处一致
+node ci/check-mutations.mjs       # 12 条变异还能不能打进去
+
+node qa/check-audit-report.mjs    # docs/20 的数字与每条异常身份跟实测一致
+node materials/tools/check-deck.mjs   # 答辩 deck：页脚页码、⏱ 时间轴收在 15:00、附录数字
 
 node tools/gen-matrix.mjs          # 要先跑测试，否则只有规格
 node tools/check-matrix.mjs        # 60/60, 76/76, 18/18
@@ -42,7 +47,9 @@ PYTHONPATH=pricedata/src python3 -m unittest discover -s pricedata/tests
 ./gradlew :data:connectedDebugAndroidTest
 ```
 
-CI（`.github/workflows/ci.yml`）五个 job：`docs`（含边界/关键词/任务覆盖/原型回归）、`jvm`（单测 + 矩阵）、`android`（debug APK）、`mutations`（12 条变异，`needs: jvm`）、`room`（Room instrumented，真机/模拟器，只在 main 与手动触发）。
+CI（`.github/workflows/ci.yml`）五个常规 job：`docs`（边界/关键词/任务覆盖/字段路径/审计报告/deck 自检/原型回归）、`jvm`（单测 + 矩阵）、`android`（debug APK）、`mutations`（12 条变异，`needs: jvm`）、`room`（Room instrumented，模拟器，只在 main 与手动触发）。
+另有手动触发的 `release-verify`（勾选 `verify_release`）：先跑证据与审计门，再下载最新 release 校验 sha256 / 签名 / 权限 / ABI。
+PR 上不跑 `room`：改 `:data` 的 PR 要自己 dispatch 一次。
 
 ## 成员从哪开始
 
