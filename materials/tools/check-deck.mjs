@@ -39,21 +39,20 @@ function openZip(file) {
     const extraLen = b.readUInt16LE(off + 30);
     const commentLen = b.readUInt16LE(off + 32);
     const name = b.toString("utf8", off + 46, off + 46 + nameLen);
-    entries.set(name, b.readUInt32LE(off + 42));
+    // 压缩大小从**中央目录**取：本地文件头在 data descriptor 模式（通用标志 bit 3）下会写 0。
+    entries.set(name, { lo: b.readUInt32LE(off + 42), compressed: b.readUInt32LE(off + 20) });
     off += 46 + nameLen + extraLen + commentLen;
   }
   return {
     names: () => [...entries.keys()],
     read(name) {
-      const lo = entries.get(name);
-      if (lo === undefined) return null;
+      const entry = entries.get(name);
+      if (!entry) return null;
+      const { lo, compressed } = entry;
       const nameLen = b.readUInt16LE(lo + 26);
       const extraLen = b.readUInt16LE(lo + 28);
       const start = lo + 30 + nameLen + extraLen;
-      // 本地文件头：签名 4 + 版本 2 + 标志 2 + 方法 2 + 时间 2 + 日期 2 + CRC 4，压缩大小在 18。
-      // （写成 20 会读到「压缩大小高 16 位 + 解压大小低 16 位」，解压大小 < 64 KB 时凑巧还能解出来。）
-      const size = b.readUInt32LE(lo + 18);
-      const raw = b.slice(start, start + size);
+      const raw = b.slice(start, start + compressed);
       return (b.readUInt16LE(lo + 8) === 0 ? raw : inflateRawSync(raw)).toString("utf8");
     },
   };
