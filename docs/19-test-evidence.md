@@ -25,7 +25,8 @@
 
 支撑它们的静态检查：`tools/check-docs.mjs`（文档/规则/fixture 自洽）、`ci/check-boundaries.mjs`
 （模块依赖与 test-oracle 自证禁令）、`ci/check-keywords.mjs`（范围外关键词与权限）、
-`ci/check-test-tasks.mjs`（测试任务覆盖）、`ci/check-mutations.mjs`（变异表还能不能打进去）。
+`ci/check-test-tasks.mjs`（测试任务覆盖）、`ci/check-mutations.mjs`（变异表还能不能打进去）、
+`qa/check-audit-report.mjs`（`docs/20` 的目录审计数字与实测一致）。
 
 CI 里五个常规 job：`docs`（上述静态检查 + 原型回归 + 矩阵工具自测）、`jvm`（单测 + 矩阵门）、
 `android`（debug APK）、`mutations`（变异门，`needs: jvm`）、`room`（Room instrumented，main / 手动）。
