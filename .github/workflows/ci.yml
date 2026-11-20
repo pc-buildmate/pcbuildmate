@@ -38,6 +38,7 @@ jobs:
           node ci/check-field-paths.mjs
           node qa/check-audit-report.mjs --self-test
           node qa/check-audit-report.mjs
+          node materials/tools/check-deck.mjs
       - name: Prototype regression
         run: |
           node tools/test-demo-engine.mjs

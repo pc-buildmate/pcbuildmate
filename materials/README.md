@@ -39,6 +39,10 @@
 - **幻灯片标题/要点**：改 `Defense_PPT_Outline.md`，PPT 的要点与备注与它一一对应。
 - **数字**：先改 `Defense_Numbers_To_Confirm.md` 的状态，再改文案；不要只改一处。
 - **截图**：只用 `qa/screenshots/` 里的图（同一批真机证据），不要混入自制示意图。
+- **改完 deck 先跑一次自检**：`node materials/tools/check-deck.mjs`
+  （30 页、页脚「N / 30」、备注里的 ⏱ 时间轴不重叠且收在 15:00、附录 D 的
+  「30 records / 168 fields」与 `assets/catalogue` 一致；插删页后最容易漏的就是这几处）。
+  失败会点名是哪一页、哪一项，改 PPT 即可，不用手改脚本。
 
 
 ## 与本仓库的口径差异（答辩前必须处理）
