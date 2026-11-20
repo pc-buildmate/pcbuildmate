@@ -29,7 +29,7 @@
 | [source/Defense_Run_Sheet_CN.md](source/Defense_Run_Sheet_CN.md) | 中文操作 + 英文口播的现场卡 | 建议打印 |
 | [source/Defense_Repo_Walkthrough_EN.md](source/Defense_Repo_Walkthrough_EN.md) | "打开给我看"时的 10 条主张 → 文件 | 可用 |
 | [source/Defense_Rehearsal_Plan.md](source/Defense_Rehearsal_Plan.md) | 三次合练与过关标准 | 可用 |
-| [source/Defense_Open_Issues_EN.md](source/Defense_Open_Issues_EN.md) | 当前 6 个 open issue 的“会不会被看到、被问怎么答” | 可用（随 issue 变化更新） |
+| [source/Defense_Open_Issues_EN.md](source/Defense_Open_Issues_EN.md) | open issue 与已关闭项（附 PR 号）的“会不会被看到、被问怎么答” | 可用（随 issue 变化更新） |
 | [source/Defense_Numbers_To_Confirm.md](source/Defense_Numbers_To_Confirm.md) | 所有数字的 owner 与确认状态 | 持续更新 |
 
 ### 怎么改文案（避免出现多份 deck）
