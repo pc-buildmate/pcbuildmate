@@ -21,9 +21,11 @@
 | `gpu-demo-5070ti` | COLORFUL 战斧 RTX 5070 Ti 豪华版 SFF 16GB | 13399 | [七彩虹商城](https://www.skycolorful.com/) · [尺寸/功耗](https://www.compuzone.co.kr/product/product_detail.htm?ProductNo=1377341) |
 | `gpu-demo-5080` | COLORFUL iGame RTX 5080 Ultra W OC 16GB | 21099 | [七彩虹商城](https://www.skycolorful.com/) · [ZOL 参数](http://m.zol.com/shop_62445/42518431.html) |
 | `psu-demo-rm750e` | Corsair RM750e 750W | 849 | [什么值得买 电源页](https://www.smzdm.com/ju/sp61v12/) |
-| `case-demo-l216` | LIAN LI Lancool 216 | 579 | [机箱横评报价](https://m.toutiao.com/article/7662236752735715867/) |
-| `cooler-demo-pa120max` | Thermalright PA120 VISION MAX ARGB | 439 | [上市价新闻](https://news.17173.com/content/10112026/200325023.shtml) |
 | `storage-demo-sn580` | WD Blue SN580 1TB | 969 | [ZOL 报价](https://detail.zol.com.cn/solid_state_drive/s8137/pic_2.html) |
+
+> **仅在 demo-v1 演示目录、未进入上架目录的两条**（不列入来源表，保留原 URL）：
+> - `case-demo-l216` — LIAN LI Lancool 216，¥579，[机箱横评报价](https://m.toutiao.com/article/7662236752735715867/)
+> - `cooler-demo-pa120max` — Thermalright PA120 VISION MAX ARGB，¥439，[上市价新闻](https://news.17173.com/content/10112026/200325023.shtml)
 
 ## 原有 demo seed（2026-10-31，早期演示数据）
 
