@@ -50,7 +50,9 @@ function openZip(file) {
       const nameLen = b.readUInt16LE(lo + 26);
       const extraLen = b.readUInt16LE(lo + 28);
       const start = lo + 30 + nameLen + extraLen;
-      const size = b.readUInt32LE(lo + 20);
+      // 本地文件头：签名 4 + 版本 2 + 标志 2 + 方法 2 + 时间 2 + 日期 2 + CRC 4，压缩大小在 18。
+      // （写成 20 会读到「压缩大小高 16 位 + 解压大小低 16 位」，解压大小 < 64 KB 时凑巧还能解出来。）
+      const size = b.readUInt32LE(lo + 18);
       const raw = b.slice(start, start + size);
       return (b.readUInt16LE(lo + 8) === 0 ? raw : inflateRawSync(raw)).toString("utf8");
     },
