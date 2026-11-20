@@ -289,6 +289,8 @@ fun `过期诊断显示横幅且不显示通过徽标`() {
 | 3 | 关键 mutation 全杀死 | `node tools/run-mutations.mjs` → `node tools/check-matrix.mjs --mutations` |
 | 4 | 边界/关键词检查通过 | `node ci/check-boundaries.mjs && node ci/check-keywords.mjs` |
 | 4b | 有测试的模块都在 CI 任务列表里 | `node ci/check-test-tasks.mjs` |
+| 4c | 字段路径在文档、注册表、审计表三处一致 | `node ci/check-field-paths.mjs` |
+| 4d | 目录审计报告 `docs/20` 与数据实测一致 | `node qa/check-audit-report.mjs` |
 | 5 | 公开 API 未变（或已走契约流程） | `./gradlew :contracts:apiCheck` |
 | 6 | 无 `TODO` / `FIXME` / `println` 在 `src/main` | `ci/check-keywords.mjs` 附带的卫生检查 |
 | 7 | 评审：没有把业务逻辑写进 ViewModel/UI | 评审清单（10 章 §10.6） |

@@ -47,11 +47,14 @@ node tools/check-matrix.mjs --mutations
 | 17 端口契约 | `InMemoryBuildStoreTest` + `RoomBuildStoreTest`（真机 instrumented） |
 | 18 无 I/O | `node ci/check-boundaries.mjs` |
 
-## 仍要补的（2026-11-17 更新）
+## 补充记录（2026-11-20 更新）
 
 - **`test-oracle` 参考模型**：已建（`test-oracle/src/main/...`，规则 + 两张状态机），与生产实现在 60+7 fixture 和 76 格上交叉校验；oracle 自身另有 38 个单测（MiniJson / 规则 / 状态机 / 预算 / 候选过滤）。
 - **Room 已在 CI**：`room` job（模拟器，push main / 手动触发）跑 `:data:connectedDebugAndroidTest` + 启动冒烟；PR 上不跑。
 - **UI semantics**：Entry / Workspace / 诊断 / 比较 / 3D 预览已有 Compose 测试（Robolectric，JVM 跑）。
+- **字段路径三处一致**：`ci/check-field-paths.mjs` 比对 `docs/03 §3.3`、`FieldPathRegistry` 与审计脚本的 `FIELDS`，任何一处增删字段而另两处没跟上都会红。
+- **目录审计报告不漂**：`qa/check-audit-report.mjs` 核对 `docs/20` 与审计脚本实测（记录/字段/异常/退出码/URL 数，以及**每条异常的身份**），已进每个 PR 的 `docs` job。
+- **答辩 deck 不漂**：`materials/tools/check-deck.mjs` 查页脚「N / 30」、备注 ⏱ 时间轴收在 15:00、附录 D 的「30 records / 168 fields」与目录一致。
 
 Room 契约已补：`:data:connectedDebugAndroidTest` 8/8；契约测试抓到了
 `@Insert(REPLACE)` 删除父 build 触发 revision 级联删除的真实 bug，已改 `@Upsert`。
