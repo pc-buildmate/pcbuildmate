@@ -42,9 +42,10 @@
 
 > "It does not prove that our rule parameters match real hardware — the fixtures encode our
 > understanding, and if that understanding is wrong, both sides are wrong together. It does not prove
-> that prices are accurate. It does not prove the 3D slot coordinates, because we do not yet have the
-> motherboard x16 slot position in the catalogue. It does not prove accessibility. And it does not prove
-> that Room persistence works on every pull request — that job runs on main and on demand."
+> that prices are accurate. It does not prove that the 3D slot positions are vendor-verified: the view
+> reads them from the catalogue, but the values are standard-layout references. It does not prove
+> accessibility. And it does not prove that Room persistence works on every pull request — that job runs
+> on main and on demand."
 
 > "We say this first, because a claim that cannot be falsified is not evidence."
 
@@ -53,9 +54,10 @@
 ## Slide 23 — Known limits (35 s)
 
 > "Concretely, three limits. The catalogue is static, with dated reference prices and no live feed — the
-> manifest has no network permission, so this is a design boundary, not a missing feature. The
-> motherboard slot position is not recorded yet, so the 3D view uses a documented estimate. And we have
-> not automated real-device gestures; the nine-step demo is run by hand, three times, with screenshots."
+> manifest has no network permission, so this is a design boundary, not a missing feature. The x16 slot
+> position is recorded for five of six boards; the sixth falls back to the documented constant, and the
+> view labels that fallback. And we have not automated real-device gestures; the nine-step demo is run by
+> hand, three times, with screenshots."
 
 （中文提示：每项都给出"为什么"而不是"以后会做"。）
 

@@ -62,10 +62,10 @@ in the stale case — no summary, and a "please recheck" banner instead.
 中文要点：revision 不匹配就不返回诊断（单测）+ 屏幕在过期时不显示结论（语义测试）。
 
 **F10. What would you do with two more weeks?**
-Field-level sources for the catalogue, then the data work's two gaps: the motherboard x16 slot position
-for the 3D view and price reconciliation against official pages. Functionally we would rather harden
-than add features — the feature set is frozen on 11-28.
-中文要点：先补字段级来源，再补 x16 槽位与价格对账；功能冻结后再加功能不是优先项。
+Field-level sources for the catalogue, then the data work's two gaps: the x16 slot values are still
+standard-layout references (one board has none) and prices still need reconciliation against official
+pages. Functionally we would rather harden than add features — the feature set is frozen on 11-28.
+中文要点：先补字段级来源，再把 x16 槽位从参考值换成厂商图核实、补齐缺的那块板，最后价格对账；功能冻结后再加功能不是优先项。
 
 **F11. What if the catalogue has no dimension for a part?**
 The 3D view draws what exists and labels what it estimates (for example the card's body width);
