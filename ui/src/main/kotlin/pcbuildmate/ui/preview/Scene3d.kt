@@ -71,7 +71,6 @@ object SceneBuilder {
     const val IO_THICKNESS_MM = 6f   // 沿 Y
     const val IO_HEIGHT_MM = 160f    // 沿 Z，从板上沿往下
     const val GPU_WIDTH_MM = 110f    // 沿 X
-    const val GPU_SLOT_INDEX = 2
 
     fun build(revision: BuildRevision?, catalogue: CataloguePort): Scene3d? {
         val items = revision?.items ?: return null
@@ -88,7 +87,8 @@ object SceneBuilder {
         val formFactor = board?.text("formFactor") ?: "MICRO_ATX"
         val boardHeight = boardHeight(formFactor)
         val boardDepth = boardDepth(formFactor)
-        val slotCount = slotCount(formFactor)
+        // ADR-0011：目录字段优先，缺失才回退板型推断（docs/18 §18.8 #2/#3）
+        val slotCount = board?.num("pcieSlotCount")?.toInt()?.takeIf { it in 1..16 } ?: slotCount(formFactor)
         val caseLength = case?.num("maxGpuLengthMm")
         val caseCoolerHeight = case?.num("maxCoolerHeightMm") ?: 160f
         val caseTop = boardHeight
@@ -117,15 +117,21 @@ object SceneBuilder {
         )
         labels += DimLabel("I/O ${fmt(IO_WIDTH_MM)}×${fmt(IO_HEIGHT_MM)}", Tone.MUTED)
 
-        // 全板型统一：第一个槽 = I/O 下缘 - 0.30 in = [7.52] mm
-        val firstSlotZ = (boardHeight - IO_HEIGHT_MM) - FIRST_SLOT_FROM_IO_MM
+        // 首个 x16 槽：目录字段优先（距板下沿）；缺失时回退 I/O 下缘 - 0.30 in = [7.52] mm
+        val estimatedSlotZ = (boardHeight - IO_HEIGHT_MM) - FIRST_SLOT_FROM_IO_MM
+        val fieldSlotZ = board?.num("pcieX16SlotMm")
+        val firstSlotZ = fieldSlotZ ?: estimatedSlotZ
         fun slotZ(k: Int): Float = firstSlotZ - (k - 1) * SLOT_PITCH_MM
         val usedSlots = (1..slotCount).map { slotZ(it) }
         labels += DimLabel(
             "槽位 Z ${fmt(usedSlots.first())} → ${fmt(usedSlots.last())}（$slotCount 槽）",
             Tone.MUTED,
         )
-        notes += "第一个槽 = I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)} - 7.52 = ${fmt(firstSlotZ)}（0.30 in）；向下每槽 20.32"
+        notes += if (fieldSlotZ != null) {
+            "首个 x16 槽 = 目录字段 ${fmt(fieldSlotZ, 1)}（距板下沿，标准布局参考）；向下每槽 20.32"
+        } else {
+            "首个槽 = I/O 下缘 ${fmt(boardHeight - IO_HEIGHT_MM)} - 7.52 = ${fmt(firstSlotZ)}（0.30 in，缺字段回退）；向下每槽 20.32"
+        }
         if (slotCount == 1) {
             notes += "Mini-ITX 单槽在 Z=${fmt(firstSlotZ)}；3 槽卡会到 Z=${fmt(firstSlotZ - gpuThicknessForHint(gpu))}，允许为负"
         }
@@ -133,8 +139,8 @@ object SceneBuilder {
         // 显卡
         val gpuLength = gpu?.num("lengthMm")
         val gpuThickness = gpu?.num("thicknessMm") ?: 50f
-        val slotIndex = GPU_SLOT_INDEX.coerceAtMost(slotCount)
-        val centerZ = slotZ(slotIndex)
+        // ADR-0011：显卡放首个 x16 槽（不再硬编码第 2 槽）
+        val centerZ = slotZ(1)
         if (gpuLength != null) {
             val overLength = caseLength != null && gpuLength > caseLength
             // 挡板上沿 = 槽位中线；卡身向下占 thickness
@@ -150,7 +156,7 @@ object SceneBuilder {
             )
             labels += DimLabel("长 ${fmt(gpuLength)} mm", if (overLength) Tone.WARN else Tone.NORMAL)
             labels += DimLabel("厚 ${fmt(gpuThickness)} / ${fmt(gpuThickness / SLOT_PITCH_MM, 1)} 槽", Tone.NORMAL)
-            notes += "显卡第 $slotIndex 槽（中线 Z=${fmt(centerZ)}），宽 ${fmt(GPU_WIDTH_MM)}，长度沿 Y"
+            notes += "显卡在首个 x16 槽（挡板上沿 Z=${fmt(centerZ, 1)}），宽 ${fmt(GPU_WIDTH_MM)}，长度沿 Y"
             if (overLength) labels += DimLabel("超出限长 ${fmt(gpuLength - caseLength!!)} mm", Tone.WARN)
         } else {
             labels += DimLabel("无独显 · 核显输出", Tone.MUTED)
