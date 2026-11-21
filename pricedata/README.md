@@ -103,7 +103,7 @@ pricedata/
 | `integrated_graphics` | `YES` / `NO`；CPU 专用。无独显配置必须选 `YES` |
 | `status` | `active` / `legacy` / `eol` |
 | `recommendable` | 规则生成，不手填 |
-| `specs_json` | 只放 `docs/03 §3.3` 冻结字段；导出时映射到 `attributes` |
+| `specs_json` | 只放 `docs/03 §3.3` 冻结字段；导出时映射到 `attributes`。单个字段可加 `"state": "REPORTED"`（或 `VERIFIED`/`EMPTY`）覆盖记录级 `confidence` 推导；`EMPTY` 不许带 `value`/`numeric`，提级为 `VERIFIED` 需在 PR 里给出处（见 `docs/24 §4`） |
 
 ### prices（长表，核心）
 

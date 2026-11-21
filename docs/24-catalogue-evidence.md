@@ -88,8 +88,10 @@
 - 导出时字段 `state` 默认随记录级 `confidence=high` 标为 `VERIFIED`，但数值精度是「标准布局参考级」，
   精确逐板值需厂商布局图人工核实（TODO：升为逐板实测值）；
 - 自 2026-11-21 起，`specs_json` 里的单个字段可显式写 `"state": "REPORTED"`（或 `VERIFIED`/`EMPTY`）
-  覆盖记录级推导，取值与「EMPTY 必须无值」在 `export.validate()` 里校验——
+  覆盖记录级推导，取值与「EMPTY 不许带 `value`/`numeric`」在 `export.validate()` 里校验——
   ADR-0011 决策 5 要求证据等级是**每字段**的，不是每记录；
+  这个开关同时能提级：把低 `confidence` 记录的字段覆盖成 `VERIFIED` 必须在 PR 描述里给出处，
+  否则审查无法判断证据是否够；
 - `mb-demo-lga1700` 未加字段，保留「唯一 EMPTY = `biosGeneration`」锚点。
 
 ---

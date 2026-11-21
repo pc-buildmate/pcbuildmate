@@ -147,6 +147,13 @@ class ExportTest(unittest.TestCase):
             export(seed, self.out, version="2026.11")
         self.assertIn("state=EMPTY 但带 value", str(ctx.exception))
 
+    def test_empty_state_with_numeric_is_rejected(self) -> None:
+        """EMPTY 只挡 value 不够：3D 的 num() 是 numeric ?: value，不查 state。"""
+        seed = self._seed_with_override("mb-demo-b650", "memorySlots", "EMPTY", keep_value=False)
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state=EMPTY 但带 numeric", str(ctx.exception))
+
     def test_reported_state_without_value_is_rejected(self) -> None:
         seed = self._seed_with_override("mb-demo-b650", "socket", "REPORTED", keep_value=False)
         with self.assertRaises(ValueError) as ctx:
