@@ -1,13 +1,12 @@
 # Defense · Open issues and how to answer if asked
 
-> Snapshot 2026-11-20, main `47b4ff8`. **Four** issues are open: the three carried over from the 11-19
-> list (#119, #122, #149) plus one new scope-change proposal (#175). Three were closed since 11-19.
+> Snapshot 2026-11-21, main `760e979`. **Three** issues are open: two carried over from the 11-19 list
+> (#122, #149) plus one scope-change proposal (#175). Four were closed since 11-19.
 > For each: does it affect what the demo shows, and what to say if an examiner asks. Answers stay inside the
 > evidence rules — no claim beyond what the repo can show.
 
 | Issue | What it is | Does the demo show it? | If asked, say |
 |---|---|---|---|
-| **#119** two stale rows in `SOURCES.md` | Two models listed in the source table no longer exist in the shipped catalogue | No | "Two rows in the source table are stale and queued for cleanup; the catalogue itself is unaffected — record-level sources remain 30/30." |
 | **#122** cooler mount coverage | Both coolers carry `socketMounts`, but no cooler supports LGA1851, and only one supports AM5 | Only if you build with the 245K or pair AM5 with the NH-D15: the cooler rule returns **unverified** instead of pass/conflict | "Cooler mount data is incomplete for the newest socket, so that rule reports unverified rather than guessing. That is the designed behaviour for missing data, and the gap is logged." |
 | **#149** one motherboard lacks the two PCIe fields | `mb-demo-lga1700` has no `pcieX16SlotMm` / `pcieSlotCount` (five of six boards have them) | Not in the current demo build (b650 board); if you pick that board in 3D, the view labels the fallback | "Five of six boards record the slot position; one does not, so the view falls back to the documented constant and says so on screen." |
 | **#175** proposal: optional catalogue updates via GitHub Pages | A proposal for an optional network update channel — `manifest.json` plus immutable versioned catalogue files. It is **blocked by design**: `AGENTS.md` A4 and `docs/09 §9.1` forbid network permission and any HTTP client, and `verify-release.sh` asserts the release manifest has no `INTERNET` | No. The demo and the release stay fully offline | "That is a proposal, not shipped behaviour. Our scope rules forbid network permission and `qa/verify-release.sh` asserts the release has none. Changing that boundary is a human decision, not something we slipped in." |
@@ -16,6 +15,7 @@
 
 | Issue | Fixed by | One line if asked |
 |---|---|---|
+| **#119** two stale rows in `SOURCES.md` | #179 | "The two demo-only rows moved out of the source table into a footnote; the table is 28 rows, all matching the catalogue, and record-level sources remain 30/30, 27 with a URL." |
 | **#104** lint: missing launcher icon / backup rules | #177 | "Adaptive launcher icon and backup rules shipped; the remaining two lint items are disabled with a recorded reason." |
 | **#123** 3D view looked empty without a case or cooler | #176 | "The view now says which part is missing instead of drawing nothing, and draws no placeholder box." |
 | **#152** 3D view did not read the new PCIe fields | #173 | "The view reads the slot position from the catalogue and puts the card in the first x16 slot; for the one board without the field it falls back to the documented constant and labels it." |
