@@ -129,13 +129,28 @@ CI 里没有跑 Lint；本地执行 `./gradlew :app:lintDebug` 的结果：
 | 时间 | 结果 | 说明 |
 |---|---|---|
 | 2026-11-17 | **0 error / 3 warning** | 报告：`app/build/reports/lint-results-debug.txt` |
+| 2026-11-20 | **0 error / 0 warning** | #177 修复三条后复测 |
 
-三条告警的去向：
+三条告警的去向（2026-11-20 已全部收口）：
 
 | 检查项 | 处理 |
 |---|---|
-| `MissingApplicationIcon`（manifest 无 `android:icon`） | 真问题，已开 issue #104（app/ owner） |
-| `DataExtractionRules`（`allowBackup` 已废弃） | 同上，建议加 dataExtractionRules 并关闭云备份 |
-| `ChromeOsAbiSupport`（缺 x86_64） | 非问题：release 明确只出 arm64，可不处理 |
+| `MissingApplicationIcon`（manifest 无 `android:icon`） | 已修：自适应 icon + monochrome（#177） |
+| `DataExtractionRules`（`allowBackup` 已废弃） | 已修：`data_extraction_rules.xml` 关闭云备份/迁移（#177） |
+| `ChromeOsAbiSupport`（缺 x86_64） | 按原因 `disable`：release 明确只出 arm64（#177） |
 
-**关于接进 CI**（2026-11-18 更正）：Android Lint 默认**只在 error 时**让任务失败——实测 0 error / 3 warning 时 `:app:lintDebug` 是成功的，warning 不会让 CI 红。要防回归必须显式配置 `lint { warningsAsErrors = true }`（或接 baseline）；只加一个 job 拦不住任何东西。先修前两条 warning，再接 job。
+**关于接进 CI**（2026-11-18 更正）：Android Lint 默认**只在 error 时**让任务失败——实测 0 error / 3 warning 时 `:app:lintDebug` 是成功的，warning 不会让 CI 红。要防回归必须显式配置 `lint { warningsAsErrors = true }`（或接 baseline）；只加一个 job 拦不住任何东西。当前已 0 warning，尚未接进 CI（本地命令 + 证据表为准）。
+
+## 19.10 答辩旅程端到端（数字钉）
+
+四道门回答的是「判对错 / 会不会红 / 谁来发现 / 会不会漂移」。除此之外还有一类风险：**答辩念的数字和生产栈实测不一致**——数据或讲稿改了，单测却全绿，因为没有人把「7869 / 7800 / 52 / 7900」这些具体数字钉在生产路径上。
+
+`app/src/test/.../DemoJourneyEndToEndTest.kt`（#182）就是这根钉子：它用真实 30 条目录 + 真实规则 + 真实引擎 + 真实替换建议器 + 真实 ViewModel，走完答辩脚本的完整旅程并断言**具体数字**：
+
+- 推荐 8000/游戏 = **7869**、6 类、含独显、无 BLOCKER；
+- 演示配置 **7800**（8 件）；
+- 检查 = **CONFLICT / HIGH / 52**（337>320 BLOCKER + 61>60 MAJOR + BIOS 未验证）；
+- 替换 = 300mm 卡 **+¥100**、预览 **7900**、应用重检后无 BLOCKER 但 **BIOS 仍未验证**；
+- 保存 A/B → 比较 `7800 → 7900`；编辑内存 → 诊断过期不自动重跑；单件类目改数量 → 拒绝；Undo 恢复。
+
+运行位置：`jvm` job 的 `:app:testDebugUnitTest`（与其余 JVM 单测同一处，PR / main 都跑）。任何一处数字漂移都会让这条测试红，提醒先改 `Defense_Numbers_To_Confirm.md` 再改代码，而不是悄悄改断言。
