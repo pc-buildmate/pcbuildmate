@@ -62,6 +62,104 @@ class ExportTest(unittest.TestCase):
         self.assertNotIn("CASE", categories)
         self.assertNotIn("COOLER", categories)
 
+    # ---------------------------------------------------------- state 覆盖
+
+    def _seed_with_override(self, product_id: str, path: str, state: object, keep_value: bool = True) -> Path:
+        """复制 seed，把某记录的某个 spec 加上 state 键（可选去掉 value）。"""
+        out = Path(self.tmp.name) / "seed.csv"
+        with open(self.seed, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            fields = reader.fieldnames
+            rows = list(reader)
+        for row in rows:
+            if row["product_id"] != product_id:
+                continue
+            specs = json.loads(row["specs_json"])
+            spec = dict(specs[path])
+            spec["state"] = state
+            if not keep_value:
+                spec.pop("value", None)
+            specs[path] = spec
+            row["specs_json"] = json.dumps(specs, ensure_ascii=False)
+        with open(out, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+        return out
+
+    def test_no_override_reproduces_committed_derived_outputs(self) -> None:
+        """不带覆盖时，四个产物与仓库里已提交的 derived 文件逐字节一致（换行符按平台归一）。"""
+        committed = ROOT / "data" / "derived"
+        export(
+            self.seed,
+            self.out,
+            version="2026.11",
+            generated_at="2026-11-04T00:00:00+00:00",
+        )
+        for name in ("products.csv", "prices.csv", "catalogue-2026.11.json", "manifest.json"):
+            got = (self.out / name).read_bytes().replace(b"\r\n", b"\n")
+            want = (committed / name).read_bytes().replace(b"\r\n", b"\n")
+            self.assertEqual(want, got, f"{name} 与已提交产物不一致")
+
+    def test_field_state_override_changes_only_that_field(self) -> None:
+        export(self.seed, self.out, version="2026.11")
+        baseline = json.loads((self.out / "catalogue-2026.11.json").read_text(encoding="utf-8"))
+
+        seed = self._seed_with_override("mb-demo-b650", "socket", "REPORTED")
+        out2 = Path(self.tmp.name) / "overridden"
+        export(seed, out2, version="2026.11")
+        changed = json.loads((out2 / "catalogue-2026.11.json").read_text(encoding="utf-8"))
+
+        base_by_id = {c["componentId"]: c for c in baseline["components"]}
+        over_by_id = {c["componentId"]: c for c in changed["components"]}
+        self.assertEqual(set(base_by_id), set(over_by_id))
+
+        for cid, base in base_by_id.items():
+            over = over_by_id[cid]
+            if cid != "mb-demo-b650":
+                self.assertEqual(base, over, f"{cid} 不该受影响")
+                continue
+            self.assertEqual("REPORTED", over["attributes"]["socket"]["state"])
+            self.assertEqual(base["attributes"]["socket"]["value"], over["attributes"]["socket"]["value"])
+            for path, attr in base["attributes"].items():
+                if path == "socket":
+                    continue
+                self.assertEqual(attr["state"], over["attributes"][path]["state"], path)
+
+    def test_validate_stage_also_rejects_bad_state(self) -> None:
+        """`pricepipe.cli validate` 走的是同一个 validate()，不能只在 export 里拦。"""
+        from pricepipe.export import validate
+        from pricepipe.models import load_seed
+
+        seed = self._seed_with_override("mb-demo-b650", "socket", "MAYBE")
+        errors = validate(load_seed(seed))
+        self.assertTrue(any("state 只能是" in e for e in errors), errors)
+
+    def test_invalid_state_is_rejected(self) -> None:
+        seed = self._seed_with_override("mb-demo-b650", "socket", "MAYBE")
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state 只能是 VERIFIED/REPORTED/EMPTY", str(ctx.exception))
+
+    def test_empty_state_with_value_is_rejected(self) -> None:
+        seed = self._seed_with_override("mb-demo-b650", "socket", "EMPTY")
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state=EMPTY 但带 value", str(ctx.exception))
+
+    def test_empty_state_with_numeric_is_rejected(self) -> None:
+        """EMPTY 只挡 value 不够：3D 的 num() 是 numeric ?: value，不查 state。"""
+        seed = self._seed_with_override("mb-demo-b650", "memorySlots", "EMPTY", keep_value=False)
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state=EMPTY 但带 numeric", str(ctx.exception))
+
+    def test_reported_state_without_value_is_rejected(self) -> None:
+        seed = self._seed_with_override("mb-demo-b650", "socket", "REPORTED", keep_value=False)
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state=REPORTED 但没有 value", str(ctx.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

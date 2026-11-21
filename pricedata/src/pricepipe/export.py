@@ -32,6 +32,37 @@ def validate(rows: list[Row]) -> list[str]:
         seen.add(key)
         if not r.source_url.startswith("http"):
             errors.append(f"{r.product_id}: source_url 不是 URL")
+        errors.extend(_spec_state_errors(r))
+    return errors
+
+
+def _spec_state_errors(r: Row) -> list[str]:
+    """字段级 state 覆盖的取值校验（ADR-0011 决策 5 是**每字段**的证据等级）。
+
+    升级为 `VERIFIED`（低 confidence 记录里把某字段提成 VERIFIED）是允许的，但这个开关
+    既能降级也能提级：PR 描述里必须给出处，否则审查无法判断证据够不够。
+    """
+    errors: list[str] = []
+    for path, spec in r.specs.items():
+        if not isinstance(spec, dict):
+            errors.append(f"{r.product_id}.{path}: spec 必须是对象")
+            continue
+        state = spec.get("state")
+        if state is None:
+            continue
+        value = spec.get("value")
+        numeric = spec.get("numeric")
+        if state not in {"VERIFIED", "REPORTED", "EMPTY"}:
+            errors.append(f"{r.product_id}.{path}: state 只能是 VERIFIED/REPORTED/EMPTY，实际 {state!r}")
+        elif state == "EMPTY":
+            # 与 tools/audit-catalogue.mjs 的「EMPTY 必须无值」一致，避免 validate 过、audit 报错。
+            # numeric 也要挡：3D 预览的 num() 是 numeric ?: value，不查 state，会拿 EMPTY 的数去画尺寸。
+            if value is not None:
+                errors.append(f"{r.product_id}.{path}: state=EMPTY 但带 value={value!r}")
+            if numeric is not None:
+                errors.append(f"{r.product_id}.{path}: state=EMPTY 但带 numeric={numeric!r}")
+        elif value is None:
+            errors.append(f"{r.product_id}.{path}: state={state} 但没有 value")
     return errors
 
 
@@ -132,10 +163,15 @@ def _catalogue(rows: list[Row], version: str) -> dict:
         attrs = {}
         for path, spec in r.specs.items():
             value = spec.get("value")
+            # 字段级 state 优先（ADR-0011 决策 5：证据等级是每字段的）；
+            # 没写才退回记录级 confidence 推导，行为与旧版完全一致。
+            override = spec.get("state")
             attrs[path] = {
                 "value": value,
-                "state": "EMPTY" if value is None else (
-                    "VERIFIED" if r.confidence == "high" else "REPORTED"
+                "state": override if override is not None else (
+                    "EMPTY" if value is None else (
+                        "VERIFIED" if r.confidence == "high" else "REPORTED"
+                    )
                 ),
                 "sources": [],
                 "conflict": False,

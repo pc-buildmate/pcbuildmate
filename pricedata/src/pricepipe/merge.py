@@ -5,6 +5,12 @@ from pathlib import Path
 
 
 def merge(active_path: str | Path, overlay_path: str | Path, out_path: str | Path) -> dict:
+    """active（2020+ 快照）叠加 overlay（demo 机箱/散热等锚点），**整条记录**以 overlay 为准。
+
+    注意：overlay 是记录级覆盖，会把该记录在 active 里的全部属性（含 export 写入的
+    字段级 `state` 覆盖）一起替换掉。若以后某个 componentId 同时出现在 overlay 里，
+    又需要保留字段级 state，得在 overlay 文件里把该属性一并写全。
+    """
     active = json.loads(Path(active_path).read_text(encoding="utf-8"))
     overlay = json.loads(Path(overlay_path).read_text(encoding="utf-8"))
 
