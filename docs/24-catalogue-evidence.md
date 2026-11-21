@@ -85,8 +85,11 @@
   值为标准布局参考值（ATX 137.5mm / M-ATX 76.5mm，基于现有 3D 常量公式）；
 - `Scene3d` 已按字段放置显卡（`pcieX16SlotMm` 即首个 x16 槽，`pcieSlotCount` 覆盖槽数），
   缺字段的 `mb-demo-lga1700` 走 I/O 下缘 − 7.52 的常量回退，界面注明「缺字段回退」；
-  导出时字段 `state` 随记录级 `confidence=high` 标为 `VERIFIED`，但数值精度是「标准布局参考级」，
+- 导出时字段 `state` 默认随记录级 `confidence=high` 标为 `VERIFIED`，但数值精度是「标准布局参考级」，
   精确逐板值需厂商布局图人工核实（TODO：升为逐板实测值）；
+- 自 2026-11-21 起，`specs_json` 里的单个字段可显式写 `"state": "REPORTED"`（或 `VERIFIED`/`EMPTY`）
+  覆盖记录级推导，取值与「EMPTY 必须无值」在 `export.validate()` 里校验——
+  ADR-0011 决策 5 要求证据等级是**每字段**的，不是每记录；
 - `mb-demo-lga1700` 未加字段，保留「唯一 EMPTY = `biosGeneration`」锚点。
 
 ---
