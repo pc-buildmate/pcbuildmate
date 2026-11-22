@@ -35,7 +35,7 @@ import pcbuildmate.feature.workspace.WorkspaceViewModel
  *   → 比较 A/B → 编辑导致诊断过期 → 数量策略拒绝 → Undo。
  *
  * 与 `RecommendationIntegrationTest` 的区别：那个只断言"性质"，本测试断言
- * 答辩脚本里出现的**具体数字**（7869 / 7800 / 7900 / 52 / +100），防止
+ * 答辩脚本里出现的**具体数字**（推荐 7900 / 演示 7800 / 替换后 7900 / 52 / +100），防止
  * 数据和讲稿脱节。数字变了这里会红，提醒先改 `Defense_Numbers_To_Confirm.md`。
  */
 class DemoJourneyEndToEndTest {
@@ -60,13 +60,13 @@ class DemoJourneyEndToEndTest {
     fun `the whole demo journey stays true to the defence script`() {
         val vm = newViewModel()
 
-        // ---- 0. 预算推荐：8000 / 游戏 → 6 类、含独显、无 BLOCKER
+        // ---- 0. 预算推荐：8000 / 游戏 → 8 类（含机箱散热）、含独显、无 BLOCKER
         val rec = vm.recommend(8000, UseCase.GAMING)
         assertTrue(rec.feasible, "8000 游戏应可行")
         val recommended = assertNotNull(rec.build)
-        assertEquals(7869, recommended.totalCny, "答辩脚本宣称的推荐总价")
+        assertEquals(7900, recommended.totalCny, "答辩脚本宣称的推荐总价")
         val cats = recommended.items.map { it.category }.toSet()
-        assertEquals(setOf(Category.CPU, Category.MOTHERBOARD, Category.MEMORY, Category.GPU, Category.PSU, Category.STORAGE), cats)
+        assertEquals(setOf(Category.CPU, Category.MOTHERBOARD, Category.MEMORY, Category.GPU, Category.PSU, Category.STORAGE, Category.COOLER, Category.CASE), cats)
         assertTrue(engine.evaluate(recommended).none {
             it is RuleOutcome.Conflict && it.severity == Severity.BLOCKER
         }, "推荐结果不应有 BLOCKER")

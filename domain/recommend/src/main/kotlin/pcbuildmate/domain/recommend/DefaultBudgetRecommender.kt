@@ -17,8 +17,9 @@ import kotlin.math.abs
 /**
  * D4 预算推荐：权重可见、先过硬约束、预算不可行必须报告。
  *
- * 范围：CPU / 主板 / 内存 / 显卡（可选）/ 电源 / 硬盘。
- * 机箱/散热不在长期价格数据里，App demo 仍单独保留锚点，不参与本推荐器。
+ * 范围：CPU / 主板 / 内存 / 显卡（可选）/ 电源 / 硬盘，外加散热 + 机箱。
+ * 前 6 类按权重分预算；散热/机箱不占权重，选「最便宜且通过硬约束」的，
+ * 保证生成配置是「装得进去」的完整方案（显卡会受机箱限长约束）。
  *
  * 无 GPU 时必须选有核显的 CPU；否则不会生成一台点不亮的机器。
  */
@@ -48,6 +49,8 @@ class DefaultBudgetRecommender(
             if (needsGpu) add(Category.GPU)
             add(Category.PSU)
             add(Category.STORAGE)
+            add(Category.COOLER)
+            add(Category.CASE)
         }
 
         val optionsByCategory = categories.associateWith { category ->
