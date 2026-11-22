@@ -33,9 +33,9 @@
 
 | 数字 | 含义 | 真相源 |
 |---|---|---|
-| **7869** | 预算 8000 / 游戏 → 6 类推荐总价 | `domain/recommend` 算法实测（rc2 APK 三次一致）：`docs/21-device-evidence.md §21.2`、`docs/defense/DEMO.md`、`HANDOFF.md` |
+| **7900** | 预算 8000 / 游戏 → 8 类推荐总价 | `domain/recommend` 算法实测（rc2 APK 三次一致）：`docs/21-device-evidence.md §21.2`、`docs/defense/DEMO.md`、`HANDOFF.md` |
 
-> **注意**：7869 是推荐算法输出，**不是固定锚点**；目录价格或权重变动会改变它。答辩时以 App 实测为准，不要把它当常量。
+> **注意**：7900 是推荐算法输出，**不是固定锚点**；目录价格或权重变动会改变它。答辩时以 App 实测为准，不要把它当常量。
 
 ---
 
@@ -80,7 +80,7 @@ requiredW = ceil( (cpu.tdpW + gpu.tdpW + 100) × 1.2 )
 | 15 / 60 / 76 / 18 / 12 | 规则 / 矩阵 / 状态机 / 不变量 / 变异 | 王嘉瑞 / 杨壹硕 | `assets/rules`、`tools/check-matrix.mjs` |
 | 30 | 目录记录数 | 刘喆 / 陈思言 | `catalogue-app.json` |
 | 7800 / 7900 | 演示锚点 | 王嘉瑞 | fixture `fx_suggestion_300_plus_100` |
-| 7869 | 推荐示例 | 黄奕维 / 陈思言 | App 实测（非 fixture） |
+| 7900 | 推荐示例 | 黄奕维 / 陈思言 | App 实测（非 fixture） |
 | 337 / 320 | 3D + 冲突锚点 | 阮立坤 / 陈思言 | `catalogue-app.json` + fixture |
 | 588 / 750 / 550 | 电源规则 | 王嘉瑞 | `docs/03 §3.7` + fixture |
 | 2026-11-04 / 2026.11 | 价格快照 | 陈思言 | `catalogue-app.json` + `SOURCES.md` |
