@@ -17,7 +17,7 @@
 |---|---|---|---|
 | 陈思言 | 0:00–2:40 problem | can tell the "good parts, bad fit" story in 60 s without slides | no rule list read aloud; ends on the handover line |
 | 王嘉瑞 | 2:40–4:45 principles | three principles, each with a "why" | "unverified is not a pass" said once, clearly |
-| 黄奕维 | 4:45–11:20 demo | nine steps twice on the tablet, once with the recording | every anchor said: 7869, 7800, 52, +100, 7900, A/B |
+| 黄奕维 | 4:45–11:20 demo | nine steps twice on the tablet, once with the recording | every anchor said: 7900, 7800, 52, +100, 7900, A/B |
 | 阮立坤 | 11:20–12:50 architecture | module story in 90 s + 3D boundary in 30 s | no dependency diagram reading; answers "why not assembly" in one sentence |
 | 杨壹硕 | 12:50–15:00 evidence | four gates + "what none of this proves" in 90 s | the inversion sentence ("turned the cross-check red") is said |
 
