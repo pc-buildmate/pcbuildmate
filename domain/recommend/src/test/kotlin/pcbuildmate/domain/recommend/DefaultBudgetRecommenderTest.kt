@@ -46,6 +46,16 @@ class DefaultBudgetRecommenderTest {
             RuleOperand(Category.PSU, "connectors"), RuleOperand(Category.GPU, "requiredPsuConnectors"), Severity.BLOCKER),
         RuleDef("STORAGE_MB_INTERFACE", RuleKind.CSV_CONTAINS,
             RuleOperand(Category.MOTHERBOARD, "storageInterfaces"), RuleOperand(Category.STORAGE, "interface"), Severity.MAJOR),
+        RuleDef("COOLER_CPU_SOCKET", RuleKind.CSV_CONTAINS,
+            RuleOperand(Category.COOLER, "socketMounts"), RuleOperand(Category.CPU, "socket"), Severity.BLOCKER),
+        RuleDef("MB_CASE_FORM_FACTOR", RuleKind.CSV_CONTAINS,
+            RuleOperand(Category.CASE, "supportedFormFactors"), RuleOperand(Category.MOTHERBOARD, "formFactor"), Severity.BLOCKER),
+        RuleDef("GPU_CASE_LENGTH", RuleKind.NUMERIC_LE,
+            RuleOperand(Category.GPU, "lengthMm"), RuleOperand(Category.CASE, "maxGpuLengthMm"), Severity.BLOCKER),
+        RuleDef("GPU_CASE_THICKNESS", RuleKind.NUMERIC_LE,
+            RuleOperand(Category.GPU, "thicknessMm"), RuleOperand(Category.CASE, "maxGpuThicknessMm"), Severity.BLOCKER),
+        RuleDef("COOLER_CASE_HEIGHT", RuleKind.NUMERIC_LE,
+            RuleOperand(Category.COOLER, "heightMm"), RuleOperand(Category.CASE, "maxCoolerHeightMm"), Severity.BLOCKER),
     )
 
     @Test
@@ -56,7 +66,9 @@ class DefaultBudgetRecommenderTest {
         val build = assertNotNull(result.build)
         assertTrue(build.totalCny <= 8000)
         assertTrue(build.items.any { it.category == Category.GPU })
-        assertEquals(6, build.items.size)
+        assertEquals(8, build.items.size)
+        assertTrue(build.items.any { it.category == Category.COOLER })
+        assertTrue(build.items.any { it.category == Category.CASE })
         assertEquals(0, result.shortfallCny)
         assertEquals(1.0, result.weightsVisible.values.sum(), 1e-9)
         assertTrue(result.weightsVisible[Category.GPU]!! > 0)
@@ -151,6 +163,12 @@ class DefaultBudgetRecommenderTest {
         record("psu-750", Category.PSU, 600,
             "continuousW" to f("750", 750.0), "connectors" to f("8PIN")),
         record("ssd-nvme", Category.STORAGE, 200, "interface" to f("M2_NVME")),
+        record("cooler-160", Category.COOLER, 300,
+            "socketMounts" to f("AM5,LGA1700"), "heightMm" to f("160", 160.0)),
+        record("case-320", Category.CASE, 400,
+            "supportedFormFactors" to f("ATX,MICRO_ATX"), "maxGpuLengthMm" to f("320", 320.0),
+            "maxGpuThicknessMm" to f("60", 60.0), "maxCoolerHeightMm" to f("160", 160.0),
+            "maxGpuSlots" to f("3", 3.0)),
     )
 
     private fun f(value: String, numeric: Double? = null) =
