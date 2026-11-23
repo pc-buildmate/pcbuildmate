@@ -29,13 +29,15 @@
 
 ---
 
-## 2. 推荐示例：¥7,869
+## 2. 推荐示例：¥7,900（8 类）/ 真机记录 ¥7,869（6 类，rc2）
 
 | 数字 | 含义 | 真相源 |
 |---|---|---|
-| **7900** | 预算 8000 / 游戏 → 8 类推荐总价 | `domain/recommend` 算法实测（rc2 APK 三次一致）：`docs/21-device-evidence.md §21.2`、`docs/defense/DEMO.md`、`HANDOFF.md` |
+| **7900** | 预算 8000 / 游戏 → **8 类**（含机箱+散热）推荐总价；目录里没有 ≥337 mm 的机箱，显卡自动降到 300 mm | `#185` 后 main 的算法实测（`DefaultBudgetRecommender` + 真实 30 条目录 / 15 条规则）；`DemoJourneyEndToEndTest` 已钉住此值 |
+| 7869 | 同上，但 rc2 上的 **6 类**旧值 | `docs/21-device-evidence.md §21.2` 三轮真机记录（2026-11-17） |
 
 > **注意**：7900 是推荐算法输出，**不是固定锚点**；目录价格或权重变动会改变它。答辩时以 App 实测为准，不要把它当常量。
+> 真机截图目前仍是 rc2 的 7869/6 类；最终发布包出来后重跑九步，再把 7900 换成真机实测值。
 
 ---
 
@@ -80,7 +82,7 @@ requiredW = ceil( (cpu.tdpW + gpu.tdpW + 100) × 1.2 )
 | 15 / 60 / 76 / 18 / 12 | 规则 / 矩阵 / 状态机 / 不变量 / 变异 | 王嘉瑞 / 杨壹硕 | `assets/rules`、`tools/check-matrix.mjs` |
 | 30 | 目录记录数 | 刘喆 / 陈思言 | `catalogue-app.json` |
 | 7800 / 7900 | 演示锚点 | 王嘉瑞 | fixture `fx_suggestion_300_plus_100` |
-| 7900 | 推荐示例 | 黄奕维 / 陈思言 | App 实测（非 fixture） |
+| 7900 | 推荐示例（8 类） | 黄奕维 / 陈思言 | main 算法实测（#185），真机待最终包重跑 |
 | 337 / 320 | 3D + 冲突锚点 | 阮立坤 / 陈思言 | `catalogue-app.json` + fixture |
 | 588 / 750 / 550 | 电源规则 | 王嘉瑞 | `docs/03 §3.7` + fixture |
 | 2026-11-04 / 2026.11 | 价格快照 | 陈思言 | `catalogue-app.json` + `SOURCES.md` |

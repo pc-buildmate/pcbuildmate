@@ -69,8 +69,9 @@
 **S10 · Cover (5 s)** — "Let me show you what that looks like on a device."
 
 **S11 · Steps 1–2 (60 s)**
-> "Budget 8,000, use case gaming. The recommendation gives six categories with the weights shown —
-> about 7,869 in total. I will use our fixed demo build instead, so the numbers are the same every
+> "Budget 8,000, use case gaming. The recommendation gives eight categories with the weights shown —
+> case and cooler included —
+> about 7,900 in total. I will use our fixed demo build instead, so the numbers are the same every
 > time: 7,800. Notice the graphics card is 337 millimetres and the case allows 320. Both are on
 > screen, and nothing is red yet — because nobody has checked."
 

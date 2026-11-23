@@ -24,8 +24,11 @@
 
 ## 九步口播卡（你点什么 → 念什么）
 
+> 排练口径：在 **rc2** 包上排练时屏幕是 **6 类 / ¥7,869**；最终发布包才是 **8 类 / ¥7,900**。
+> 若在小包上看到 7869，不是 App 坏了，是包旧了。
+
 1. Entry：8000 / 游戏 → **生成配置** → **载入演示配置**
-   > "Six categories, about 7,869. Our anchor build is 7,800."
+   > "Eight categories, case and cooler included, about 7,900. Our anchor build is 7,800."
 2. 工作区 → **"337 millimetres card, 320 millimetre case, on one screen."**
 3. 保存 A → **"A is the baseline."**
 4. 检查 → 指 BIOS 那一行，停一秒
