@@ -27,7 +27,7 @@
 
 ## Demo cue card (nine steps, say the bold part)
 
-1. Entry · 8000 / 游戏 → **"recommendation: six categories, about 7,869"** → load demo **"anchor build: 7,800"**
+1. Entry · 8000 / 游戏 → **"recommendation: eight categories, case and cooler included, about 7,900"** → load demo **"anchor build: 7,800"**
 2. Workspace · **"337 mm card, 320 mm case, on one screen"**
 3. Save A · **"A is the baseline"**
 4. Check · **"score 52; the length is a blocker; the BIOS row is unverified — unverified is not a pass"**

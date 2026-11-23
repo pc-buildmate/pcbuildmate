@@ -63,8 +63,8 @@ no live prices, no account or cloud. Scope is a design decision, not an excuse.
 
 **Slide 10 — Section cover.** Six features, demonstrated live.
 
-**Slide 11 — Step 1–2: budget entry and workspace.** 8000 CNY, gaming; demo build loaded at
-¥7,800; 337 mm GPU and 320 mm case on one screen.
+**Slide 11 — Step 1–2: budget entry and workspace.** 8000 CNY, gaming → eight categories
+(case + cooler included) about ¥7,900; demo build loaded at ¥7,800; 337 mm GPU and 320 mm case on one screen.
 
 **Slide 12 — Step 3–4: save A, then check.** Conflict summary, GPU length BLOCKER (337 > 320),
 and BIOS **unverified** — the line that matters most: unverified is not a pass.
