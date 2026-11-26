@@ -90,7 +90,9 @@ object SceneBuilder {
         // ADR-0011：目录字段优先，缺失才回退板型推断（docs/18 §18.8 #2/#3）
         val slotCount = board?.num("pcieSlotCount")?.toInt()?.takeIf { it in 1..16 } ?: slotCount(formFactor)
         val caseLength = case?.num("maxGpuLengthMm")
-        val caseCoolerHeight = case?.num("maxCoolerHeightMm") ?: 160f
+        // 没有机箱 = 没有上限数据：不能用默认 160 去判「超高」，否则会造出规则引擎没报的假冲突。
+        val caseCoolerHeight = case?.num("maxCoolerHeightMm")
+        val caseGpuThickness = case?.num("maxGpuThicknessMm")
         val caseTop = boardHeight
 
         val boxes = mutableListOf<Box3>()
@@ -124,7 +126,8 @@ object SceneBuilder {
         fun slotZ(k: Int): Float = firstSlotZ - (k - 1) * SLOT_PITCH_MM
         val usedSlots = (1..slotCount).map { slotZ(it) }
         labels += DimLabel(
-            "槽位 Z ${fmt(usedSlots.first())} → ${fmt(usedSlots.last())}（$slotCount 槽）",
+            // 与 note / docs 一样保留一位小数：137.5 不能显示成 138。
+            "槽位 Z ${fmt(usedSlots.first(), 1)} → ${fmt(usedSlots.last(), 1)}（$slotCount 槽）",
             Tone.MUTED,
         )
         notes += if (fieldSlotZ != null) {
@@ -143,6 +146,7 @@ object SceneBuilder {
         val centerZ = slotZ(1)
         if (gpuLength != null) {
             val overLength = caseLength != null && gpuLength > caseLength
+            val overThickness = caseGpuThickness != null && gpuThickness > caseGpuThickness
             // 挡板上沿 = 槽位中线；卡身向下占 thickness
             val gpuTop = centerZ
             val gpuBottom = centerZ - gpuThickness
@@ -152,12 +156,16 @@ object SceneBuilder {
                 min = Vec3(0f, 0f, gpuBottom),
                 max = Vec3(GPU_WIDTH_MM, gpuLength, gpuTop),
                 style = BoxStyle.GPU,
-                conflict = overLength,
+                conflict = overLength || overThickness,
             )
             labels += DimLabel("长 ${fmt(gpuLength)} mm", if (overLength) Tone.WARN else Tone.NORMAL)
-            labels += DimLabel("厚 ${fmt(gpuThickness)} / ${fmt(gpuThickness / SLOT_PITCH_MM, 1)} 槽", Tone.NORMAL)
+            // 目录给了 slotWidth 就用它；没有才用厚度/槽距折算。
+            val slotWidth = gpu.num("slotWidth")
+            val slotsLabel = if (slotWidth != null) fmt(slotWidth, 1) else fmt(gpuThickness / SLOT_PITCH_MM, 1)
+            labels += DimLabel("厚 ${fmt(gpuThickness)} / $slotsLabel 槽", if (overThickness) Tone.WARN else Tone.NORMAL)
             notes += "显卡在首个 x16 槽（挡板上沿 Z=${fmt(centerZ, 1)}），宽 ${fmt(GPU_WIDTH_MM)}，长度沿 Y"
             if (overLength) labels += DimLabel("超出限长 ${fmt(gpuLength - caseLength!!)} mm", Tone.WARN)
+            if (overThickness) labels += DimLabel("超出限厚 ${fmt(gpuThickness - caseGpuThickness!!)} mm", Tone.WARN)
         } else {
             labels += DimLabel("无独显 · 核显输出", Tone.MUTED)
             notes += "当前配置没有显卡条目"
@@ -184,7 +192,8 @@ object SceneBuilder {
         // 散热：高度沿 X，底面在板面上方 CPU 区域
         val coolerHeight = cooler?.num("heightMm")
         if (coolerHeight != null) {
-            val overHeight = coolerHeight > caseCoolerHeight
+            val limit = caseCoolerHeight
+            val overHeight = limit != null && coolerHeight > limit
             // CPU 散热在板上部（I/O 下方、Y 向前）
             val z0 = boardHeight - 140f
             val z1 = z0 + 130f
@@ -198,34 +207,42 @@ object SceneBuilder {
                 style = BoxStyle.COOLER,
                 conflict = overHeight,
             )
-            labels += DimLabel("高 ${fmt(coolerHeight)} / 限高 ${fmt(caseCoolerHeight)}", if (overHeight) Tone.WARN else Tone.NORMAL)
-            limits += LimitPlane(
-                id = "case-cooler",
-                label = "侧板限高 ${fmt(caseCoolerHeight)}",
-                corners = listOf(
-                    Vec3(caseCoolerHeight, y0, z0),
-                    Vec3(caseCoolerHeight, y0 + 130f, z0),
-                    Vec3(caseCoolerHeight, y0 + 130f, z1),
-                    Vec3(caseCoolerHeight, y0, z1),
-                ),
-                conflict = overHeight,
-            )
+            if (limit != null) {
+                labels += DimLabel("高 ${fmt(coolerHeight)} / 限高 ${fmt(limit)}", if (overHeight) Tone.WARN else Tone.NORMAL)
+                limits += LimitPlane(
+                    id = "case-cooler",
+                    label = "侧板限高 ${fmt(limit)}",
+                    corners = listOf(
+                        Vec3(limit, y0, z0),
+                        Vec3(limit, y0 + 130f, z0),
+                        Vec3(limit, y0 + 130f, z1),
+                        Vec3(limit, y0, z1),
+                    ),
+                    conflict = overHeight,
+                )
+            } else {
+                labels += DimLabel("高 ${fmt(coolerHeight)} / 未选择机箱 · 不判限高", Tone.MUTED)
+                notes += "没有机箱限高数据：不判断散热是否超高"
+            }
         } else {
             labels += DimLabel("未选择散热 · 不画散热器", Tone.MUTED)
             notes += "当前配置没有散热条目：不显示散热器预览，也不判断限高"
         }
 
-        // 机箱允许空间：透明 ghost，上沿与主板上沿对齐
-        val caseWidth = maxOf(GPU_WIDTH_MM, coolerHeight ?: 160f, IO_WIDTH_MM) + 20f
-        val caseDepth = maxOf(caseLength ?: 320f, 300f) + 70f
-        boxes += Box3(
-            id = "case",
-            label = "机箱允许空间",
-            min = Vec3(-10f, -20f, 0f),
-            max = Vec3(caseWidth, caseDepth, caseTop),
-            style = BoxStyle.CASE,
-            ghost = true,
-        )
+        // 机箱允许空间：透明 ghost，上沿与主板上沿对齐。
+        // 没有机箱记录就不画——用 320mm 之类的默认值「编」一个外壳，会让空态看起来像是真的。
+        if (case != null && caseLength != null) {
+            val caseWidth = maxOf(GPU_WIDTH_MM, coolerHeight ?: 160f, IO_WIDTH_MM) + 20f
+            val caseDepth = maxOf(caseLength, 300f) + 70f
+            boxes += Box3(
+                id = "case",
+                label = "机箱允许空间",
+                min = Vec3(-10f, -20f, 0f),
+                max = Vec3(caseWidth, caseDepth, caseTop),
+                style = BoxStyle.CASE,
+                ghost = true,
+            )
+        }
 
         notes += "盒体只表达尺寸与间隙；X=法线，Y=深度，Z=高度（docs/18）"
 

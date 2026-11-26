@@ -174,6 +174,66 @@ class Scene3dTest {
         assertEquals(40f, bilinear(quad, 0.5f, 0.5f).y, 0.01f)
     }
 
+    @Test
+    fun `no case means no cooler height verdict and no fake conflict`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(
+                revisionWith(gpu = "337", case = "320", cooler = "190", withCase = false),
+                catalogue(),
+            ),
+        )
+
+        assertTrue(scene.limits.none { it.id == "case-cooler" }, "没有机箱就不该有侧板限高面")
+        assertTrue(
+            scene.boxes.none { it.style == BoxStyle.COOLER && it.conflict },
+            "没有限高数据时不能把默认 160 当成上限去判超高",
+        )
+        assertTrue(scene.labels.any { it.text.contains("不判限高") && it.tone == Tone.MUTED })
+    }
+
+    @Test
+    fun `no case means no invented enclosure box`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "337", case = "320", withCase = false), catalogue()),
+        )
+
+        assertTrue(scene.boxes.none { it.style == BoxStyle.CASE }, "没有机箱记录时不该画「机箱允许空间」")
+        assertTrue(scene.labels.any { it.text.contains("未选择机箱") })
+    }
+
+    @Test
+    fun `gpu thicker than the case limit is flagged like the rule engine does`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(
+                revisionWith(gpu = "337", case = "320"),
+                // 限长放宽到 400，只让厚度成为冲突（显卡 61，机箱 55）
+                catalogue(caseMaxGpuLength = 400.0, caseMaxGpuThickness = 55.0),
+            ),
+        )
+        val gpu = scene.boxes.first { it.style == BoxStyle.GPU }
+
+        assertTrue(gpu.conflict, "厚度超限要和 `GPU_CASE_THICKNESS` 一样标红")
+        assertTrue(scene.hasConflict)
+        assertTrue(scene.labels.any { it.text.contains("超出限厚") })
+    }
+
+    @Test
+    fun `slot label keeps one decimal instead of rounding to whole millimetres`() {
+        val scene = assertNotNull(
+            SceneBuilder.build(revisionWith(gpu = "337", case = "320"), catalogue(slotMm = 137.5)),
+        )
+
+        assertTrue(scene.labels.any { it.text.contains("137.5") }, "槽位标签应与目录字段一致")
+        assertTrue(scene.labels.none { it.text.contains("槽位 Z 138") })
+    }
+
+    @Test
+    fun `top view pitch survives the drag clamp`() {
+        assertEquals(1.5708f, clampPitch(1.5708f), 1e-4f, "俯视预设不能被拖动用的限制压回去")
+        assertTrue(clampPitch(3f) <= PITCH_LIMIT)
+        assertTrue(clampPitch(-3f) >= -PITCH_LIMIT)
+    }
+
     // ---------------------------------------------------------------- fixture
 
     private fun revisionWith(
@@ -181,11 +241,12 @@ class Scene3dTest {
         case: String,
         cooler: String? = null,
         formFactor: String = "ATX",
+        withCase: Boolean = true,
     ): BuildRevision {
         val items = mutableListOf(
             BuildItem("mb", Category.MOTHERBOARD, 1, 900),
-            BuildItem("case-$case", Category.CASE, 1, 400),
         )
+        if (withCase) items += BuildItem("case-$case", Category.CASE, 1, 400)
         if (gpu != null) items += BuildItem("gpu-$gpu", Category.GPU, 1, 3400)
         if (cooler != null) items += BuildItem("cooler-$cooler", Category.COOLER, 1, 300)
         return BuildRevision(
@@ -203,25 +264,33 @@ class Scene3dTest {
         formFactor: String = "ATX",
         slotMm: Double? = null,
         slotCount: Int? = null,
+        caseMaxGpuLength: Double = 320.0,
+        caseMaxGpuThickness: Double = 80.0,
+        caseMaxCoolerHeight: Double = 175.0,
     ): CataloguePort {
         val boardAttrs = buildMap {
             put("formFactor", f(formFactor))
             if (slotMm != null) put("pcieX16SlotMm", f(fmtOf(slotMm), slotMm))
             if (slotCount != null) put("pcieSlotCount", f(slotCount.toString(), slotCount.toDouble()))
         }
-        return catalogueOf(boardAttrs)
+        return catalogueOf(boardAttrs, caseMaxGpuLength, caseMaxGpuThickness, caseMaxCoolerHeight)
     }
 
     private fun fmtOf(value: Double): String =
         if (value % 1.0 == 0.0) value.toInt().toString() else value.toString()
 
-    private fun catalogueOf(boardAttrs: Map<String, FieldValue>): CataloguePort = MapCatalogue(
+    private fun catalogueOf(
+        boardAttrs: Map<String, FieldValue>,
+        caseMaxGpuLength: Double = 320.0,
+        caseMaxGpuThickness: Double = 80.0,
+        caseMaxCoolerHeight: Double = 175.0,
+    ): CataloguePort = MapCatalogue(
         listOf(
             record("mb", Category.MOTHERBOARD, boardAttrs),
             record("case-320", Category.CASE, mapOf(
-                "maxGpuLengthMm" to f("320", 320.0),
-                "maxGpuThicknessMm" to f("80", 80.0),
-                "maxCoolerHeightMm" to f("175", 175.0),
+                "maxGpuLengthMm" to f(fmtOf(caseMaxGpuLength), caseMaxGpuLength),
+                "maxGpuThicknessMm" to f(fmtOf(caseMaxGpuThickness), caseMaxGpuThickness),
+                "maxCoolerHeightMm" to f(fmtOf(caseMaxCoolerHeight), caseMaxCoolerHeight),
             )),
             record("gpu-337", Category.GPU, mapOf(
                 "lengthMm" to f("337", 337.0),
