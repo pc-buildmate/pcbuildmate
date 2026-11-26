@@ -103,8 +103,11 @@ class DefaultReplacementAdvisor(
 
         val newOutcomes = evaluator.evaluate(newRevision)
 
+        // conflictId 里带 componentId：换件后即使同一条规则仍然冲突，id 也会变。
+        // 所以除了原 id，还要按 ruleId 判断「这条规则是否真的不再 Conflict」，
+        // 否则 MAJOR/MINOR 规则会把「换个零件照样冲突」当成已解决。
         val targetStillConflicts = newOutcomes.any {
-            it is RuleOutcome.Conflict && it.conflictId == conflict.conflictId
+            it is RuleOutcome.Conflict && (it.conflictId == conflict.conflictId || it.ruleId == conflict.ruleId)
         }
         if (targetStillConflicts) return null
 
