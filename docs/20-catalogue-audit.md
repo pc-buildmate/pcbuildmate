@@ -3,16 +3,16 @@
 > 生成方式：`node tools/audit-catalogue.mjs`。本文件的统计与表格由脚本产出，数据变更请改 `pricedata/` 后重新导出，不要手改本文件。
 > 审计对象：`assets/catalogue/catalogue-app.json` — 30 条 / 版本 `2026.11` / 价格日 `2026-11-04` / `isDemo=true`
 > 判定依据：[`docs/03-rules.md`](03-rules.md) §3.3 冻结字段表与 §3.4 CSV、数值解析规范；任务包 [`docs/tasks/DATA-03.md`](tasks/DATA-03.md)
-> 运行结果：**30 条记录、168 个字段逐项检查完毕；异常 2 条（待修 2 条）；退出码 1**
+> 运行结果：**30 条记录、170 个字段逐项检查完毕；异常 0 条（待修 0 条）；退出码 0**
 
 ## 20.1 结论
 
 - 记录级（必需键、ID 唯一、类别、价格与日期、版本一致）：30 条全部合格；
-- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：168 个字段中有 2 项待修；
+- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：170 个字段全部合格；
 - 交叉级（板型↔机箱、socket↔主板、内存代数↔主板、芯片组↔主板）：无断链；
 - 来源表：本轮采集 28/28 条与目录对上，陈旧 0 条、目录缺来源 0 条，见 20.6；
-- 异常清单：2 条，其中 **2 条待修**，见 20.3；
-- 待答辩关注项：字段级 `sources` 落地 0/168，见 20.5。
+- 异常清单：0 条，全部「已解释并定向」，无待修项，见 20.3；
+- 待答辩关注项：字段级 `sources` 落地 0/170，见 20.5。
 
 ## 20.2 逐条结果
 
@@ -27,7 +27,7 @@
 | 7 | `mb-demo-b650` | MOTHERBOARD | TUF B650-PLUS | 12 | PASS | PASS | — |
 | 8 | `mb-demo-b850-cvn` | MOTHERBOARD | CVN B850 GAMING PRO WIFI7 V14 | 12 | PASS | PASS | — |
 | 9 | `mb-demo-b850m` | MOTHERBOARD | iGame B850M ULTRA-S V14 | 12 | PASS | PASS | — |
-| 10 | `mb-demo-lga1700` | MOTHERBOARD | PRO B760M-A | 10 | PASS | MISSING_FIELD | MISSING_FIELD |
+| 10 | `mb-demo-lga1700` | MOTHERBOARD | PRO B760M-A | 12 | PASS | PASS | — |
 | 11 | `mb-demo-z890m` | MOTHERBOARD | iGame Z890M ULTRA W V20 | 12 | PASS | PASS | — |
 | 12 | `mem-demo-ddr4-32` | MEMORY | FURY Beast 32GB DDR4 | 4 | PASS | PASS | — |
 | 13 | `mem-demo-ddr5-16` | MEMORY | FURY Beast DDR5 6000 16GB | 4 | PASS | PASS | — |
@@ -51,10 +51,7 @@
 
 ## 20.3 异常与解释
 
-| # | 记录 | 检查项 | 现象 | 判定 | 去向 |
-|---:|---|---|---|---|---|
-| 1 | `mb-demo-lga1700` | 冻结表要求的字段不存在（`MISSING_FIELD` / `pcieX16SlotMm`） | 冻结表要求但记录中没有该字段 | **待修** | 需在本卡或后续卡修复 |
-| 2 | `mb-demo-lga1700` | 冻结表要求的字段不存在（`MISSING_FIELD` / `pcieSlotCount`） | 冻结表要求但记录中没有该字段 | **待修** | 需在本卡或后续卡修复 |
+无异常。
 
 ## 20.4 交叉一致性
 
@@ -80,9 +77,9 @@
 
 | 指标 | 值 |
 |---|---:|
-| 字段总数 | 168 |
-| `VERIFIED` | 144 |
-| `REPORTED` | 23 |
+| 字段总数 | 170 |
+| `VERIFIED` | 138 |
+| `REPORTED` | 31 |
 | `EMPTY` | 1 |
 | 字段级 `sources` 非空 | 0 |
 | 字段级来源覆盖率 | 0% |
@@ -92,21 +89,21 @@
 
 `EMPTY` 是合法三态：规则读到即返回 `UNVERIFIED`，不视为缺数据 bug。本次共 1 个：`mb-demo-b650.biosGeneration`。
 
-**要点**：168 个字段的 `sources` 全部为空数组——字段级证据目前没有落地 URL；`VERIFIED / REPORTED` 默认来自 `pricedata` 导出时整条记录的 `confidence`；自 2026-11 起 `specs_json` 可对单个字段显式写 `state` 覆盖它（见 `docs/24 §4`）（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。
+**要点**：170 个字段的 `sources` 全部为空数组——字段级证据目前没有落地 URL；`VERIFIED / REPORTED` 默认来自 `pricedata` 导出时整条记录的 `confidence`；自 2026-11 起 `specs_json` 可对单个字段显式写 `state` 覆盖它（见 `docs/24 §4`）（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。
 
 ### 20.5.1 分门类覆盖率
 
 | 类别 | 记录 | 字段 | 字段级有来源 | 覆盖率 |
 |---|---:|---:|---:|---:|
 | CPU | 5 | 25 | 0 | 0% |
-| MOTHERBOARD | 6 | 70 | 0 | 0% |
+| MOTHERBOARD | 6 | 72 | 0 | 0% |
 | MEMORY | 3 | 12 | 0 | 0% |
 | GPU | 6 | 36 | 0 | 0% |
 | PSU | 3 | 6 | 0 | 0% |
 | CASE | 2 | 12 | 0 | 0% |
 | COOLER | 2 | 4 | 0 | 0% |
 | STORAGE | 3 | 3 | 0 | 0% |
-| **合计** | **30** | **168** | **0** | **0%** |
+| **合计** | **30** | **170** | **0** | **0%** |
 
 ### 20.5.2 冻结表反向覆盖（声明了、但没有任何记录使用的字段）
 

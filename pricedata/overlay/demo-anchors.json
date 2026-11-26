@@ -130,8 +130,8 @@
           "numeric": 160
         },
         "socketMounts": {
-          "value": "AM5,AM4,LGA1700",
-          "state": "VERIFIED",
+          "value": "AM4,AM5,LGA1700,LGA1851",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": null
@@ -157,8 +157,8 @@
           "numeric": 175
         },
         "socketMounts": {
-          "value": "AM4,LGA1700",
-          "state": "VERIFIED",
+          "value": "AM4,AM5,LGA1700,LGA1851",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": null

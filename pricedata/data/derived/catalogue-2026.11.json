@@ -654,7 +654,7 @@
         },
         "pcieX16SlotMm": {
           "value": "76.5",
-          "state": "VERIFIED",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": 76.5
@@ -751,7 +751,7 @@
         },
         "pcieX16SlotMm": {
           "value": "137.5",
-          "state": "VERIFIED",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": 137.5
@@ -848,7 +848,7 @@
         },
         "pcieX16SlotMm": {
           "value": "137.5",
-          "state": "VERIFIED",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": 137.5
@@ -945,7 +945,7 @@
         },
         "pcieX16SlotMm": {
           "value": "76.5",
-          "state": "VERIFIED",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": 76.5
@@ -1039,6 +1039,20 @@
           "sources": [],
           "conflict": false,
           "numeric": null
+        },
+        "pcieX16SlotMm": {
+          "value": "76.5",
+          "state": "REPORTED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 76.5
+        },
+        "pcieSlotCount": {
+          "value": "3",
+          "state": "VERIFIED",
+          "sources": [],
+          "conflict": false,
+          "numeric": 3
         }
       },
       "catalogueVersion": "2026.11",
@@ -1125,7 +1139,7 @@
         },
         "pcieX16SlotMm": {
           "value": "76.5",
-          "state": "VERIFIED",
+          "state": "REPORTED",
           "sources": [],
           "conflict": false,
           "numeric": 76.5
