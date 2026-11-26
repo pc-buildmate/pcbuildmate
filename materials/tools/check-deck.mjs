@@ -10,7 +10,7 @@
  *   2. 第 2 页起每页页脚 = 「N / 30」，首页没有页脚；
  *   3. 正文页（3–25 中有备注的）备注必须有 ⏱ 起止 + 中文提示；附录页（26–30）不能有 ⏱；
  *   4. ⏱ 时间轴不重叠、递增，最后一页收在 15:00；正文页之间的空档只允许出现在无备注的分节页上；
- *   5. 附录 D 的「30 records / 168 fields」与 assets/catalogue 实际一致。
+ *   5. 附录 D 的「30 records / 170 fields」与 assets/catalogue 实际一致。
  *
  * 用法：node materials/tools/check-deck.mjs [--deck path]
  * 退出码：0 = 全过；1 = 有问题或读不到文件。

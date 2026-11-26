@@ -63,7 +63,7 @@
 - **Say**: not "we do not call the network" but "the artifact cannot".
 
 ## 9. "Data is dated and audited"
-中文提示：30 条、快照 2026-11-04、记录级来源（27 条带 URL）；字段级 0/168 主动说。
+中文提示：30 条、快照 2026-11-04、记录级来源（27 条带 URL）；字段级 0/170 主动说。
 
 - **Files**: `assets/catalogue/catalogue-app.json`, `assets/catalogue/SOURCES.md`,
   `tools/audit-catalogue.mjs` → `docs/20`.
