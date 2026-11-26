@@ -49,10 +49,12 @@ class ShippedCatalogueRejectionTest {
     fun `rejects an empty field that still carries a numeric`() {
         // 与 apps 的 EMPTY 规则一致：EMPTY 只能表示「没有证据」，不许留一个能用的 numeric，
         // 否则 3D 的 num()（numeric ?: value，不看 state）会把它当已知尺寸用。
-        val original = "          \"value\": null,\r\n          \"state\": \"EMPTY\",\r\n          \"sources\": [],\r\n          \"conflict\": false,\r\n          \"numeric\": null"
+        // 资产在本地是 CRLF、在 CI 是 LF：先归一换行，否则测试只在其中一种环境里成立。
+        val text = shippedText().replace("\r\n", "\n")
+        val original = "          \"value\": null,\n          \"state\": \"EMPTY\",\n          \"sources\": [],\n          \"conflict\": false,\n          \"numeric\": null"
         val broken = original.replace("\"numeric\": null", "\"numeric\": 1.0")
-        assertTrue(shippedText().contains(original), "上架资产里找不到唯一的 EMPTY 字段块，测试需要更新")
-        assertFailsWith<IllegalArgumentException> { parse(shippedText().replaceFirst(original, broken)) }
+        assertTrue(text.contains(original), "上架资产里找不到唯一的 EMPTY 字段块，测试需要更新")
+        assertFailsWith<IllegalArgumentException> { parse(text.replaceFirst(original, broken)) }
     }
 
     @Test
