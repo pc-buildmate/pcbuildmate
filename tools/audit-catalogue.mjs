@@ -395,9 +395,13 @@ lines.push(`> 运行结果：**${records.length} 条记录、${fieldTotal} 个�
   + `异常 ${anomalies.length} 条（待修 ${unexplained.length} 条）；退出码 ${unexplained.length === 0 ? 0 : 1}**`, "");
 
 lines.push("## 20.1 结论", "");
-lines.push(`- 记录级（必需键、ID 唯一、类别、价格与日期、版本一致）：${records.length} 条全部合格；`);
-lines.push(`- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：${fieldTotal} 个字段全部合格；`);
-lines.push(`- 交叉级（板型↔机箱、socket↔主板、内存代数↔主板、芯片组↔主板）：无断链；`);
+// 结论必须由异常推出：曾经这里写死「全部合格」，结果报告一边说全部合格、一边列出 2 条待修。
+const pendingByScope = (scope) => unexplained.filter((item) => item.scope === scope).length;
+const verdict = (total, unit, pending) =>
+  pending === 0 ? `${total} ${unit}全部合格` : `${total} ${unit}中有 ${pending} 项待修`;
+lines.push(`- 记录级（必需键、ID 唯一、类别、价格与日期、版本一致）：${verdict(records.length, "条", pendingByScope("record"))}；`);
+lines.push(`- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：${verdict(fieldTotal, "个字段", pendingByScope("field"))}；`);
+lines.push(`- 交叉级（板型↔机箱、socket↔主板、内存代数↔主板、芯片组↔主板）：${pendingByScope("cross") === 0 ? "无断链" : `${pendingByScope("cross")} 处断链待修`}；`);
 lines.push(`- 来源表：本轮采集 ${matchedSources.length}/${sourcedRows.length} 条与目录对上，`
   + `陈旧 ${staleSources.length} 条、目录缺来源 ${missingSources.length} 条，见 20.6；`);
 if (unexplained.length === 0) {
@@ -470,7 +474,8 @@ lines.push("");
 lines.push(`\`EMPTY\` 是合法三态：规则读到即返回 \`UNVERIFIED\`，不视为缺数据 bug。本次共 `
   + `${emptyFields.length} 个：${emptyFields.map((item) => `\`${item}\``).join("、") || "无"}。`, "");
 lines.push(`**要点**：${fieldTotal} 个字段的 \`sources\` 全部为空数组——字段级证据目前没有落地 URL；`
-  + "`VERIFIED / REPORTED` 的差别来自 `pricedata` 导出时整条记录的 `confidence`"
+  + "`VERIFIED / REPORTED` 默认来自 `pricedata` 导出时整条记录的 `confidence`；"
+  + "自 2026-11 起 `specs_json` 可对单个字段显式写 `state` 覆盖它（见 `docs/24 §4`）"
   + "（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），"
   + "记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。"
   + "答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。", "");
