@@ -36,33 +36,62 @@ def validate(rows: list[Row]) -> list[str]:
     return errors
 
 
+SPEC_KEYS = {"value", "numeric", "state"}
+STATES = {"VERIFIED", "REPORTED", "EMPTY"}
+
+
 def _spec_state_errors(r: Row) -> list[str]:
     """字段级 state 覆盖的取值校验（ADR-0011 决策 5 是**每字段**的证据等级）。
 
     升级为 `VERIFIED`（低 confidence 记录里把某字段提成 VERIFIED）是允许的，但这个开关
     既能降级也能提级：PR 描述里必须给出处，否则审查无法判断证据够不够。
+
+    同时把「能生成坏目录」的形状挡在导出前，而不是等 audit 报——两套闸门对同一份数据的
+    判断必须一致：
+    - value 缺失（None 或空串）时不许带 numeric，否则导出 EMPTY + numeric；
+    - numeric 与可解析的 value 必须一致；
+    - 未知键直接报错，不要静默丢弃（例如写成 `statee`、或塞一个不会被导出的 `sources`）。
     """
     errors: list[str] = []
     for path, spec in r.specs.items():
         if not isinstance(spec, dict):
             errors.append(f"{r.product_id}.{path}: spec 必须是对象")
             continue
+
+        unknown = set(spec) - SPEC_KEYS
+        if unknown:
+            errors.append(f"{r.product_id}.{path}: 未知的 spec 键 {sorted(unknown)}（只支持 {sorted(SPEC_KEYS)}）")
+
         state = spec.get("state")
-        if state is None:
-            continue
         value = spec.get("value")
         numeric = spec.get("numeric")
-        if state not in {"VERIFIED", "REPORTED", "EMPTY"}:
+        missing_value = value is None or (isinstance(value, str) and value.strip() == "")
+
+        if state is not None and state not in STATES:
             errors.append(f"{r.product_id}.{path}: state 只能是 VERIFIED/REPORTED/EMPTY，实际 {state!r}")
         elif state == "EMPTY":
             # 与 tools/audit-catalogue.mjs 的「EMPTY 必须无值」一致，避免 validate 过、audit 报错。
             # numeric 也要挡：3D 预览的 num() 是 numeric ?: value，不查 state，会拿 EMPTY 的数去画尺寸。
-            if value is not None:
+            if not missing_value:
                 errors.append(f"{r.product_id}.{path}: state=EMPTY 但带 value={value!r}")
             if numeric is not None:
                 errors.append(f"{r.product_id}.{path}: state=EMPTY 但带 numeric={numeric!r}")
-        elif value is None:
+        elif state in {"VERIFIED", "REPORTED"} and missing_value:
             errors.append(f"{r.product_id}.{path}: state={state} 但没有 value")
+        elif state is None and missing_value and numeric is not None:
+            # 没写 state 时 state 由 value 推导：value 缺失就是 EMPTY，同样不许留 numeric。
+            errors.append(f"{r.product_id}.{path}: 没有 value 却带 numeric={numeric!r}")
+
+        if numeric is not None and not missing_value:
+            try:
+                parsed = float(value)
+            except (TypeError, ValueError):
+                errors.append(f"{r.product_id}.{path}: numeric={numeric!r} 但 value={value!r} 不是数字")
+            else:
+                if abs(parsed - float(numeric)) > 1e-9:
+                    errors.append(
+                        f"{r.product_id}.{path}: numeric={numeric!r} 与 value={value!r} 不一致"
+                    )
     return errors
 
 
