@@ -111,7 +111,7 @@ fun Preview3DScreen(
                         detectDragGestures { change, drag ->
                             change.consume()
                             yaw += drag.x * 0.010f
-                            pitch = (pitch + drag.y * 0.008f).coerceIn(-0.9f, 0.9f)
+                            pitch = clampPitch(pitch + drag.y * 0.008f)
                         }
                     },
             ) {
@@ -134,7 +134,7 @@ fun Preview3DScreen(
                     AssistChip(
                         onClick = {
                             yaw = -1.5708f
-                            pitch = 0f
+                            pitch = clampPitch(0f)
                             zoom = 1f
                         },
                         label = { Text(stringResource(R.string.preview3d_view_board), style = MaterialTheme.typography.labelSmall) },
@@ -142,7 +142,7 @@ fun Preview3DScreen(
                     AssistChip(
                         onClick = {
                             yaw = 0f
-                            pitch = 1.5708f
+                            pitch = clampPitch(1.5708f)
                             zoom = 1f
                         },
                         label = { Text(stringResource(R.string.preview3d_view_top), style = MaterialTheme.typography.labelSmall) },
@@ -150,7 +150,7 @@ fun Preview3DScreen(
                     AssistChip(
                         onClick = {
                             yaw = 0f
-                            pitch = 0f
+                            pitch = clampPitch(0f)
                             zoom = 1f
                         },
                         label = { Text(stringResource(R.string.preview3d_view_rear), style = MaterialTheme.typography.labelSmall) },

@@ -17,6 +17,14 @@ data class ViewPose(
 
 data class P2(val x: Float, val y: Float, val depth: Float)
 
+/**
+ * 俯仰上限：俯视预设需要接近 π/2，拖动时若用更小的限制，点完预设再拖一下会「跳」。
+ * 拖动与三个预设都用 [clampPitch]，保证任何入口得到的 pose 都是合法值。
+ */
+const val PITCH_LIMIT = 1.5708f
+
+fun clampPitch(pitch: Float): Float = pitch.coerceIn(-PITCH_LIMIT, PITCH_LIMIT)
+
 enum class Face { TOP, BOTTOM, LEFT, RIGHT, FRONT, BACK }
 
 data class FaceCorners(val face: Face, val normal: Vec3, val corners: List<Vec3>)
