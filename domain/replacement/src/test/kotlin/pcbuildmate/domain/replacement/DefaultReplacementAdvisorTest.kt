@@ -125,6 +125,47 @@ class DefaultReplacementAdvisorTest {
     }
 
     @Test
+    fun `filters a candidate whose rule still conflicts under a new conflict id`() {
+        // 两块主板都只支持 M2，SATA 盘对谁都是冲突；换块主板 ruleId 仍然 CONFLICT，
+        // 只是 conflictId 里的 componentId 变了。这种候选不能算「已解决」。
+        val rule = RuleDef(
+            ruleId = "STORAGE_MB_INTERFACE",
+            kind = RuleKind.CSV_CONTAINS,
+            left = RuleOperand(Category.MOTHERBOARD, "storageInterfaces"),
+            right = RuleOperand(Category.STORAGE, "interface"),
+            severity = Severity.MAJOR,
+        )
+        val port = MapCatalogue(
+            listOf(
+                record("mb-a", Category.MOTHERBOARD, 900, "storageInterfaces" to field("M2_NVME")),
+                record("mb-b", Category.MOTHERBOARD, 950, "storageInterfaces" to field("M2_NVME")),
+                record("ssd-sata", Category.STORAGE, 200, "interface" to field("SATA")),
+            ),
+        )
+        val engine = DefaultRuleEngine(listOf(rule), port)
+        val base = BuildRevision(
+            id = 1,
+            buildId = "mb-sata",
+            items = listOf(
+                item("mb-a", Category.MOTHERBOARD, 900),
+                item("ssd-sata", Category.STORAGE, 200),
+            ),
+            totalCny = 1100,
+            catalogueVersion = "static-v1",
+            priceDate = "2026-10-31",
+            userModified = false,
+        )
+        val conflict = engine.evaluate(base)
+            .filterIsInstance<RuleOutcome.Conflict>()
+            .single { it.ruleId == "STORAGE_MB_INTERFACE" }
+
+        val result = DefaultReplacementAdvisor(port, engine).suggest(base, conflict)
+
+        assertTrue(result.candidates.isEmpty(), "换一块同样只支持 M2 的主板，规则仍然冲突，不能当候选")
+        assertNotNull(result.noCandidate)
+    }
+
+    @Test
     fun `is deterministic`() {
         val advisor = advisor()
         val a = advisor.suggest(base(), conflict())
