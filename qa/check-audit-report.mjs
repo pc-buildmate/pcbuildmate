@@ -69,6 +69,7 @@ export function parseReport(text) {
     fieldsRow: fieldsRow ? +fieldsRow[1] : null,
     urls: urlRow ? +urlRow[1] : null,
     total: urlRow ? +urlRow[2] : null,
+    claimsAllFieldsOk: /个字段全部合格/.test(text),
     items: text
       .split("\n")
       .map(reportItem)
@@ -96,6 +97,10 @@ export function compare(actual, reported) {
   }
   if (actual.urls !== null && reported.urls !== null && reported.urls !== actual.urls) {
     problems.push(`带 URL 的记录数：实测 ${actual.urls}，报告 ${reported.urls}`);
+  }
+  // 结论句必须与待修数一致：曾经报告一边写「168 个字段全部合格」、一边列出 2 条待修。
+  if (actual.pending > 0 && reported.claimsAllFieldsOk) {
+    problems.push(`报告声称「字段全部合格」，但实测有 ${actual.pending} 条待修`);
   }
   // 条数对上不等于内容对上：换了一条异常但数量不变时，上面几项全都发现不了。
   if (Array.isArray(actual.items) && Array.isArray(reported.items)) {
@@ -152,13 +157,26 @@ function selfTest() {
     "> 运行结果：**30 条记录、158 个字段逐项检查完毕；异常 2 条（待修 0 条）；退出码 0**\n\n| 字段总数 | 158 |\n\n| 　其中本轮采集带 URL | 14 / 30 |",
   );
 
+  // 结论句和待修数打架：数字全对，但正文声称「字段全部合格」。
+  const falseClaim = parseReport(
+    [
+      "> 运行结果：**30 条记录、168 个字段逐项检查完毕；异常 2 条（待修 2 条）；退出码 1**",
+      "",
+      "| 字段总数 | 168 |",
+      "",
+      "- 字段级：168 个字段全部合格；",
+    ].join("\n"),
+  );
+
   const p1 = compare(actual, good);
   const p2 = compare(actual, swapped);
   const p3 = compare(actual, stale);
+  const p4 = compare(actual, falseClaim);
   const ok =
     p1.length === 0 &&
     p2.some((x) => x.includes("报告缺少异常：MISSING_FIELD mb-demo-lga1700.pcieX16SlotMm")) &&
     p2.some((x) => x.includes("报告多出异常：MISSING_FIELD mb-demo-b650.pcieX16SlotMm")) &&
+    p4.some((x) => x.includes("字段全部合格")) &&
     p3.some((x) => x.includes("字段数")) &&
     p3.some((x) => x.includes("退出码"));
   if (!ok) {

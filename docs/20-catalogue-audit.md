@@ -8,7 +8,7 @@
 ## 20.1 结论
 
 - 记录级（必需键、ID 唯一、类别、价格与日期、版本一致）：30 条全部合格；
-- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：168 个字段全部合格；
+- 字段级（冻结表字段齐全、枚举/正则/版本格式/数值下限、证据三态）：168 个字段中有 2 项待修；
 - 交叉级（板型↔机箱、socket↔主板、内存代数↔主板、芯片组↔主板）：无断链；
 - 来源表：本轮采集 28/28 条与目录对上，陈旧 0 条、目录缺来源 0 条，见 20.6；
 - 异常清单：2 条，其中 **2 条待修**，见 20.3；
@@ -92,7 +92,7 @@
 
 `EMPTY` 是合法三态：规则读到即返回 `UNVERIFIED`，不视为缺数据 bug。本次共 1 个：`mb-demo-b650.biosGeneration`。
 
-**要点**：168 个字段的 `sources` 全部为空数组——字段级证据目前没有落地 URL；`VERIFIED / REPORTED` 的差别来自 `pricedata` 导出时整条记录的 `confidence`（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。
+**要点**：168 个字段的 `sources` 全部为空数组——字段级证据目前没有落地 URL；`VERIFIED / REPORTED` 默认来自 `pricedata` 导出时整条记录的 `confidence`；自 2026-11 起 `specs_json` 可对单个字段显式写 `state` 覆盖它（见 `docs/24 §4`）（见 [`pricedata/src/pricepipe/export.py`](../pricedata/src/pricepipe/export.py) 的 `_catalogue`），记录级来源在 [`assets/catalogue/SOURCES.md`](../assets/catalogue/SOURCES.md)。答辩口径只能表述为「记录级有来源、字段级暂无 URL」，不要声称字段级可溯源。
 
 ### 20.5.1 分门类覆盖率
 
