@@ -87,6 +87,51 @@ class ExportTest(unittest.TestCase):
             writer.writerows(rows)
         return out
 
+    def _seed_with_spec(self, product_id: str, path: str, spec: dict) -> Path:
+        """复制 seed，把某记录的某个 spec 整体替换成给定对象。"""
+        out = Path(self.tmp.name) / "seed.csv"
+        with open(self.seed, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            fields = reader.fieldnames
+            rows = list(reader)
+        for row in rows:
+            if row["product_id"] != product_id:
+                continue
+            specs = json.loads(row["specs_json"])
+            specs[path] = spec
+            row["specs_json"] = json.dumps(specs, ensure_ascii=False)
+        with open(out, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+        return out
+
+    def test_numeric_must_match_the_value(self) -> None:
+        seed = self._seed_with_spec("mb-demo-b650", "memorySlots", {"value": "4", "numeric": 5})
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("不一致", str(ctx.exception))
+
+    def test_numeric_without_value_is_rejected(self) -> None:
+        seed = self._seed_with_spec("mb-demo-b650", "memorySlots", {"numeric": 4})
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("没有 value 却带 numeric", str(ctx.exception))
+
+    def test_blank_value_with_reported_state_is_rejected(self) -> None:
+        seed = self._seed_with_spec("mb-demo-b650", "socket", {"value": "", "state": "REPORTED"})
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("state=REPORTED 但没有 value", str(ctx.exception))
+
+    def test_unknown_spec_key_is_rejected(self) -> None:
+        seed = self._seed_with_spec(
+            "mb-demo-b650", "socket", {"value": "AM5", "numeric": None, "statee": "REPORTED"}
+        )
+        with self.assertRaises(ValueError) as ctx:
+            export(seed, self.out, version="2026.11")
+        self.assertIn("未知的 spec 键", str(ctx.exception))
+
     def test_no_override_reproduces_committed_derived_outputs(self) -> None:
         """不带覆盖时，四个产物与仓库里已提交的 derived 文件逐字节一致（换行符按平台归一）。"""
         committed = ROOT / "data" / "derived"
