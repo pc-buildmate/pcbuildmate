@@ -108,10 +108,13 @@ class DefaultRuleEngine(
         val passed = try {
             compare(rule.kind, l.field, r.field)
         } catch (e: NumberFormatException) {
+            // numeric 为 null 不等于「解析失败」：number() 还会退回 value.toDoubleOrNull()。
+            // 用同样的解析顺序判断到底哪一侧读不出来，否则会把错误指向能解析的那一侧。
+            val leftNumber = l.field.numeric ?: l.field.value?.toDoubleOrNull()
             return RuleOutcome.Unverified(
                 ruleId = rule.ruleId,
                 weakest = weakest,
-                missingField = if (l.field.numeric == null) l.ref else r.ref,
+                missingField = if (leftNumber == null) l.ref else r.ref,
                 reason = UnverifiedReason.INSUFFICIENT_DATA,
             )
         }
@@ -338,9 +341,13 @@ class DefaultRuleEngine(
             right is Side.Present && right.field.conflict -> right
             else -> null
         } ?: return null
+        // INV-06：weakest = min(所有参与比较的字段)，冲突字段自身的来源也要取最弱。
+        val otherState = (if (field === left) right else left).let {
+            if (it is Side.Present) it.state else VerificationState.VERIFIED
+        }
         return ConflictHit(
             ref = field.ref,
-            weakest = weakestOfSources(field.field),
+            weakest = weakest(weakestOfSources(field.field), otherState),
         )
     }
 
@@ -369,8 +376,9 @@ class DefaultRuleEngine(
     private fun weakest(a: VerificationState, b: VerificationState): VerificationState =
         if (a.ordinal >= b.ordinal) a else b
 
+    // ordinal：VERIFIED=0 < REPORTED=1 < EMPTY=2，越大越弱；这里要取最弱，不是最强。
     private fun weakestOfSources(field: FieldValue): VerificationState =
-        field.sources.minByOrNull { it.state.ordinal }?.state ?: field.state
+        field.sources.maxByOrNull { it.state.ordinal }?.state ?: field.state
 
     private fun formatNumber(value: Double): String =
         if (value % 1.0 == 0.0) value.toLong().toString() else value.toString()
