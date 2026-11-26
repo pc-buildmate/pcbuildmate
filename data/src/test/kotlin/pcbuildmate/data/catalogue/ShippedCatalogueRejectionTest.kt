@@ -3,6 +3,7 @@ package pcbuildmate.data.catalogue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  * 上架资产的拒绝路径（DATA-04 补强）。
@@ -42,6 +43,16 @@ class ShippedCatalogueRejectionTest {
         val broken = shippedText().replaceFirst("\"value\": null", "\"value\": \"1.2\"")
 
         assertFailsWith<IllegalArgumentException> { parse(broken) }
+    }
+
+    @Test
+    fun `rejects an empty field that still carries a numeric`() {
+        // 与 apps 的 EMPTY 规则一致：EMPTY 只能表示「没有证据」，不许留一个能用的 numeric，
+        // 否则 3D 的 num()（numeric ?: value，不看 state）会把它当已知尺寸用。
+        val original = "          \"value\": null,\r\n          \"state\": \"EMPTY\",\r\n          \"sources\": [],\r\n          \"conflict\": false,\r\n          \"numeric\": null"
+        val broken = original.replace("\"numeric\": null", "\"numeric\": 1.0")
+        assertTrue(shippedText().contains(original), "上架资产里找不到唯一的 EMPTY 字段块，测试需要更新")
+        assertFailsWith<IllegalArgumentException> { parse(shippedText().replaceFirst(original, broken)) }
     }
 
     @Test

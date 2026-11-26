@@ -90,6 +90,11 @@ internal object FieldPathRegistry {
                 if (value.value != null) {
                     fail(record.componentId, "$path state=EMPTY 但 value 非空")
                 }
+                // numeric 也要挡：3D 预览的 num() 是 numeric ?: value，不查 state，
+                // 一个「没有证据」的数值会被当成已知尺寸画进去（与 audit 的 EMPTY 规则对齐）。
+                if (value.numeric != null) {
+                    fail(record.componentId, "$path state=EMPTY 但 numeric 非空")
+                }
                 continue
             }
 
