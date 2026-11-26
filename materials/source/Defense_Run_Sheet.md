@@ -54,6 +54,6 @@ Never say: guaranteed compatible · real-time or lowest price · optimal build �
 - **"Are the tests just restating the implementation?"** Independent oracle, contracts-only, forbidden to import domain code; inverting it turns the cross-check red; 12 mutations killed in CI.
 - **"3D assembly?"** Deliberately out: read-only clearance view, fixed camera, no GL, no external model.
 - **"Can I trace each spec to a source?"** Record level: all 30 records are in `SOURCES.md` (27 with a URL).
-  Field level is 0 of 168 today — say that plainly rather than implying per-field citations.
+  Field level is 0 of 170 today — say that plainly rather than implying per-field citations.
 
 Fallbacks: "We have not measured that — here is what we can show instead." / "That is deliberately outside this version."

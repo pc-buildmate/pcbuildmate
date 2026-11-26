@@ -104,7 +104,7 @@ orbit camera, no GL dependency, offline. [confirm: 阮立坤 for screenshot and 
 - Will it drift? A check fails if any module with tests is missing from the CI task list.
 
 **Slide 22 — What this does not prove.** Rule parameters, price accuracy, **field-level source URLs
-(0 of 168 fields; only record-level sources exist)**, 3D slot precision (the field is read, but its
+(0 of 170 fields; only record-level sources exist)**, 3D slot precision (the field is read, but its
 values are standard-layout references, not vendor-verified), UI accessibility, and Room on pull requests. Say it before the examiner asks.
 
 ## 6 · Limits and conclusion (杨壹硕)
@@ -126,7 +126,7 @@ adapters, then feature freeze on 11/28.
 | A1/A2 | The 15 rules with their kinds | "How do you organise the rules?" |
 | B | Evidence at a glance (60/76/18, 12/12, oracle, Room, three runs) | "Why should we trust the checks?" |
 | C | Scope boundaries (no FPS/prices/accounts/3D assembly) | Any request for something out of scope |
-| D | Data provenance: 30 records, 27 URLs, 0/168 field-level sources | "Where does the data come from?" |
+| D | Data provenance: 30 records, 27 URLs, 0/170 field-level sources | "Where does the data come from?" |
 
 Every appendix answer is one line; the detail lives in `docs/03`, `docs/19` and `docs/21`.
 
