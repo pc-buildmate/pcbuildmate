@@ -18,7 +18,21 @@ BT="${BUILD_TOOLS:-$(ls -d "${ANDROID_HOME:-$HOME/Android/Sdk}"/build-tools/*/ 2
 
 # Windows 的 build-tools 只有 apksigner.bat
 SIGNER="$BT/apksigner"; [ -x "$SIGNER" ] || SIGNER="$BT/apksigner.bat"
+for tool in "$SIGNER" "$BT/aapt2" "$BT/aapt"; do
+  [ -f "$tool" ] || { echo "❌ build-tools 缺少组件：$tool（设置 BUILD_TOOLS 指向完整 build-tools）" >&2; exit 2; }
+done
 hash_of(){ sha256sum "$1" | awk '{print substr($1, length($1)-63)}'; }
+
+# apksigner 是个 java 程序：没有 JDK 时它会失败，但那是「工具没装好」，不是「签名不对」。
+# 两者混在一起会在发布日造成误判，所以先做前置检查，缺 JDK 直接退出 2。
+if [ -z "${JAVA_HOME:-}" ] && ! command -v java >/dev/null 2>&1; then
+  echo "❌ apksigner 需要 JDK 17+：设置 JAVA_HOME 后重跑（本机可用 export JAVA_HOME=C:/androidd/jbr）" >&2
+  exit 2
+fi
+[ -x "${JAVA_HOME:-}/bin/java" ] || command -v java >/dev/null 2>&1 || {
+  echo "❌ JAVA_HOME 指向的目录里没有 bin/java：$JAVA_HOME" >&2
+  exit 2
+}
 
 fail=0
 ok(){ echo "✅ $1"; }
@@ -34,7 +48,14 @@ else
 fi
 
 # 2. 签名（必须是发布证书，不能是 debug）
-certs=$("$SIGNER" verify --print-certs "$APK" 2>&1) || { bad "签名校验失败"; certs=""; }
+certs=$("$SIGNER" verify --print-certs "$APK" 2>&1) || {
+  case "$certs" in
+    *"JAVA_HOME"*|*"java command"*|*"java: not found"*)
+      echo "❌ apksigner 没能启动（找不到 java）：设置 JAVA_HOME 后重跑" >&2
+      exit 2;;
+  esac
+  bad "签名校验失败"; certs=""
+}
 if printf '%s' "$certs" | grep -q "CN=Android Debug"; then
   bad "用的是 debug 证书"
 elif [ -n "$certs" ]; then
@@ -43,11 +64,16 @@ fi
 
 # 3. 权限黑名单
 perms=$("$BT/aapt2" dump permissions "$APK" 2>/dev/null || true)
-for p in android.permission.INTERNET android.permission.CAMERA \
-         android.permission.ACCESS_FINE_LOCATION android.permission.POST_NOTIFICATIONS; do
-  printf '%s' "$perms" | grep -q "$p" && bad "声明了不该有的权限：$p"
-done
-printf '%s' "$perms" | grep -q "android.permission.INTERNET" || ok "无 INTERNET 权限"
+if [ -z "$perms" ]; then
+  # 空输出不能当「没有权限」：aapt2 失败、APK 路径不对都会是空的，那会变成一个假的绿灯。
+  bad "读不到权限（aapt2 没有输出；检查 build-tools 与 APK 路径）"
+else
+  for p in android.permission.INTERNET android.permission.CAMERA \
+           android.permission.ACCESS_FINE_LOCATION android.permission.POST_NOTIFICATIONS; do
+    printf '%s' "$perms" | grep -q "$p" && bad "声明了不该有的权限：$p"
+  done
+  printf '%s' "$perms" | grep -q "android.permission.INTERNET" || ok "无 INTERNET 权限"
+fi
 
 # 4. ABI
 abis=$("$BT/aapt" dump badging "$APK" 2>/dev/null | grep -o "native-code:.*" || true)
