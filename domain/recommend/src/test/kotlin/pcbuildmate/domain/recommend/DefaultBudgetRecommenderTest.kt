@@ -108,6 +108,25 @@ class DefaultBudgetRecommenderTest {
     }
 
     @Test
+    fun `a compatible case beyond the six cheapest is still considered`() {
+        // 6 个便宜机箱都装不下 231mm 显卡，第 7 个（更贵）才装得下。
+        // 按价格截断 6 条会让所有组合都撞 GPU_CASE_LENGTH，进而把请求误判为不可行。
+        val cheapCases = (1..6).map { index ->
+            record("case-cheap-$index", Category.CASE, 100L + index,
+                "supportedFormFactors" to f("ATX,MICRO_ATX"), "maxGpuLengthMm" to f("200", 200.0),
+                "maxGpuThicknessMm" to f("60", 60.0), "maxCoolerHeightMm" to f("160", 160.0),
+                "maxGpuSlots" to f("3", 3.0))
+        }
+        val records = catalogue() + cheapCases
+        val result = DefaultBudgetRecommender(MapCatalogue(records), engine(records))
+            .recommend(request(20000, UseCase.GAMING))
+
+        assertTrue(result.feasible, "第 7 个机箱装得下，不该判不可行")
+        val build = assertNotNull(result.build)
+        assertEquals("case-320", build.items.first { it.category == Category.CASE }.componentId)
+    }
+
+    @Test
     fun `same input is deterministic`() {
         val a = recommender().recommend(request(8000, UseCase.GAMING))
         val b = recommender().recommend(request(8000, UseCase.GAMING))

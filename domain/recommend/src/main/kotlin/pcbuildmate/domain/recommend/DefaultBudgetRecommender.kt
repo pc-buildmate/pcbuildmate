@@ -136,6 +136,9 @@ class DefaultBudgetRecommender(
         needsGpu: Boolean,
     ): List<CatalogueRecord> {
         val target = budget * weight
+        // 权重 0 的类目（散热/机箱）不参与「按预算分配」：它们的取舍只看兼容性，
+        // 若也按价格截断 6 条，最便宜的一批装不下就会把本来可行的请求判成不可行。
+        val limit = if (weight == 0.0) Int.MAX_VALUE else 6
         return catalogue.listByCategory(category)
             .asSequence()
             .filter { record ->
@@ -150,7 +153,7 @@ class DefaultBudgetRecommender(
                     .thenBy { it.priceCny }
                     .thenBy { it.componentId },
             )
-            .take(6)
+            .take(limit)
             .toList()
     }
 
