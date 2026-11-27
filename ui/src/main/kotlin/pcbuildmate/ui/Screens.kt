@@ -36,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import android.content.res.Resources
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,41 +62,42 @@ import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.contracts.WorkspaceUiState
 import pcbuildmate.ui.theme.PcBuildmateTheme
 
-private val categoryLabels: Map<Category, String> = mapOf(
-    Category.CPU to "处理器",
-    Category.MOTHERBOARD to "主板",
-    Category.MEMORY to "内存",
-    Category.GPU to "显卡",
-    Category.PSU to "电源",
-    Category.CASE to "机箱",
-    Category.COOLER to "散热器",
-    Category.STORAGE to "硬盘",
-)
+private fun categoryLabel(res: Resources, category: Category): String = when (category) {
+    Category.CPU -> res.getString(R.string.category_cpu)
+    Category.MOTHERBOARD -> res.getString(R.string.category_motherboard)
+    Category.MEMORY -> res.getString(R.string.category_memory)
+    Category.GPU -> res.getString(R.string.category_gpu)
+    Category.PSU -> res.getString(R.string.category_psu)
+    Category.CASE -> res.getString(R.string.category_case)
+    Category.COOLER -> res.getString(R.string.category_cooler)
+    Category.STORAGE -> res.getString(R.string.category_storage)
+}
 
-private val ruleLabels: Map<String, String> = mapOf(
-    "CPU_SOCKET_MATCH" to "CPU 插槽",
-    "CPU_MB_CHIPSET_SUPPORT" to "芯片组支持",
-    "CPU_MB_BIOS_SUPPORT" to "BIOS 版本",
-    "MEMORY_DDR_GENERATION" to "内存代际",
-    "MEMORY_SLOT_COUNT" to "内存插槽",
-    "MEMORY_CAPACITY_LIMIT" to "内存容量",
-    "GPU_CASE_LENGTH" to "显卡长度",
-    "GPU_CASE_THICKNESS" to "显卡厚度",
-    "GPU_CASE_SLOT_WIDTH" to "显卡槽宽",
-    "PSU_CONTINUOUS_POWER" to "电源功率",
-    "PSU_CONNECTORS" to "电源接口",
-    "COOLER_CASE_HEIGHT" to "散热器高度",
-    "COOLER_CPU_SOCKET" to "散热器扣具",
-    "MB_CASE_FORM_FACTOR" to "主板板型",
-    "STORAGE_MB_INTERFACE" to "硬盘接口",
-)
+private fun ruleLabel(res: Resources, ruleId: String): String = when (ruleId) {
+    "CPU_SOCKET_MATCH" -> res.getString(R.string.rule_cpu_socket_match)
+    "CPU_MB_CHIPSET_SUPPORT" -> res.getString(R.string.rule_cpu_mb_chipset_support)
+    "CPU_MB_BIOS_SUPPORT" -> res.getString(R.string.rule_cpu_mb_bios_support)
+    "MEMORY_DDR_GENERATION" -> res.getString(R.string.rule_memory_ddr_generation)
+    "MEMORY_SLOT_COUNT" -> res.getString(R.string.rule_memory_slot_count)
+    "MEMORY_CAPACITY_LIMIT" -> res.getString(R.string.rule_memory_capacity_limit)
+    "GPU_CASE_LENGTH" -> res.getString(R.string.rule_gpu_case_length)
+    "GPU_CASE_THICKNESS" -> res.getString(R.string.rule_gpu_case_thickness)
+    "GPU_CASE_SLOT_WIDTH" -> res.getString(R.string.rule_gpu_case_slot_width)
+    "PSU_CONTINUOUS_POWER" -> res.getString(R.string.rule_psu_continuous_power)
+    "PSU_CONNECTORS" -> res.getString(R.string.rule_psu_connectors)
+    "COOLER_CASE_HEIGHT" -> res.getString(R.string.rule_cooler_case_height)
+    "COOLER_CPU_SOCKET" -> res.getString(R.string.rule_cooler_cpu_socket)
+    "MB_CASE_FORM_FACTOR" -> res.getString(R.string.rule_mb_case_form_factor)
+    "STORAGE_MB_INTERFACE" -> res.getString(R.string.rule_storage_mb_interface)
+    else -> ruleId
+}
 
-private val useCaseLabels: Map<UseCase, String> = mapOf(
-    UseCase.GAMING to "游戏",
-    UseCase.STUDY_OFFICE to "办公/学习",
-    UseCase.CONTENT_CREATION to "内容创作",
-    UseCase.LOCAL_AI to "本地 AI",
-)
+private fun useCaseLabel(res: Resources, uc: UseCase): String = when (uc) {
+    UseCase.GAMING -> res.getString(R.string.usecase_gaming)
+    UseCase.STUDY_OFFICE -> res.getString(R.string.usecase_study_office)
+    UseCase.CONTENT_CREATION -> res.getString(R.string.usecase_content_creation)
+    UseCase.LOCAL_AI -> res.getString(R.string.usecase_local_ai)
+}
 
 @Composable
 fun EntryScreen(
@@ -107,6 +110,7 @@ fun EntryScreen(
     var budgetText by rememberSaveable { mutableStateOf("8000") }
     var useCase by rememberSaveable { mutableStateOf(UseCase.GAMING) }
     val budget = budgetText.toLongOrNull() ?: 0L
+    val res = LocalContext.current.resources
 
     Column(
         modifier = Modifier
@@ -143,7 +147,7 @@ fun EntryScreen(
                 FilterChip(
                     selected = useCase == uc,
                     onClick = { useCase = uc },
-                    label = { Text(useCaseLabels.getValue(uc), style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(useCaseLabel(res, uc), style = MaterialTheme.typography.labelSmall) },
                 )
             }
         }
@@ -196,6 +200,7 @@ fun WorkspaceScreen(
     onBack: () -> Unit,
 ) {
     val revision = state.revision
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -222,7 +227,7 @@ fun WorkspaceScreen(
                 item { WeightCard(weights) }
             }
             state.banner?.let { key ->
-                item { Banner(bannerText(key)) }
+                item { Banner(bannerText(res, key)) }
             }
             if (state.isDiagnosisStale) {
                 item {
@@ -301,6 +306,7 @@ fun DiagnosticsScreen(
     onIntent: (WorkspaceIntent) -> Unit,
     onBack: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -318,7 +324,7 @@ fun DiagnosticsScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             state.banner?.let { key ->
-                item { Banner(bannerText(key)) }
+                item { Banner(bannerText(res, key)) }
             }
             when (val d = state.diagnosisState) {
                 is DiagnosisState.Running -> item { LoadingCard(stringResource(R.string.loading_checking)) }
@@ -372,8 +378,11 @@ fun DiagnosticsScreen(
                 is ReplacementState.NoCandidate -> {
                     item {
                         ErrorCard(
-                            "当前目录内没有可选替换：${r.reason.blockingConstraint}\n" +
-                                "建议：${r.reason.suggestedDirection}",
+                            stringResource(
+                                R.string.no_candidate_message,
+                                r.reason.blockingConstraint,
+                                r.reason.suggestedDirection,
+                            ),
                         )
                     }
                     item {
@@ -427,6 +436,7 @@ fun CompareScreen(
     labels: Map<String, String>,
     onBack: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -489,7 +499,7 @@ fun CompareScreen(
                                 )
                                 val diag = result.diagnoses.getOrNull(index)
                                 Text(
-                                    diag?.let { statusLabel(it.overall.name) } ?: stringResource(R.string.compare_status_recheck),
+                                    diag?.let { statusLabel(res, it.overall.name) } ?: stringResource(R.string.compare_status_recheck),
                                     color = if (diag == null) {
                                         Color(0xFF9A6700)
                                     } else {
@@ -514,10 +524,11 @@ fun CompareScreen(
 
 @Composable
 private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String, String>) {
+    val res = LocalContext.current.resources
     val fieldLabel = when (delta.field) {
         "totalCny" -> stringResource(R.string.compare_total)
         "status" -> stringResource(R.string.compare_status)
-        else -> categoryLabelByName(delta.field)
+        else -> categoryLabelByName(res, delta.field)
     }
     Card(
         colors = CardDefaults.cardColors(
@@ -534,7 +545,7 @@ private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 delta.values.forEach { value ->
                     Text(
-                        formatDeltaValue(delta.field, value),
+                        formatDeltaValue(res, delta.field, value),
                         modifier = Modifier.weight(1f),
                         fontWeight = if (delta.highlighted) FontWeight.Bold else FontWeight.Normal,
                     )
@@ -544,24 +555,24 @@ private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String
     }
 }
 
-private fun formatDeltaValue(field: String, value: String): String =
+private fun formatDeltaValue(res: Resources, field: String, value: String): String =
     if (field == "totalCny" || field in Category.entries.map { it.name }) {
         value.toLongOrNull()?.let { money(it) } ?: value
     } else {
-        statusLabel(value)
+        statusLabel(res, value)
     }
 
-private fun statusLabel(value: String): String = when (value) {
-    "PASSED" -> "全部通过"
-    "CONFLICT" -> "存在冲突"
-    "MIXED" -> "冲突 + 未验证"
-    "UNVERIFIED" -> "有未验证项"
-    "UNCHECKED" -> "未检查"
+private fun statusLabel(res: Resources, value: String): String = when (value) {
+    "PASSED" -> res.getString(R.string.status_passed)
+    "CONFLICT" -> res.getString(R.string.status_conflict)
+    "MIXED" -> res.getString(R.string.status_mixed)
+    "UNVERIFIED" -> res.getString(R.string.status_unverified)
+    "UNCHECKED" -> res.getString(R.string.status_unchecked)
     else -> value
 }
 
-private fun categoryLabelByName(name: String): String =
-    Category.entries.firstOrNull { it.name == name }?.let { categoryLabels[it] } ?: name
+private fun categoryLabelByName(res: Resources, name: String): String =
+    Category.entries.firstOrNull { it.name == name }?.let { categoryLabel(res, it) } ?: name
 
 // ------------------------------------------------------------------ pieces
 
@@ -572,6 +583,7 @@ private fun DemoBadge() {
 
 @Composable
 private fun WeightCard(weights: Map<Category, Double>) {
+    val res = LocalContext.current.resources
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
         Column(Modifier.padding(12.dp)) {
             Text(stringResource(R.string.weights_title), style = MaterialTheme.typography.labelLarge)
@@ -580,7 +592,7 @@ private fun WeightCard(weights: Map<Category, Double>) {
                 weights.entries
                     .sortedByDescending { it.value }
                     .joinToString(" · ") { (category, w) ->
-                        "${categoryLabels[category] ?: category.name} ${(w * 100).toInt()}%"
+                        "${categoryLabel(res, category)} ${(w * 100).toInt()}%"
                     },
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -630,6 +642,7 @@ private fun ItemRow(
     onPlus: () -> Unit,
 ) {
     val editable = QuantityRules.allowsQuantityAboveOne(item.category)
+    val res = LocalContext.current.resources
     Card {
         Row(
             modifier = Modifier
@@ -638,7 +651,7 @@ private fun ItemRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
-                Text(categoryLabels[item.category] ?: item.category.name, style = MaterialTheme.typography.labelSmall)
+                Text(categoryLabel(res, item.category), style = MaterialTheme.typography.labelSmall)
                 Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             if (editable) {
@@ -660,19 +673,24 @@ private fun ItemRow(
 
 @Composable
 private fun DiagnosisSummary(diagnosis: Diagnosis) {
+    val res = LocalContext.current.resources
     val (title, color) = when (diagnosis.overall) {
-        OverallStatus.PASSED -> "全部通过" to Color(0xFF1B7F3A)
-        OverallStatus.CONFLICT -> "存在冲突" to MaterialTheme.colorScheme.error
-        OverallStatus.MIXED -> "冲突 + 未验证" to Color(0xFF9A6700)
-        OverallStatus.UNVERIFIED -> "有未验证项" to Color(0xFF9A6700)
+        OverallStatus.PASSED -> stringResource(R.string.diagnosis_passed) to Color(0xFF1B7F3A)
+        OverallStatus.CONFLICT -> stringResource(R.string.diagnosis_conflict) to MaterialTheme.colorScheme.error
+        OverallStatus.MIXED -> stringResource(R.string.diagnosis_mixed) to Color(0xFF9A6700)
+        OverallStatus.UNVERIFIED -> stringResource(R.string.diagnosis_unverified) to Color(0xFF9A6700)
     }
     Card(colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.08f))) {
         Column(Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, color = color)
             Spacer(Modifier.height(4.dp))
             Text(
-                "风险 ${riskLabel(diagnosis.riskLevel)} · 分数 ${diagnosis.score ?: "—"} · " +
-                    "revision #${diagnosis.revisionId}",
+                stringResource(
+                    R.string.diagnosis_risk_score,
+                    riskLabel(res, diagnosis.riskLevel),
+                    diagnosis.score?.toString() ?: "—",
+                    diagnosis.revisionId,
+                ),
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -685,12 +703,13 @@ private fun ConflictCard(
     labels: Map<String, String>,
     onSelect: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Card {
         Column(Modifier.padding(14.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(ruleLabels[conflict.ruleId] ?: conflict.ruleId, fontWeight = FontWeight.Bold)
+                Text(ruleLabel(res, conflict.ruleId), fontWeight = FontWeight.Bold)
                 Text(
-                    severityLabel(conflict.severity),
+                    severityLabel(res, conflict.severity),
                     color = if (conflict.severity == Severity.BLOCKER) {
                         MaterialTheme.colorScheme.error
                     } else {
@@ -708,7 +727,7 @@ private fun ConflictCard(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "conflictId ${conflict.conflictId}",
+                stringResource(R.string.conflict_id_label, conflict.conflictId),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
             )
@@ -722,16 +741,23 @@ private fun ConflictCard(
 
 @Composable
 private fun UnverifiedCard(u: RuleOutcome.Unverified) {
+    val res = LocalContext.current.resources
     Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF6E0))) {
         Column(Modifier.padding(14.dp)) {
-            Text(ruleLabels[u.ruleId] ?: u.ruleId, fontWeight = FontWeight.Bold)
+            Text(ruleLabel(res, u.ruleId), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(4.dp))
             Text(
                 when (u.reason) {
-                    UnverifiedReason.MISSING_FIELD -> "未验证 —— 缺少 ${u.missingField?.fieldPath ?: "部件"}"
-                    UnverifiedReason.SOURCE_CONFLICT -> "未验证 —— 来源冲突 ${u.missingField?.fieldPath ?: ""}"
-                    UnverifiedReason.UNSUPPORTED_RULE -> "未验证 —— 规则暂不支持"
-                    UnverifiedReason.INSUFFICIENT_DATA -> "未验证 —— 数据不足"
+                    UnverifiedReason.MISSING_FIELD -> stringResource(
+                        R.string.unverified_missing_field,
+                        u.missingField?.fieldPath ?: "部件",
+                    )
+                    UnverifiedReason.SOURCE_CONFLICT -> stringResource(
+                        R.string.unverified_source_conflict,
+                        u.missingField?.fieldPath ?: "",
+                    )
+                    UnverifiedReason.UNSUPPORTED_RULE -> stringResource(R.string.unverified_unsupported_rule)
+                    UnverifiedReason.INSUFFICIENT_DATA -> stringResource(R.string.unverified_insufficient_data)
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -761,7 +787,7 @@ private fun CandidateCard(candidate: Candidate, label: String, onPreview: () -> 
             if (candidate.affectsOtherRules.isNotEmpty()) {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "会影响：${candidate.affectsOtherRules.joinToString()}",
+                    stringResource(R.string.candidate_affects, candidate.affectsOtherRules.joinToString()),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF9A6700),
                 )
@@ -834,28 +860,28 @@ private fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 6.dp))
 }
 
-private fun bannerText(key: TextKey): String = when (key) {
-    TextKey.NO_DISPLAY_OUTPUT -> "没有显示输出：请加一张独显，或换一颗带核显的 CPU"
-    TextKey.QUANTITY_NOT_APPLICABLE -> "这一类零件固定 1 件；多件会让价格翻倍但兼容结论不变，因此不支持修改数量"
-    TextKey.QUANTITY_INVALID -> "数量必须至少为 1"
-    TextKey.DIAGNOSTICS_REQUIRED -> "先载入或生成一份配置"
-    TextKey.APPLY_REVISION_STALE -> "配置已过期，请重新检查"
-    TextKey.CANDIDATE_NOT_FOUND -> "候选已失效，请重新加载"
-    TextKey.CONFLICT_SELECTED_NONE -> "请选择一条冲突"
+private fun bannerText(res: Resources, key: TextKey): String = when (key) {
+    TextKey.NO_DISPLAY_OUTPUT -> res.getString(R.string.banner_no_display_output)
+    TextKey.QUANTITY_NOT_APPLICABLE -> res.getString(R.string.banner_quantity_not_applicable)
+    TextKey.QUANTITY_INVALID -> res.getString(R.string.banner_quantity_invalid)
+    TextKey.DIAGNOSTICS_REQUIRED -> res.getString(R.string.banner_diagnostics_required)
+    TextKey.APPLY_REVISION_STALE -> res.getString(R.string.banner_apply_revision_stale)
+    TextKey.CANDIDATE_NOT_FOUND -> res.getString(R.string.banner_candidate_not_found)
+    TextKey.CONFLICT_SELECTED_NONE -> res.getString(R.string.banner_conflict_selected_none)
     else -> key.key
 }
 
 private fun money(value: Long): String = "¥" + "%,d".format(value)
 
-private fun riskLabel(risk: RiskLevel): String = when (risk) {
-    RiskLevel.HIGH -> "高"
-    RiskLevel.MEDIUM -> "中"
-    RiskLevel.LOW -> "低"
-    RiskLevel.UNKNOWN -> "未知"
+private fun riskLabel(res: Resources, risk: RiskLevel): String = when (risk) {
+    RiskLevel.HIGH -> res.getString(R.string.risk_high)
+    RiskLevel.MEDIUM -> res.getString(R.string.risk_medium)
+    RiskLevel.LOW -> res.getString(R.string.risk_low)
+    RiskLevel.UNKNOWN -> res.getString(R.string.risk_unknown)
 }
 
-private fun severityLabel(severity: Severity): String = when (severity) {
-    Severity.BLOCKER -> "BLOCKER"
-    Severity.MAJOR -> "MAJOR"
-    Severity.MINOR -> "MINOR"
+private fun severityLabel(res: Resources, severity: Severity): String = when (severity) {
+    Severity.BLOCKER -> res.getString(R.string.severity_blocker)
+    Severity.MAJOR -> res.getString(R.string.severity_major)
+    Severity.MINOR -> res.getString(R.string.severity_minor)
 }
