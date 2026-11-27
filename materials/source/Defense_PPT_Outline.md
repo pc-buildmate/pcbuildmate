@@ -110,7 +110,7 @@ values are standard-layout references, not vendor-verified), UI accessibility, a
 ## 6 · Limits and conclusion (杨壹硕)
 
 **Slide 23 — Known limits.** Static catalogue with dated reference prices; x16 slot position recorded
-for five of six boards (the sixth falls back to the documented constant); no real-device automation of gestures.
+for all six boards, as standard-layout references rather than vendor-verified values; no real-device automation of gestures.
 
 **Slide 24 — Next steps.** Signed release with checksum, device evidence ×3, official-store price
 adapters, then feature freeze on 11/28.

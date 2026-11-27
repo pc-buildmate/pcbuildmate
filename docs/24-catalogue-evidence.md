@@ -81,10 +81,11 @@
 
 - `docs/03 §3.3` 新增 MOTHERBOARD `pcieX16SlotMm`（number，mm）与 `pcieSlotCount`（number，个）；
 - `FieldPathRegistry.kt` 同步（代码冻结表副本）；
-- 已填 5 块主板（`mb-demo-b650`、`mb-demo-b850-cvn`、`mb-demo-b850m`、`mb-demo-z890m`、`mb-demo-b550m`），
+- 已填 **6 块主板**（`mb-demo-b650`、`mb-demo-b850-cvn`、`mb-demo-b850m`、`mb-demo-z890m`、`mb-demo-b550m`、`mb-demo-lga1700`），
   值为标准布局参考值（ATX 137.5mm / M-ATX 76.5mm，基于现有 3D 常量公式）；
-- `Scene3d` 已按字段放置显卡（`pcieX16SlotMm` 即首个 x16 槽，`pcieSlotCount` 覆盖槽数），
-  缺字段的 `mb-demo-lga1700` 走 I/O 下缘 − 7.52 的常量回退，界面注明「缺字段回退」；
+  2026-11-27 起统一标为 `REPORTED`（参考值不等于厂商核实）；
+- `Scene3d` 已按字段放置显卡（`pcieX16SlotMm` 即首个 x16 槽，`pcieSlotCount` 覆盖槽数）；
+  字段缺失时的常量回退（I/O 下缘 − 7.52）与「缺字段回退」提示仍保留，但当前目录里 6 块板都有字段；
 - 导出时字段 `state` 默认随记录级 `confidence=high` 标为 `VERIFIED`，但数值精度是「标准布局参考级」，
   精确逐板值需厂商布局图人工核实（TODO：升为逐板实测值）；
 - 自 2026-11-21 起，`specs_json` 里的单个字段可显式写 `"state": "REPORTED"`（或 `VERIFIED`/`EMPTY`）
@@ -92,7 +93,8 @@
   ADR-0011 决策 5 要求证据等级是**每字段**的，不是每记录；
   这个开关同时能提级：把低 `confidence` 记录的字段覆盖成 `VERIFIED` 必须在 PR 描述里给出处，
   否则审查无法判断证据是否够；
-- `mb-demo-lga1700` 未加字段，保留「唯一 EMPTY = `biosGeneration`」锚点。
+- `mb-demo-lga1700` 已补齐两个字段（`pcieSlotCount = 3` 为 `VERIFIED`，MSI 规格页「2× x16 + 1× x1」；`pcieX16SlotMm = 76.5` 为 `REPORTED`）；
+  「唯一 EMPTY = `mb-demo-b650.biosGeneration`」锚点不变。
 
 ---
 
@@ -100,5 +102,5 @@
 
 - ~~6 类各 3–5 条价格核对~~ ✅ 已完成（见 §1.1）；
 - ~~数字附录（INFO-03）~~ ✅ 已产出 `materials/source/Data_Appendix.md`；
-- 5 块主板的 `pcieX16SlotMm` 用厂商布局图核实后升 `VERIFIED`（当前为标准布局参考值）；
+- 6 块主板的 `pcieX16SlotMm` 用厂商布局图核实后升 `VERIFIED`（当前为标准布局参考值，`REPORTED`）；
 - P4 爬虫：补 1 个官方 adapter（华硕/七彩虹）或人工 CSV（可后置）。
