@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 /**
- * 生成 assets/catalogue/demo-v1.json、assets/rules/rules-v1.json、
- * assets/fixtures/fixtures-rules-v1.json（15 规则 × 4 类 = 60 条）、
- * assets/fixtures/fixtures-anchor-v1.json（答辩锚点）。
+ * 生成三个文件：
+ *   assets/rules/rules-v1.json（15 条规则）
+ *   assets/fixtures/fixtures-rules-v1.json（15 规则 × 4 类 = 60 条）
+ *   assets/fixtures/fixtures-anchor-v1.json（8 条答辩锚点）
  *
- * 单一真相源：本文件的 DEMO / RULE_SPECS。改数值先改这里再重新生成，
+ * 单一真相源：本文件的 DEMO / RULES。改数值先改这里再重新生成，
  * 禁止手改生成物（CI 会用 --check 比对）。
+ *
+ * **不生成** assets/catalogue/demo-v1.json：那份 32 条文件是 DEMO-01 的原型资产
+ * （site 原型与 :data 测试资源），由 tools/check-demo-catalogue.mjs 守护。
+ * 本文件的 DEMO 只有 16 条 fixture 锚点，与 demo-v1 不是同一份数据；以前这里
+ * 顺手一起生成，谁跑一次生成就把 32 条打回 16 条（issue #197）。
  *
  * 用法：
  *   node tools/gen-fixtures.mjs           # 生成
@@ -19,13 +25,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const CATALOGUE_VERSION = "static-v1";
 const RULES_VERSION = "rules-v1";
-const PRICE_DATE = "2026-10-31";
 
 const V = (v, n) => ({ value: String(v), state: "VERIFIED", sources: [], conflict: false, numeric: n === undefined ? null : n });
 const EMPTY = () => ({ value: null, state: "EMPTY", sources: [], conflict: false, numeric: null });
 const REPORTED = (v, n) => ({ value: String(v), state: "REPORTED", sources: [{ source: "retailer", rawValue: String(v), state: "REPORTED" }], conflict: false, numeric: n === undefined ? null : n });
 
-/** 演示目录：8 类 10 件，价格刻意合计为 7800（答辩锚点）。 */
+/** fixture 锚点目录：8 类 16 件，价格刻意合计为 7800；不是 assets/catalogue/demo-v1.json。 */
 const DEMO = {
   "cpu-demo-7600x": { category: "CPU", manufacturer: "AMD", model: "Ryzen 5 7600X", partNumber: "100-100000593WOF", priceCny: 1500,
     attributes: { socket: V("AM5"), supportedChipsets: V("B650,X670"), tdpW: V(105, 105), minBiosGeneration: V("1.0", 1.0) } },
@@ -385,14 +390,6 @@ function emit(path, obj) {
   console.log("[gen-fixtures] wrote " + path + " (" + text.length + " bytes)");
 }
 
-const catalogue = {
-  catalogueVersion: CATALOGUE_VERSION,
-  priceDate: PRICE_DATE,
-  isDemo: true,
-  note: "概念数据，仅用于 fixture 与答辩演示；禁止进入生产 seed（INV-11）。",
-  components: Object.entries(DEMO).map(([id, r]) => ({ componentId: id, ...r, catalogueVersion: CATALOGUE_VERSION, priceDate: PRICE_DATE, isDemo: true }))
-};
-
 const rules = {
   rulesVersion: RULES_VERSION,
   catalogueVersion: CATALOGUE_VERSION,
@@ -402,7 +399,6 @@ const rules = {
 const ruleFixtures = { fixturesVersion: "fx-rules-v1", rulesVersion: RULES_VERSION, catalogueVersion: CATALOGUE_VERSION, fixtures: buildRuleFixtures() };
 const anchorFixtures = { fixturesVersion: "fx-anchor-v1", rulesVersion: RULES_VERSION, catalogueVersion: CATALOGUE_VERSION, fixtures: buildAnchorFixtures() };
 
-emit(join(ROOT, "assets/catalogue/demo-v1.json"), catalogue);
 emit(join(ROOT, "assets/rules/rules-v1.json"), rules);
 emit(join(ROOT, "assets/fixtures/fixtures-rules-v1.json"), ruleFixtures);
 emit(join(ROOT, "assets/fixtures/fixtures-anchor-v1.json"), anchorFixtures);

@@ -11,6 +11,8 @@
  *   6. ADR-0001..0006 文件存在且在索引里
  *   7. 04 章状态机包含全部状态与事件名
  *   8. ci/modules.json 的每个模块在 05 章出现
+ *   9. docs/VERSION 存在
+ *  10. assets/catalogue/demo-v1.json：32 条 / 8 类 ≥3 / 三态自洽 / 7800→7900
  *
  * 用法：node tools/check-docs.mjs
  * 退出码：0 通过，1 有问题。
@@ -18,6 +20,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkDemoCatalogueFile } from "./check-demo-catalogue.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
@@ -172,6 +175,12 @@ ok("ci/modules.json：" + modules.length + " 个模块");
 // ---------------------------------------------------------------- 9. 版本文件
 if (!exists("docs/VERSION")) fail("缺 docs/VERSION");
 else ok("docs/VERSION 存在");
+
+// ---------------------------------------------------------------- 10. demo-v1 原型目录
+// 它不再由 gen-fixtures.mjs 生成（#197），所以形状必须单独守：32 条 / 8 类 / 三态 / 锚点。
+const demo = checkDemoCatalogueFile(ROOT);
+for (const p of demo.problems) fail("demo-v1：" + p);
+if (!demo.problems.length) ok("demo-v1 原型目录：" + demo.summary);
 
 // ---------------------------------------------------------------- 汇总
 console.log("");

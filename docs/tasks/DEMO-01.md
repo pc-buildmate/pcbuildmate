@@ -10,6 +10,10 @@
 
 `assets/catalogue/demo-v1.json` 已从 16 条扩到 **32 条**，8 类每类 ≥3；来源见 [SOURCES.md](../../assets/catalogue/SOURCES.md)。D5 的 337→300 锚点仍靠 `gpu-demo-300` 支撑。
 
+> 这份 32 条文件**不由** `tools/gen-fixtures.mjs` 生成（那个生成器只有 16 条 fixture 锚点，
+> 见 issue #197）；它按原型资产维护，形状由 `node tools/check-demo-catalogue.mjs` 守护，
+> `node tools/check-docs.mjs` 也会跑同一套检查。
+
 ## 需要写
 
 - 每类补 1–6 条真实型号（价格用带日期的参考价，标注 `isDemo=true`）；
