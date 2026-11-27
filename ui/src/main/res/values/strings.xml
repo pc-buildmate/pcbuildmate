@@ -97,10 +97,10 @@
     <string name="unverified_unsupported_rule">未验证 —— 规则暂不支持</string>
     <string name="unverified_insufficient_data">未验证 —— 数据不足</string>
 
-    <!-- Severity -->
-    <string name="severity_blocker">BLOCKER</string>
-    <string name="severity_major">MAJOR</string>
-    <string name="severity_minor">MINOR</string>
+    <!-- Severity（契约枚举值，不可翻译） -->
+    <string name="severity_blocker" translatable="false">BLOCKER</string>
+    <string name="severity_major" translatable="false">MAJOR</string>
+    <string name="severity_minor" translatable="false">MINOR</string>
 
     <!-- Risk levels -->
     <string name="risk_high">高</string>

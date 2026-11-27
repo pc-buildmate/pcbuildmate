@@ -36,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import android.content.res.Resources
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,44 +62,41 @@ import pcbuildmate.contracts.WorkspaceIntent
 import pcbuildmate.contracts.WorkspaceUiState
 import pcbuildmate.ui.theme.PcBuildmateTheme
 
-@Composable
-private fun categoryLabel(category: Category): String = when (category) {
-    Category.CPU -> stringResource(R.string.category_cpu)
-    Category.MOTHERBOARD -> stringResource(R.string.category_motherboard)
-    Category.MEMORY -> stringResource(R.string.category_memory)
-    Category.GPU -> stringResource(R.string.category_gpu)
-    Category.PSU -> stringResource(R.string.category_psu)
-    Category.CASE -> stringResource(R.string.category_case)
-    Category.COOLER -> stringResource(R.string.category_cooler)
-    Category.STORAGE -> stringResource(R.string.category_storage)
+private fun categoryLabel(res: Resources, category: Category): String = when (category) {
+    Category.CPU -> res.getString(R.string.category_cpu)
+    Category.MOTHERBOARD -> res.getString(R.string.category_motherboard)
+    Category.MEMORY -> res.getString(R.string.category_memory)
+    Category.GPU -> res.getString(R.string.category_gpu)
+    Category.PSU -> res.getString(R.string.category_psu)
+    Category.CASE -> res.getString(R.string.category_case)
+    Category.COOLER -> res.getString(R.string.category_cooler)
+    Category.STORAGE -> res.getString(R.string.category_storage)
 }
 
-@Composable
-private fun ruleLabel(ruleId: String): String = when (ruleId) {
-    "CPU_SOCKET_MATCH" -> stringResource(R.string.rule_cpu_socket_match)
-    "CPU_MB_CHIPSET_SUPPORT" -> stringResource(R.string.rule_cpu_mb_chipset_support)
-    "CPU_MB_BIOS_SUPPORT" -> stringResource(R.string.rule_cpu_mb_bios_support)
-    "MEMORY_DDR_GENERATION" -> stringResource(R.string.rule_memory_ddr_generation)
-    "MEMORY_SLOT_COUNT" -> stringResource(R.string.rule_memory_slot_count)
-    "MEMORY_CAPACITY_LIMIT" -> stringResource(R.string.rule_memory_capacity_limit)
-    "GPU_CASE_LENGTH" -> stringResource(R.string.rule_gpu_case_length)
-    "GPU_CASE_THICKNESS" -> stringResource(R.string.rule_gpu_case_thickness)
-    "GPU_CASE_SLOT_WIDTH" -> stringResource(R.string.rule_gpu_case_slot_width)
-    "PSU_CONTINUOUS_POWER" -> stringResource(R.string.rule_psu_continuous_power)
-    "PSU_CONNECTORS" -> stringResource(R.string.rule_psu_connectors)
-    "COOLER_CASE_HEIGHT" -> stringResource(R.string.rule_cooler_case_height)
-    "COOLER_CPU_SOCKET" -> stringResource(R.string.rule_cooler_cpu_socket)
-    "MB_CASE_FORM_FACTOR" -> stringResource(R.string.rule_mb_case_form_factor)
-    "STORAGE_MB_INTERFACE" -> stringResource(R.string.rule_storage_mb_interface)
+private fun ruleLabel(res: Resources, ruleId: String): String = when (ruleId) {
+    "CPU_SOCKET_MATCH" -> res.getString(R.string.rule_cpu_socket_match)
+    "CPU_MB_CHIPSET_SUPPORT" -> res.getString(R.string.rule_cpu_mb_chipset_support)
+    "CPU_MB_BIOS_SUPPORT" -> res.getString(R.string.rule_cpu_mb_bios_support)
+    "MEMORY_DDR_GENERATION" -> res.getString(R.string.rule_memory_ddr_generation)
+    "MEMORY_SLOT_COUNT" -> res.getString(R.string.rule_memory_slot_count)
+    "MEMORY_CAPACITY_LIMIT" -> res.getString(R.string.rule_memory_capacity_limit)
+    "GPU_CASE_LENGTH" -> res.getString(R.string.rule_gpu_case_length)
+    "GPU_CASE_THICKNESS" -> res.getString(R.string.rule_gpu_case_thickness)
+    "GPU_CASE_SLOT_WIDTH" -> res.getString(R.string.rule_gpu_case_slot_width)
+    "PSU_CONTINUOUS_POWER" -> res.getString(R.string.rule_psu_continuous_power)
+    "PSU_CONNECTORS" -> res.getString(R.string.rule_psu_connectors)
+    "COOLER_CASE_HEIGHT" -> res.getString(R.string.rule_cooler_case_height)
+    "COOLER_CPU_SOCKET" -> res.getString(R.string.rule_cooler_cpu_socket)
+    "MB_CASE_FORM_FACTOR" -> res.getString(R.string.rule_mb_case_form_factor)
+    "STORAGE_MB_INTERFACE" -> res.getString(R.string.rule_storage_mb_interface)
     else -> ruleId
 }
 
-@Composable
-private fun useCaseLabel(uc: UseCase): String = when (uc) {
-    UseCase.GAMING -> stringResource(R.string.usecase_gaming)
-    UseCase.STUDY_OFFICE -> stringResource(R.string.usecase_study_office)
-    UseCase.CONTENT_CREATION -> stringResource(R.string.usecase_content_creation)
-    UseCase.LOCAL_AI -> stringResource(R.string.usecase_local_ai)
+private fun useCaseLabel(res: Resources, uc: UseCase): String = when (uc) {
+    UseCase.GAMING -> res.getString(R.string.usecase_gaming)
+    UseCase.STUDY_OFFICE -> res.getString(R.string.usecase_study_office)
+    UseCase.CONTENT_CREATION -> res.getString(R.string.usecase_content_creation)
+    UseCase.LOCAL_AI -> res.getString(R.string.usecase_local_ai)
 }
 
 @Composable
@@ -111,6 +110,7 @@ fun EntryScreen(
     var budgetText by rememberSaveable { mutableStateOf("8000") }
     var useCase by rememberSaveable { mutableStateOf(UseCase.GAMING) }
     val budget = budgetText.toLongOrNull() ?: 0L
+    val res = LocalContext.current.resources
 
     Column(
         modifier = Modifier
@@ -147,7 +147,7 @@ fun EntryScreen(
                 FilterChip(
                     selected = useCase == uc,
                     onClick = { useCase = uc },
-                    label = { Text(useCaseLabel(uc), style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(useCaseLabel(res, uc), style = MaterialTheme.typography.labelSmall) },
                 )
             }
         }
@@ -200,6 +200,7 @@ fun WorkspaceScreen(
     onBack: () -> Unit,
 ) {
     val revision = state.revision
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -226,7 +227,7 @@ fun WorkspaceScreen(
                 item { WeightCard(weights) }
             }
             state.banner?.let { key ->
-                item { Banner(bannerText(key)) }
+                item { Banner(bannerText(res, key)) }
             }
             if (state.isDiagnosisStale) {
                 item {
@@ -305,6 +306,7 @@ fun DiagnosticsScreen(
     onIntent: (WorkspaceIntent) -> Unit,
     onBack: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -322,7 +324,7 @@ fun DiagnosticsScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             state.banner?.let { key ->
-                item { Banner(bannerText(key)) }
+                item { Banner(bannerText(res, key)) }
             }
             when (val d = state.diagnosisState) {
                 is DiagnosisState.Running -> item { LoadingCard(stringResource(R.string.loading_checking)) }
@@ -434,6 +436,7 @@ fun CompareScreen(
     labels: Map<String, String>,
     onBack: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Scaffold(
         topBar = {
             TopAppBar(
@@ -496,7 +499,7 @@ fun CompareScreen(
                                 )
                                 val diag = result.diagnoses.getOrNull(index)
                                 Text(
-                                    diag?.let { statusLabel(it.overall.name) } ?: stringResource(R.string.compare_status_recheck),
+                                    diag?.let { statusLabel(res, it.overall.name) } ?: stringResource(R.string.compare_status_recheck),
                                     color = if (diag == null) {
                                         Color(0xFF9A6700)
                                     } else {
@@ -521,10 +524,11 @@ fun CompareScreen(
 
 @Composable
 private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String, String>) {
+    val res = LocalContext.current.resources
     val fieldLabel = when (delta.field) {
         "totalCny" -> stringResource(R.string.compare_total)
         "status" -> stringResource(R.string.compare_status)
-        else -> categoryLabelByName(delta.field)
+        else -> categoryLabelByName(res, delta.field)
     }
     Card(
         colors = CardDefaults.cardColors(
@@ -541,7 +545,7 @@ private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 delta.values.forEach { value ->
                     Text(
-                        formatDeltaValue(delta.field, value),
+                        formatDeltaValue(res, delta.field, value),
                         modifier = Modifier.weight(1f),
                         fontWeight = if (delta.highlighted) FontWeight.Bold else FontWeight.Normal,
                     )
@@ -551,27 +555,24 @@ private fun DeltaRow(delta: pcbuildmate.contracts.FieldDelta, labels: Map<String
     }
 }
 
-@Composable
-private fun formatDeltaValue(field: String, value: String): String =
+private fun formatDeltaValue(res: Resources, field: String, value: String): String =
     if (field == "totalCny" || field in Category.entries.map { it.name }) {
         value.toLongOrNull()?.let { money(it) } ?: value
     } else {
-        statusLabel(value)
+        statusLabel(res, value)
     }
 
-@Composable
-private fun statusLabel(value: String): String = when (value) {
-    "PASSED" -> stringResource(R.string.status_passed)
-    "CONFLICT" -> stringResource(R.string.status_conflict)
-    "MIXED" -> stringResource(R.string.status_mixed)
-    "UNVERIFIED" -> stringResource(R.string.status_unverified)
-    "UNCHECKED" -> stringResource(R.string.status_unchecked)
+private fun statusLabel(res: Resources, value: String): String = when (value) {
+    "PASSED" -> res.getString(R.string.status_passed)
+    "CONFLICT" -> res.getString(R.string.status_conflict)
+    "MIXED" -> res.getString(R.string.status_mixed)
+    "UNVERIFIED" -> res.getString(R.string.status_unverified)
+    "UNCHECKED" -> res.getString(R.string.status_unchecked)
     else -> value
 }
 
-@Composable
-private fun categoryLabelByName(name: String): String =
-    Category.entries.firstOrNull { it.name == name }?.let { categoryLabel(it) } ?: name
+private fun categoryLabelByName(res: Resources, name: String): String =
+    Category.entries.firstOrNull { it.name == name }?.let { categoryLabel(res, it) } ?: name
 
 // ------------------------------------------------------------------ pieces
 
@@ -582,6 +583,7 @@ private fun DemoBadge() {
 
 @Composable
 private fun WeightCard(weights: Map<Category, Double>) {
+    val res = LocalContext.current.resources
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
         Column(Modifier.padding(12.dp)) {
             Text(stringResource(R.string.weights_title), style = MaterialTheme.typography.labelLarge)
@@ -590,7 +592,7 @@ private fun WeightCard(weights: Map<Category, Double>) {
                 weights.entries
                     .sortedByDescending { it.value }
                     .joinToString(" · ") { (category, w) ->
-                        "${categoryLabel(category)} ${(w * 100).toInt()}%"
+                        "${categoryLabel(res, category)} ${(w * 100).toInt()}%"
                     },
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -640,6 +642,7 @@ private fun ItemRow(
     onPlus: () -> Unit,
 ) {
     val editable = QuantityRules.allowsQuantityAboveOne(item.category)
+    val res = LocalContext.current.resources
     Card {
         Row(
             modifier = Modifier
@@ -648,7 +651,7 @@ private fun ItemRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
-                Text(categoryLabel(item.category), style = MaterialTheme.typography.labelSmall)
+                Text(categoryLabel(res, item.category), style = MaterialTheme.typography.labelSmall)
                 Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             if (editable) {
@@ -670,6 +673,7 @@ private fun ItemRow(
 
 @Composable
 private fun DiagnosisSummary(diagnosis: Diagnosis) {
+    val res = LocalContext.current.resources
     val (title, color) = when (diagnosis.overall) {
         OverallStatus.PASSED -> stringResource(R.string.diagnosis_passed) to Color(0xFF1B7F3A)
         OverallStatus.CONFLICT -> stringResource(R.string.diagnosis_conflict) to MaterialTheme.colorScheme.error
@@ -683,7 +687,7 @@ private fun DiagnosisSummary(diagnosis: Diagnosis) {
             Text(
                 stringResource(
                     R.string.diagnosis_risk_score,
-                    riskLabel(diagnosis.riskLevel),
+                    riskLabel(res, diagnosis.riskLevel),
                     diagnosis.score?.toString() ?: "—",
                     diagnosis.revisionId,
                 ),
@@ -699,12 +703,13 @@ private fun ConflictCard(
     labels: Map<String, String>,
     onSelect: () -> Unit,
 ) {
+    val res = LocalContext.current.resources
     Card {
         Column(Modifier.padding(14.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(ruleLabel(conflict.ruleId), fontWeight = FontWeight.Bold)
+                Text(ruleLabel(res, conflict.ruleId), fontWeight = FontWeight.Bold)
                 Text(
-                    severityLabel(conflict.severity),
+                    severityLabel(res, conflict.severity),
                     color = if (conflict.severity == Severity.BLOCKER) {
                         MaterialTheme.colorScheme.error
                     } else {
@@ -736,9 +741,10 @@ private fun ConflictCard(
 
 @Composable
 private fun UnverifiedCard(u: RuleOutcome.Unverified) {
+    val res = LocalContext.current.resources
     Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF6E0))) {
         Column(Modifier.padding(14.dp)) {
-            Text(ruleLabel(u.ruleId), fontWeight = FontWeight.Bold)
+            Text(ruleLabel(res, u.ruleId), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(4.dp))
             Text(
                 when (u.reason) {
@@ -854,31 +860,28 @@ private fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 6.dp))
 }
 
-@Composable
-private fun bannerText(key: TextKey): String = when (key) {
-    TextKey.NO_DISPLAY_OUTPUT -> stringResource(R.string.banner_no_display_output)
-    TextKey.QUANTITY_NOT_APPLICABLE -> stringResource(R.string.banner_quantity_not_applicable)
-    TextKey.QUANTITY_INVALID -> stringResource(R.string.banner_quantity_invalid)
-    TextKey.DIAGNOSTICS_REQUIRED -> stringResource(R.string.banner_diagnostics_required)
-    TextKey.APPLY_REVISION_STALE -> stringResource(R.string.banner_apply_revision_stale)
-    TextKey.CANDIDATE_NOT_FOUND -> stringResource(R.string.banner_candidate_not_found)
-    TextKey.CONFLICT_SELECTED_NONE -> stringResource(R.string.banner_conflict_selected_none)
+private fun bannerText(res: Resources, key: TextKey): String = when (key) {
+    TextKey.NO_DISPLAY_OUTPUT -> res.getString(R.string.banner_no_display_output)
+    TextKey.QUANTITY_NOT_APPLICABLE -> res.getString(R.string.banner_quantity_not_applicable)
+    TextKey.QUANTITY_INVALID -> res.getString(R.string.banner_quantity_invalid)
+    TextKey.DIAGNOSTICS_REQUIRED -> res.getString(R.string.banner_diagnostics_required)
+    TextKey.APPLY_REVISION_STALE -> res.getString(R.string.banner_apply_revision_stale)
+    TextKey.CANDIDATE_NOT_FOUND -> res.getString(R.string.banner_candidate_not_found)
+    TextKey.CONFLICT_SELECTED_NONE -> res.getString(R.string.banner_conflict_selected_none)
     else -> key.key
 }
 
 private fun money(value: Long): String = "¥" + "%,d".format(value)
 
-@Composable
-private fun riskLabel(risk: RiskLevel): String = when (risk) {
-    RiskLevel.HIGH -> stringResource(R.string.risk_high)
-    RiskLevel.MEDIUM -> stringResource(R.string.risk_medium)
-    RiskLevel.LOW -> stringResource(R.string.risk_low)
-    RiskLevel.UNKNOWN -> stringResource(R.string.risk_unknown)
+private fun riskLabel(res: Resources, risk: RiskLevel): String = when (risk) {
+    RiskLevel.HIGH -> res.getString(R.string.risk_high)
+    RiskLevel.MEDIUM -> res.getString(R.string.risk_medium)
+    RiskLevel.LOW -> res.getString(R.string.risk_low)
+    RiskLevel.UNKNOWN -> res.getString(R.string.risk_unknown)
 }
 
-@Composable
-private fun severityLabel(severity: Severity): String = when (severity) {
-    Severity.BLOCKER -> stringResource(R.string.severity_blocker)
-    Severity.MAJOR -> stringResource(R.string.severity_major)
-    Severity.MINOR -> stringResource(R.string.severity_minor)
+private fun severityLabel(res: Resources, severity: Severity): String = when (severity) {
+    Severity.BLOCKER -> res.getString(R.string.severity_blocker)
+    Severity.MAJOR -> res.getString(R.string.severity_major)
+    Severity.MINOR -> res.getString(R.string.severity_minor)
 }
