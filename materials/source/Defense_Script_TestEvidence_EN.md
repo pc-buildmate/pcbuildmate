@@ -55,9 +55,9 @@
 
 > "Concretely, three limits. The catalogue is static, with dated reference prices and no live feed — the
 > manifest has no network permission, so this is a design boundary, not a missing feature. The x16 slot
-> position is recorded for five of six boards; the sixth falls back to the documented constant, and the
-> view labels that fallback. And we have not automated real-device gestures; the nine-step demo is run by
-> hand, three times, with screenshots."
+> position is recorded for all six boards, as standard-layout references rather than vendor-verified values.
+> And we have not automated real-device gestures; the nine-step demo is run by hand, three times, with
+> screenshots."
 
 （中文提示：每项都给出"为什么"而不是"以后会做"。）
 
