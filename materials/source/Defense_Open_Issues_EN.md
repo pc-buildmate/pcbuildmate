@@ -1,7 +1,7 @@
 # Defense · Open issues and how to answer if asked
 
 > Snapshot 2026-11-27, main `72146ad`. **Two** issues are open: the scope-change proposal (#175) and a
-> tech-debt item about a legacy prototype asset (#197). Five were closed since 11-19.
+> tech-debt item about a legacy prototype asset (#197). Six were closed since 11-19.
 > For each: does it affect what the demo shows, and what to say if an examiner asks. Answers stay inside the
 > evidence rules — no claim beyond what the repo can show.
 
