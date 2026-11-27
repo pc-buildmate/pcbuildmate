@@ -29,7 +29,7 @@
 
 | ID | 模块 | 状态 | 认领 | 依赖 | 文档 |
 |---|---|---|---|---|---|
-| QA-04 | demo-v1 生成链解耦 + 守护检查 | **doing** | @ray045678-cyber | — | [#197](https://github.com/pc-buildmate/pcbuildmate/issues/197) |
+| QA-04 | demo-v1 生成链解耦 + 守护检查 | **doing** | @ray045678-cyber | — | [QA-04](QA-04.md) · [#197](https://github.com/pc-buildmate/pcbuildmate/issues/197) |
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | paused | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
 | QA-01 | 矩阵 + 12 条关键变异 | done | @MoeField | [QA-01](QA-01.md) |
 | QA-02 | `:test-oracle` 参考模型 + 交叉校验（规则 / 两张状态机） | done | @yys1yys2yys | issue #55 |
