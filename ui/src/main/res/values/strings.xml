@@ -50,6 +50,7 @@
     <string name="loading_checking">正在检查兼容性…</string>
     <string name="loading_rechecking">正在全量重检…</string>
     <string name="error_check_failed">检查失败：%1$s</string>
+    <string name="no_candidate_message">当前目录内没有可选替换：%1$s\n建议：%2$s</string>
     <string name="applied_title">已应用并重检</string>
     <string name="applied_note">总价已更新；修一个冲突 ≠ 全部兼容，未验证项仍然保留。</string>
     <string name="action_back_to_workspace">返回配置</string>
@@ -75,6 +76,77 @@
     <string name="banner_apply_revision_stale">配置已过期，请重新检查</string>
     <string name="banner_candidate_not_found">候选已失效，请重新加载</string>
     <string name="banner_conflict_selected_none">请选择一条冲突</string>
+
+    <!-- Diagnosis summary -->
+    <string name="diagnosis_passed">全部通过</string>
+    <string name="diagnosis_conflict">存在冲突</string>
+    <string name="diagnosis_mixed">冲突 + 未验证</string>
+    <string name="diagnosis_unverified">有未验证项</string>
+    <string name="diagnosis_risk_score">风险 %1$s · 分数 %2$s · revision #%3$d</string>
+
+    <!-- Status labels (compare) -->
+    <string name="status_passed">全部通过</string>
+    <string name="status_conflict">存在冲突</string>
+    <string name="status_mixed">冲突 + 未验证</string>
+    <string name="status_unverified">有未验证项</string>
+    <string name="status_unchecked">未检查</string>
+
+    <!-- Unverified reasons -->
+    <string name="unverified_missing_field">未验证 —— 缺少 %1$s</string>
+    <string name="unverified_source_conflict">未验证 —— 来源冲突 %1$s</string>
+    <string name="unverified_unsupported_rule">未验证 —— 规则暂不支持</string>
+    <string name="unverified_insufficient_data">未验证 —— 数据不足</string>
+
+    <!-- Severity -->
+    <string name="severity_blocker">BLOCKER</string>
+    <string name="severity_major">MAJOR</string>
+    <string name="severity_minor">MINOR</string>
+
+    <!-- Risk levels -->
+    <string name="risk_high">高</string>
+    <string name="risk_medium">中</string>
+    <string name="risk_low">低</string>
+    <string name="risk_unknown">未知</string>
+
+    <!-- Category labels -->
+    <string name="category_cpu">处理器</string>
+    <string name="category_motherboard">主板</string>
+    <string name="category_memory">内存</string>
+    <string name="category_gpu">显卡</string>
+    <string name="category_psu">电源</string>
+    <string name="category_case">机箱</string>
+    <string name="category_cooler">散热器</string>
+    <string name="category_storage">硬盘</string>
+
+    <!-- Rule labels -->
+    <string name="rule_cpu_socket_match">CPU 插槽</string>
+    <string name="rule_cpu_mb_chipset_support">芯片组支持</string>
+    <string name="rule_cpu_mb_bios_support">BIOS 版本</string>
+    <string name="rule_memory_ddr_generation">内存代际</string>
+    <string name="rule_memory_slot_count">内存插槽</string>
+    <string name="rule_memory_capacity_limit">内存容量</string>
+    <string name="rule_gpu_case_length">显卡长度</string>
+    <string name="rule_gpu_case_thickness">显卡厚度</string>
+    <string name="rule_gpu_case_slot_width">显卡槽宽</string>
+    <string name="rule_psu_continuous_power">电源功率</string>
+    <string name="rule_psu_connectors">电源接口</string>
+    <string name="rule_cooler_case_height">散热器高度</string>
+    <string name="rule_cooler_cpu_socket">散热器扣具</string>
+    <string name="rule_mb_case_form_factor">主板板型</string>
+    <string name="rule_storage_mb_interface">硬盘接口</string>
+
+    <!-- Use case labels -->
+    <string name="usecase_gaming">游戏</string>
+    <string name="usecase_study_office">办公/学习</string>
+    <string name="usecase_content_creation">内容创作</string>
+    <string name="usecase_local_ai">本地 AI</string>
+
+    <!-- Conflict card -->
+    <string name="conflict_detail">%1$s %2$s vs %3$s %4$s</string>
+    <string name="conflict_id_label">conflictId %1$s</string>
+
+    <!-- Candidate card -->
+    <string name="candidate_affects">会影响：%1$s</string>
 
     <!-- 3D 预览 -->
     <string name="preview3d_title">3D 间隙预览</string>
