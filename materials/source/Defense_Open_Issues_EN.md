@@ -35,4 +35,4 @@
 ## What this list is not
 
 It is not a promise of dates. Owners are named in the issues; nothing here commits anyone to a fix
-before the 12/01 defence.
+before the 12/08 defence.

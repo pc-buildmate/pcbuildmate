@@ -63,9 +63,10 @@
 
 ## Slide 24 — Next steps (30 s)
 
-> "Between now and December the first: a signed release with a checksum, so what we demonstrate is what
-> you can install. Second: three device runs recorded with timestamps and numbers, 7800 to 7900 each
-> time. Third: more component data from official store pages. Then we freeze features on November 28."
+> "The signed release shipped on 27 November, with a checksum we verified against the download, so what
+> we demonstrate is what you can install. Four device runs are recorded, three on the release candidate and one on the shipped APK,
+> 7800 to 7900 each time. Next: more component data from official store pages. And features froze on
+> 28 November."
 
 （中文提示：不要承诺实时价格或更多功能。）
 
