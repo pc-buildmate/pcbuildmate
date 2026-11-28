@@ -92,6 +92,24 @@ adb wait-for-device
 | BIOS | 未验证 | 未验证 | 未验证 |
 | 比较 | A 7800 / B 7900 | 同 | 同 |
 
+### 最终发布包九步（2026-11-28，**发布证据**）
+
+在正式包 `v1.0.0-defense` 上重跑同一套九步（先 `adb uninstall` 掉 debug 包再 `adb install`），飞行模式全程开启：
+
+| 锚点 | 实测 |
+|---|---|
+| 推荐 | **¥7,900**，8 类（含 PA120 / Airface Pure Pro） |
+| 演示配置 | ¥7,800，剩 ¥200 |
+| 冲突 | 风险高 · 分数 **52** · `337 vs 320` BLOCKER + `61 vs 60` MAJOR + BIOS 未验证 |
+| 候选 / 预览 / 应用 | `300mm +¥100` → 预览 ¥7,900 → revision #2，BIOS 仍未验证 |
+| A/B 比较 | A 7,800（存在冲突）/ B 7,900（有未验证项） |
+| 继续上次配置 | 回到 ¥7,800 工作区 |
+
+结果：**9/9 通过**；截图 `qa/screenshots/final-*.png`（8 张）。执行：
+`adb uninstall io.github.pcbuildmate && adb install PC-Buildmate-v1.0.0-defense.apk && ADB=<adb> bash qa/drive-demo.sh final qa/screenshots`
+
+---
+
 ### 答辩包预检（2026-11-28，**不是发布证据**）
 
 答辩（12/08，组内 11/28 确认）前用当天 main 的 debug 包在 HUAWEI DBR-W10 上重跑了一遍九步，确认「8 类 / ¥7,900」的界面与讲稿一致：
@@ -122,10 +140,10 @@ adb wait-for-device
 | sha256 | `sha256sum` | 与 Release 的 `.sha256` 一致 | ✅ `5e6db504…7856894`，与附件逐字节一致 |
 | 权限 | `aapt2 dump permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ✅ 仅 `io.github.pcbuildmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（androidx 自用） |
 | ABI | `aapt dump badging` / `unzip -l` | 含 `arm64-v8a` | ✅ **仅** `arm64-v8a`（无 x86_64） |
-| 安装 | `adb install -r` | Success | ⏳ 待最终包在 DBR-W10 上重装复跑（11/28 预检用的是 debug 包，见 §21.2）；rc2 的安装记录为 2026-11-17 |
+| 安装 | `adb install -r` | Success | ✅ 2026-11-28 16:20 在 DBR-W10 上 `Success`（先卸载 debug 包；`versionName 1.0.0-defense`） |
 
 > 为什么安装/离线两行要重跑：debug 与 release 签名不同，`adb install` 需要先卸载；而且最终包的推荐结果是 8 类 / ¥7,900，九步锚点要在最终包上再核一次（表盘已就绪，连上平板即可执行）。
-| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⏳ 同上；rc2 的三次记录全程 `airplane_mode_on=1` |
+| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ✅ 2026-11-28 九步全程 `airplane_mode_on=1`（截图右上角为飞行模式图标），推荐/检查/替换/比较/3D 均正常 |
 
 > 一条命令复现上面六项的机器可判定部分：`bash qa/verify-release.sh <apk> <sha256 文件或值> [<期望 versionName>]`（sha256 / 签名 / 权限 / ABI / 包名 / 版本号，任一不符返回非零）；安装与离线启动需要设备。
 
