@@ -94,7 +94,7 @@ adb wait-for-device
 
 ### 答辩包预检（2026-11-28，**不是发布证据**）
 
-答辩前用当天 main 的 debug 包在 HUAWEI DBR-W10 上重跑了一遍九步，确认「8 类 / ¥7,900」的界面与讲稿一致：
+答辩（12/08，组内 11/28 确认）前用当天 main 的 debug 包在 HUAWEI DBR-W10 上重跑了一遍九步，确认「8 类 / ¥7,900」的界面与讲稿一致：
 
 | 项 | 值 |
 |---|---|
@@ -108,18 +108,24 @@ adb wait-for-device
 
 ## 21.3 Release 校验（与阮立坤的发布包对账）
 
-校验对象：[Release `v1.0.0-defense-rc2`](https://github.com/pc-buildmate/pcbuildmate/releases/tag/v1.0.0-defense-rc2)
-`PC-Buildmate-v1.0.0-defense-rc2.apk`（23,545,828 B，`versionName = 1.0.0-defense`，`versionCode = 1`，
+校验对象：**正式发布** [Release `v1.0.0-defense`](https://github.com/pc-buildmate/pcbuildmate/releases/tag/v1.0.0-defense)
+（published 2026-11-27T00:42Z）
+`PC-Buildmate-v1.0.0-defense.apk`（23,548,984 B，`versionName = 1.0.0-defense`，`versionCode = 1`，
 `minSdk = 31`，`targetSdk = 37`，`package = io.github.pcbuildmate`）。
 
-| 检查 | 命令 | 期望 | 结果（2026-11-17） |
+> 2026-11-28 由 @yys1yys2yys 重新校验一次：`REQUIRE_ARM64_ONLY=1 bash qa/verify-release.sh <apk> <sha256> 1.0.0-defense`。
+> 产物内的目录快照为 **30 条 / 170 字段 / 6 块主板全部带 x16 字段 / 两条散热覆盖 4 个 socket**（`unzip -p … assets/catalogue/catalogue-app.json` 抽查），与 main 的 #196 数据一致。
+
+| 检查 | 命令 | 期望 | 结果（2026-11-28 复校；安装/离线两行沿用 2026-11-17 记录） |
 |---|---|---|---|
 | APK 存在且签名 | `apksigner verify --print-certs` | 签名有效、证书非 debug | ✅ `CN=PC Buildmate, OU=EE5415, O=CityU`，证书 SHA-256 `d6d6b224…82c10` |
-| sha256 | `sha256sum` | 与 Release 的 `.sha256` 一致 | ✅ `750b2d76…ecd44e`，与附件逐字节一致 |
+| sha256 | `sha256sum` | 与 Release 的 `.sha256` 一致 | ✅ `5e6db504…7856894`，与附件逐字节一致 |
 | 权限 | `aapt2 dump permissions` | **无 INTERNET / CAMERA / LOCATION / POST_NOTIFICATIONS** | ✅ 仅 `io.github.pcbuildmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（androidx 自用） |
 | ABI | `aapt dump badging` / `unzip -l` | 含 `arm64-v8a` | ✅ **仅** `arm64-v8a`（无 x86_64） |
-| 安装 | `adb install -r` | Success | ✅ 2026-11-17 09:40 在 DBR-W10 上 `Success`（`versionName 1.0.0-defense`） |
-| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ✅ 三次演示全程 `airplane_mode_on=1`，推荐/检查/替换/比较均正常 |
+| 安装 | `adb install -r` | Success | ⏳ 待最终包在 DBR-W10 上重装复跑（11/28 预检用的是 debug 包，见 §21.2）；rc2 的安装记录为 2026-11-17 |
+
+> 为什么安装/离线两行要重跑：debug 与 release 签名不同，`adb install` 需要先卸载；而且最终包的推荐结果是 8 类 / ¥7,900，九步锚点要在最终包上再核一次（表盘已就绪，连上平板即可执行）。
+| 离线启动 | 飞行模式启动 | Entry 正常、无网络请求 | ⏳ 同上；rc2 的三次记录全程 `airplane_mode_on=1` |
 
 > 一条命令复现上面六项的机器可判定部分：`bash qa/verify-release.sh <apk> <sha256 文件或值> [<期望 versionName>]`（sha256 / 签名 / 权限 / ABI / 包名 / 版本号，任一不符返回非零）；安装与离线启动需要设备。
 

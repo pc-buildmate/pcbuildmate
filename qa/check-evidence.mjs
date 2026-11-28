@@ -5,7 +5,7 @@
  * 用法：node qa/check-evidence.mjs [--file <path>] [--self-test]
  * 退出码：0 = 完整；1 = 有未填项或缺图。
  *
- * 背景：docs/21 的表格需要人填；12/01 发布会前，"还有一格没填"必须能被机器查出来。
+ * 背景：docs/21 的表格需要人填；发布会前，"还有一格没填"必须能被机器查出来。
  * 故意不接进 PR 流水线：工作过程中的占位符是合理的，这个门检查"发布前状态"。
  */
 import { readFileSync, existsSync } from "node:fs";
