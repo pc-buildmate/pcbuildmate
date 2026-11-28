@@ -10,6 +10,8 @@ set -u
 
 RUN="${1:?usage: drive-demo.sh <run-label> [out-dir]}"
 OUT="${2:-qa/screenshots}"
+# Git Bash 会把 /sdcard/... 当成 Windows 路径改写，必须关掉路径转换。
+case "$(uname -s)" in MINGW*|MSYS*) export MSYS_NO_PATHCONV=1;; esac
 ADB="${ADB:-adb}"
 PKG="${PKG:-io.github.pcbuildmate}"
 # Windows 上 mktemp 给的是 MSYS 路径，node 读不到；用系统临时目录的绝对路径。
@@ -44,7 +46,7 @@ wait_text(){ # 等某个文本出现，最多 10 s
 wait_text '^生成配置$'
 
 # 1 Entry：推荐 → 返回 → 演示配置
-tap '^生成配置$'; wait_text '¥7,869'; shot 01-entry-recommend
+tap '^生成配置$'; wait_text '¥7,900'; shot 01-entry-recommend
 tap '^返回$'; wait_text '^载入演示配置'; tap '^载入演示配置'; wait_text '¥7,800'; shot 02-workspace
 
 # 3 保存 A

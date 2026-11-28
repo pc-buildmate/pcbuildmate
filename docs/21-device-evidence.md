@@ -92,6 +92,20 @@ adb wait-for-device
 | BIOS | 未验证 | 未验证 | 未验证 |
 | 比较 | A 7800 / B 7900 | 同 | 同 |
 
+### 答辩包预检（2026-11-28，**不是发布证据**）
+
+答辩（11/30）用当天 main 的 debug 包在 HUAWEI DBR-W10 上重跑了一遍九步，确认「8 类 / ¥7,900」的界面与讲稿一致：
+
+| 项 | 值 |
+|---|---|
+| 构建 | `./gradlew :app:assembleDebug`（main @ `72146ad` + 本地文案修复），`applicationId` 同发布包 |
+| 安装 | 先 `adb uninstall`（debug 与 rc2 签名不同），再 `adb install -r app-debug.apk` |
+| 驱动 | `ADB=<adb> bash qa/drive-demo.sh pre qa/screenshots`（脚本会把锚点从 7869 改为 7900） |
+| 结果 | **9/9 通过**；推荐 ¥7,900（8 件，含机箱/散热）→ 演示配置 ¥7,800 → 冲突 52 → 候选 +¥100 → 预览 ¥7,900 → revision #2 → A/B 7800/7900 → 继续上次配置 |
+| 截图 | `qa/screenshots/pre-*.png`（8 张，答辩 deck 第 11–16 页已换成这一批） |
+
+> 这一轮只证明"答辩演示包的行为与讲稿一致"；发布证据仍以 §21.3 的正式 APK 校验为准，最终提交前会在发布包上再跑一次。
+
 ## 21.3 Release 校验（与阮立坤的发布包对账）
 
 校验对象：[Release `v1.0.0-defense-rc2`](https://github.com/pc-buildmate/pcbuildmate/releases/tag/v1.0.0-defense-rc2)
