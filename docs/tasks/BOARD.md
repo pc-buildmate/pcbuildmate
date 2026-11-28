@@ -24,6 +24,9 @@
 | DATA-04 | 目录/Revision 契约测试 + 拒绝分支 | done | @LIU132578 | [DATA-04](DATA-04.md) |
 | D4-01 | 预算推荐（8 类，权重可见，iGPU 过滤） | done | @MoeField | [D4-01](D4-01.md) |
 | VIZ-01 | 3D 间隙预览（盒体 + 程序化纹理） | done | @MoeField | [docs/17](../17-3d-preview.md) |
+| TEST-01 | 测试证据链 + 防漂移门（字段路径 / 审计报告 / deck 自检） | done | @yys1yys2yys | [TEST-01](TEST-01.md) · [docs/19](../19-test-evidence.md) |
+| QA-03 | 真机九步证据 + 发布产物校验 | done | @yys1yys2yys | [docs/21](../21-device-evidence.md) |
+| AUDIT-01 | 审计一致性（字段路径、异常身份、结论推导、管线 spec 校验） | done | @yys1yys2yys | [docs/20](../20-catalogue-audit.md) · #150 #164 #193 #195 |
 
 ## 待做（按优先级）
 
@@ -32,7 +35,7 @@
 | DATA-05 | 全部 30 条硬件价格真实市场价核对 + 报告 | **doing** | @LIU132578 | — | [#204](https://github.com/pc-buildmate/pcbuildmate/issues/204) |
 | QA-04 | demo-v1 生成链解耦 + 守护检查 | **done** | @ray045678-cyber | — | [QA-04](QA-04.md) · [#201](https://github.com/pc-buildmate/pcbuildmate/pull/201) |
 | PRICEDATA-01 | 2020+ 价格数据管道（6 类，半自动） | paused | @MoeField | — | [pricedata/README.md](../../pricedata/README.md) |
-| QA-01 | 矩阵 + 12 条关键变异 | done | @MoeField | [QA-01](QA-01.md) |
+| QA-01 | 矩阵 + 12 条关键变异 | done | @yys1yys2yys | [QA-01](QA-01.md) |
 | QA-02 | `:test-oracle` 参考模型 + 交叉校验（规则 / 两张状态机） | done | @yys1yys2yys | issue #55 |
 | POLISH-01 | 文案资源 / 可访问性 / 截图 | **doing** | @MoeField | D2/D6 | [POLISH-01](POLISH-01.md) |
 | DEFENSE-01 | 讲稿 / 演示脚本 / Q&A / PPT | **doing** | @MoeField | D4/D6 | [DEFENSE-01](DEFENSE-01.md) |
