@@ -20,8 +20,8 @@
 | N10 | Conflict score **52** | S12, step 4 | 王嘉瑞 | rc2 APK 实测（三次一致） | [x] 2026-11-17 真机 |
 | N11 | Module count **14** | S18 | 黄奕维 | `settings.gradle.kts` | [x] |
 | N12 | 3D constants: GPU 宽 110 mm、第一槽 I/O 下缘 −7.52 mm、槽距 20.32 mm；x16 槽位按目录字段（ATX 137.5 / mATX 76.5，参考值） | S15, S19, Q&A 3D | 陈思言 | `docs/18 §18.3/§18.8`；`ui/.../Scene3d.kt` | [x] 2026-11-27：#173 起 3D 读 `pcieX16SlotMm`/`pcieSlotCount`（显卡放首个 x16 槽）；#196 补齐了最后一块 lga1700，**6/6 主板都有字段**；字段值是**标准布局参考**（`REPORTED`），不是厂商图实测；缺字段时的常量回退仍保留 |
-| N13 | APK identity: `1.0.0-defense`, arm64-only, 23,545,828 B, sha256 `750b2d76…` | S24, Q&A release | 杨壹硕 | `docs/21 §21.3` | [x] verified |
-| N14 | Device demo runs: **3 / 3** recorded（DBR-W10 / Android 12） | S24, Q15 | 杨壹硕 | `docs/21 §21.2` + `qa/screenshots/` | [x] 2026-11-17 |
+| N13 | APK identity: `1.0.0-defense`（正式发布 2026-11-27），arm64-only, **23,548,984 B**, sha256 `5e6db504…` | S24, Q&A release | 杨壹硕 | `docs/21 §21.3` | [x] 2026-11-28 复校：sha256/签名/权限/ABI/包名/版本全过 |
+| N14 | Device demo runs: **4 次**（rc2 ×3，2026-11-17；正式包 ×1，2026-11-28），锚点一致 | S24, Q15 | 杨壹硕 | `docs/21 §21.2` + `qa/screenshots/` | [x] 2026-11-28 |
 
 ## How to close a row
 

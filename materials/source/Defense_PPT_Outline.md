@@ -112,7 +112,7 @@ values are standard-layout references, not vendor-verified), UI accessibility, a
 **Slide 23 — Known limits.** Static catalogue with dated reference prices; x16 slot position recorded
 for all six boards, as standard-layout references rather than vendor-verified values; no real-device automation of gestures.
 
-**Slide 24 — Next steps.** Signed release with checksum, device evidence ×3, official-store price
+**Slide 24 — Next steps.** Signed release *shipped 11-27* with a verified checksum, device evidence ×4 (rc2 ×3, shipped ×1), official-store price
 adapters, then feature freeze on 11/28.
 
 **Slide 25 — Closing.** "The weakest evidence decides the conclusion." Thank you; invite questions.
