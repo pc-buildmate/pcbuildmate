@@ -10,7 +10,7 @@
     <string name="entry_generate">生成配置</string>
     <string name="entry_load_demo">载入演示配置 · ¥7,800</string>
     <string name="entry_continue_saved">继续上次配置 · 已保存 %1$d 份</string>
-    <string name="entry_demo_note">演示配置固定 8 类零件，用于答辩锚点；生成配置按 6 类推荐。</string>
+    <string name="entry_demo_note">演示配置固定 8 类零件，用于答辩锚点；生成配置也按 8 类推荐（含机箱与散热）。</string>
 
     <!-- 通用 -->
     <string name="common_back">返回</string>
